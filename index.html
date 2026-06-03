@@ -2212,33 +2212,23 @@ fetchPrices().catch(console.warn);
 setInterval(()=>fetchPrices().catch(console.warn), 180000);
 
 // ── Picker listeners ────────────────────────────────────────
-(function(){
-  // Button
+window._pickerReady = false;
+function initPickerListeners(){
+  if(window._pickerReady) return;
   var pbtn = document.getElementById('pickbtn');
-  if(pbtn){
-    pbtn.addEventListener('click', function(e){
-      e.stopPropagation();
-      runPicker().catch(function(e2){ console.error('runPicker error:', e2); });
-    });
-  }
-  // Header toggle
-  var phd = document.getElementById('pickerHd');
-  if(phd){
-    phd.addEventListener('click', function(){ togglePicker(); });
-  }
-  // Scenario chips
+  var phd  = document.getElementById('pickerHd');
+  if(!pbtn){ setTimeout(initPickerListeners, 200); return; }
+  window._pickerReady = true;
+  pbtn.onclick = function(){ runPicker(); return false; };
+  if(phd) phd.onclick = function(){ togglePicker(); return false; };
   document.querySelectorAll('.scen').forEach(function(el){
-    el.addEventListener('click', function(){ selectScen(el); });
+    el.onclick = function(){ selectScen(el); return false; };
   });
-  // Filter chips
   document.querySelectorAll('.fchip').forEach(function(el){
-    el.addEventListener('click', function(){ toggleFilter(el); });
+    el.onclick = function(){ toggleFilter(el); return false; };
   });
-  // Preset chips
-  document.querySelectorAll('.pchip').forEach(function(el){
-    el.addEventListener('click', function(){ usePreset(el); });
-  });
-})();
+}
+initPickerListeners();
 
 // ── Touch: swipe down to close modal on mobile ──
 (function(){
