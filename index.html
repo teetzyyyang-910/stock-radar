@@ -57,19 +57,23 @@ header{padding:16px 0 12px;display:flex;align-items:center;justify-content:space
 .nav-wrap{position:sticky;top:0;z-index:100;background:var(--bg);}
 
 /* MARKET BAR */
-.mbar{display:flex;padding:8px 0;border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none;align-items:center;}
-.mbar::-webkit-scrollbar{display:none;}
-.mitem{display:flex;align-items:center;gap:4px;white-space:nowrap;padding:0 10px;border-right:1px solid var(--bd);}
-.mitem:last-child{border-right:none;}
+.mbar{padding:0;border-bottom:1px solid var(--bd);overflow:hidden;background:var(--s1);position:relative;}
+.mbar-inner{display:flex;align-items:center;animation:ticker 80s linear infinite;width:max-content;}
+.mbar-inner:hover{animation-play-state:paused;}
+.mbar::before,.mbar::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+.mbar::before{left:0;background:linear-gradient(to right,var(--s1),transparent);}
+.mbar::after{right:0;background:linear-gradient(to left,var(--s1),transparent);}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mitem{display:flex;align-items:center;gap:4px;white-space:nowrap;padding:6px 16px;border-right:1px solid var(--bd);}
 .mlb{font-size:11px;color:var(--mu);}
 .mvl{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
 .mcg{font-size:11px;font-family:'JetBrains Mono',monospace;}
 
 /* STATUS */
-.stbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:9px;font-size:13px;margin:10px 0;}
-.st-l{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--gd);}
-.st-ok{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--up);}
-.st-w{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--dn);}
+.stbar{display:flex;align-items:center;gap:6px;font-size:11px;}
+.st-l{color:var(--gd);}
+.st-ok{color:var(--up);}
+.st-w{color:var(--dn);}
 
 /* ── OVERVIEW ── */
 .ov-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px;}
@@ -333,9 +337,15 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     <div class="bname">STOCK RADAR</div>
     <div class="bsub">個股監控</div>
   </div>
-  <div class="hact">
-    <div class="clock" id="clock">--:--:--</div>
-    <button class="btn btn-ghost" onclick="doRefresh()" id="refreshBtn">↻ 重新整理</button>
+  <div class="hact" style="flex-direction:column;align-items:flex-end;gap:4px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="clock" id="clock">--:--:--</div>
+      <button class="btn btn-ghost" onclick="doRefresh()" id="refreshBtn">↻ 重新整理</button>
+    </div>
+    <div id="stbar" class="stbar st-l" style="margin:0;padding:4px 10px;font-size:11px;border-radius:6px">
+      <span class="spin"></span>
+      <span id="stmsg">正在抓取行情...</span>
+    </div>
   </div>
 </header>
 
@@ -366,12 +376,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   </div>
 </div>
 
-<div class="mbar" id="mbar"><span style="color:var(--mu);font-size:10px;padding:0 8px">載入中...</span></div>
+<div class="mbar" id="mbar"><div class="mbar-inner" id="mbar-inner"><span style="color:var(--mu);font-size:11px;padding:6px 16px">載入中...</span></div></div>
 
-<div class="stbar st-l" id="stbar">
-  <span class="spin"></span>
-  <span id="stmsg">正在透過 Cloudflare Worker 抓取即時行情...</span>
-</div>
 
 <!-- PAGE CONTENT -->
 <div id="page-overview" style="display:block"></div>
@@ -1128,22 +1134,36 @@ function renderOverviewFull(){
 
 // ── MARKET BAR ────────────────────────────────────────────────
 function renderMbar(){
-  // Show TAIEX + NASDAQ first in market bar
-  const taiexD  = IDX.taiex;
-  const nasdaqD = IDX.nasdaq;
-  const idxHtml = [
-    taiexD  ? `<div class="mitem"><span class="mlb">加權指數</span><span class="mvl" style="color:${taiexD.chgPct>=0?'var(--dn)':'var(--up)'}">${taiexD.price.toLocaleString('en-US',{maximumFractionDigits:0})}</span><span class="mcg" style="color:${taiexD.chgPct>=0?'var(--dn)':'var(--up)'}">${sgn(taiexD.chgPct)}${fmt(taiexD.chgPct)}%</span></div><span style="color:var(--bd2)">·</span>` : '',
-    nasdaqD ? `<div class="mitem"><span class="mlb">那斯達克</span><span class="mvl" style="color:${nasdaqD.chgPct>=0?'var(--up)':'var(--dn)'}">${nasdaqD.price.toLocaleString('en-US',{maximumFractionDigits:0})}</span><span class="mcg" style="color:${nasdaqD.chgPct>=0?'var(--up)':'var(--dn)'}">${sgn(nasdaqD.chgPct)}${fmt(nasdaqD.chgPct)}%</span></div><span style="color:var(--bd2)">·</span>` : '',
-  ].join('');
-  const ticks=['2330.TW','2454.TW','NVDA','AAPL','MSFT','QQQ','2327.TW','6285.TW'];
-  document.getElementById('mbar').innerHTML=idxHtml+ticks.map((sym,i)=>{
-    const w=WL.find(x=>x.sym===sym),d=SD[sym]; if(!w||!d)return'';
-    const col=ccCol(d.chgPct,w.type);
-    return`${i>0?'<span style="color:var(--bd2)">·</span>':''}
-      <div class="mitem"><span class="mlb">${w.tick}</span>
-      <span class="mvl" style="color:${col}">${fmt(d.price)}</span>
-      <span class="mcg" style="color:${col}">${sgn(d.chgPct)}${fmt(d.chgPct)}%</span></div>`;
+  // Build ticker items for all watchlist stocks
+  var tickerItems = WL.map(function(w){
+    var d = SD[w.sym]; if(!d) return '';
+    var col = ccCol(d.chgPct, w.type);
+    return '<div class="mitem">' +
+      '<span class="mlb">' + w.tick + '</span>' +
+      '<span class="mvl" style="color:' + col + '">' + fmt(d.price) + '</span>' +
+      '<span class="mcg" style="color:' + col + '">' + sgn(d.chgPct) + fmt(d.chgPct) + '%</span>' +
+      '</div>';
   }).join('');
+
+  // Index items at front
+  var idxItems = '';
+  if(IDX.taiex){
+    var tc = IDX.taiex.chgPct >= 0 ? 'var(--dn)' : 'var(--up)';
+    idxItems += '<div class="mitem"><span class="mlb" style="color:var(--tw)">加權指數</span>' +
+      '<span class="mvl" style="color:' + tc + '">' + IDX.taiex.price.toLocaleString('en-US',{maximumFractionDigits:0}) + '</span>' +
+      '<span class="mcg" style="color:' + tc + '">' + sgn(IDX.taiex.chgPct) + fmt(IDX.taiex.chgPct) + '%</span></div>';
+  }
+  if(IDX.nasdaq){
+    var nc = IDX.nasdaq.chgPct >= 0 ? 'var(--up)' : 'var(--dn)';
+    idxItems += '<div class="mitem"><span class="mlb" style="color:var(--us)">那斯達克</span>' +
+      '<span class="mvl" style="color:' + nc + '">' + IDX.nasdaq.price.toLocaleString('en-US',{maximumFractionDigits:0}) + '</span>' +
+      '<span class="mcg" style="color:' + nc + '">' + sgn(IDX.nasdaq.chgPct) + fmt(IDX.nasdaq.chgPct) + '%</span></div>';
+  }
+
+  var content = idxItems + tickerItems;
+  // Duplicate for seamless infinite loop
+  var inner = document.getElementById('mbar-inner');
+  if(inner) inner.innerHTML = content + content;
 }
 
 // ── OVERVIEW ─────────────────────────────────────────────────
