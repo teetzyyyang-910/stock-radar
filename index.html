@@ -1743,473 +1743,86 @@ function toggleFilter(el){
 }
 
 async function runPicker(){
-  const btn = document.getElementById('pickbtn');
-  const out  = document.getElementById('presult');
-  if(!btn || !out){ return; }
+  var btn = document.getElementById('pickbtn');
+  var out = document.getElementById('presult');
+  if(!btn || !out) return;
 
-  // Ensure picker is open and visible
-  const pbd = document.getElementById('pbd');
+  // Open picker if collapsed
+  var pbd = document.getElementById('pbd');
   if(pbd && !pbd.classList.contains('open')){
     pbd.classList.add('open');
     pickOpen = true;
-    const tog = document.getElementById('ptog');
+    var tog = document.getElementById('ptog');
     if(tog) tog.textContent = '▲ 收起';
   }
 
+  // Show loading state
   btn.disabled = true;
   btn.textContent = '分析中...';
   out.style.display = 'block';
-  out.innerHTML = '<div style="color:#fbbf24;padding:8px">篩選中...</div>';
+  out.style.minHeight = '120px';
+  out.innerHTML = '<div style="color:var(--gd);padding:12px"><span class="spin"></span> 篩選中...</div>';
 
-  // Step 1: filter
-  const def = SCENARIOS[activeScen] || SCENARIOS.rebound;
-  const filtered = applyFilters(WL, activeFilters, activeGrps);
-  const pool = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
-  const allStocks = pool.length > 0 ? pool : WL.filter(w => SD[w.sym]);
+  // Filter
+  var def = SCENARIOS[activeScen] || SCENARIOS.rebound;
+  var filtered = applyFilters(WL, activeFilters, activeGrps);
+  var pool = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
+  var allStocks = pool.length > 0 ? pool : WL.filter(function(w){ return SD[w.sym]; });
 
   if(allStocks.length === 0){
-    out.textContent = '⚠ 無股票資料，請等待行情載入後再試';
+    out.innerHTML = '<div style="color:var(--mu);padding:12px">⚠ 無股票資料，請等待行情載入後再試</div>';
     btn.disabled = false;
     btn.textContent = '✦ 開始分析';
     return;
   }
 
-  // Sort safely
-  let sorted = allStocks.slice();
-  try { sorted = allStocks.slice().sort(def.sort); } catch(e) { console.warn('sort error', e); }
-  const topStocks = sorted.slice(0, 12);
+  // Sort
+  var sorted = allStocks.slice();
+  try { sorted = allStocks.slice().sort(def.sort); } catch(e){}
+  var topStocks = sorted.slice(0, 12);
 
-  // Step 2: show filter results immediately
-  const filterHTML = renderFilterResults(topStocks);
-  out.style.display = 'block';
+  // Show filter results immediately
+  var filterHTML = renderFilterResults(topStocks);
   out.innerHTML = filterHTML;
-  // Scroll picker into view
-  try { btn.scrollIntoView({ behavior:'smooth', block:'nearest' }); } catch(e){}
   btn.disabled = false;
   btn.textContent = '✦ 開始分析';
 
-  // Step 3: build prompt
-  const snap = topStocks.map(function(w){
-    const d = SD[w.sym] || {};
-    const c = (d.history || []).map(function(h){ return h.c; });
-    const rsi = calcRSI(c) || '—';
-    const macd = calcMACD(c);
-    const ma5 = calcMA(c, 5);
-    const ma20 = calcMA(c, 20);
-    const score = calcScore(w, d);
-    const macdStr = macd ? (macd.macd > 0 ? '多' : '空') : '—';
-    const maStr = (ma5 && ma20) ? (ma5 > ma20 ? '多頭' : '空頭') : '—';
+  // Build AI prompt
+  var snap = topStocks.map(function(w){
+    var d = SD[w.sym] || {};
+    var c = (d.history || []).map(function(h){ return h.c; });
+    var rsi = calcRSI(c) || '—';
+    var macd = calcMACD(c);
+    var ma5 = calcMA(c, 5);
+    var ma20 = calcMA(c, 20);
+    var score = calcScore(w, d);
+    var macdStr = macd ? (macd.macd > 0 ? '多' : '空') : '—';
+    var maStr = (ma5 && ma20) ? (ma5 > ma20 ? '多頭' : '空頭') : '—';
     return w.tick + '(' + w.name + ') 評分:' + score + ' 現價:' + fmt(d.price) + ' RSI:' + rsi + ' MACD:' + macdStr + ' 均線:' + maStr;
   }).join('\n');
 
-  const customQ = (activeScen === 'custom') ? (document.getElementById('pinput') ? document.getElementById('pinput').value : '') : '';
-  const scenNote = customQ ? ('用戶要求：' + customQ) : ('分析情境：' + def.prompt);
-  const jsonFmt = '{"summary":"25字","recommend":[{"tick":"代號","name":"名稱","reason":"15字","signal":"buy"}],"watch":[{"tick":"代號","name":"名稱","reason":"15字","signal":"watch"}],"risk":[{"tick":"代號","name":"名稱","reason":"15字","signal":"sell"}],"note":"30字"}';
-  const promptStr = '你是專業股票分析師。以下是「' + def.label + '」篩選的股票：\n' + snap + '\n\n' + scenNote + '\n\n請只回傳JSON：\n' + jsonFmt + '\nrecommend:1-3支，watch:1-2支，risk:0-2支。';
+  var pinput = document.getElementById('pinput');
+  var customQ = (activeScen === 'custom' && pinput) ? pinput.value : '';
+  var scenNote = customQ ? ('用戶要求：' + customQ) : ('情境：' + def.prompt);
+  var promptStr = '股票分析師。「' + def.label + '」篩選結果：\n' + snap + '\n\n' + scenNote + '\n\n只回傳JSON：{"summary":"25字","recommend":[{"tick":"代號","name":"名稱","reason":"15字","signal":"buy"}],"watch":[{"tick":"代號","name":"名稱","reason":"15字","signal":"watch"}],"risk":[{"tick":"代號","name":"名稱","reason":"15字","signal":"sell"}],"note":"30字"}\nrecommend:1-3支，watch:1-2支，risk:0-2支。';
 
-  // Step 4: call Groq in background, update UI if success
+  // Call Groq in background
   try {
-    const text = await groqAI(promptStr, '你是專業股票分析師，只回傳JSON。');
-    const m = text.match(/\{[\s\S]*\}/);
+    var text = await groqAI(promptStr, '你是專業股票分析師，只回傳JSON。');
+    var m = text.match(/\{[\s\S]*\}/);
     if(m){
-      const data = JSON.parse(m[0]);
-      const out2 = document.getElementById('presult');
+      var data = JSON.parse(m[0]);
+      var out2 = document.getElementById('presult');
       if(out2){ out2.style.display='block'; out2.innerHTML = renderPickerCards(data); }
       saveToTracker(data.recommend || [], activeScen);
       setTimeout(loadTracker, 100);
     }
-  } catch(ex) {
-    console.warn('Groq picker error:', ex.message);
+  } catch(ex){
+    console.warn('Groq error:', ex.message);
   }
 }
 
 
-
-
-async function runPicker(){
-  const btn = document.getElementById('pickbtn');
-  const out  = document.getElementById('presult');
-
-  // Reset UI
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> 分析中...';
-  out.style.display = 'block';
-  out.innerHTML = '<div style="color:var(--mu);font-size:12px;padding:8px 0"><span class="spin"></span> 篩選並分析中...</div>';
-
-  // Always restore button when done
-  const done = (html) => {
-    if(html) out.innerHTML = html;
-    btn.disabled = false;
-    btn.textContent = '✦ 開始分析';
-  };
-
-  // ── Step 1: Filter ───────────────────────────────────────────
-  const def      = SCENARIOS[activeScen] || SCENARIOS.rebound;
-  const filtered = applyFilters(WL, activeFilters, activeGrps);
-  // If fewer than 3 results, relax to all stocks in chosen groups
-  const pool   = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
-  const sorted = [...pool].sort(def.sort);
-  const topStocks    = sorted.slice(0, 12);
-
-  if (topStocks.length === 0) {
-    done('<div style="color:var(--mu);font-size:13px;padding:16px 0;text-align:center">⚠ 無股票資料，請等待行情載入後再試</div>');
-    return;
-  }
-
-  const filterNote = filtered.length < 3
-    ? `（條件較嚴，已自動擴展至 ${pool.length} 支）`
-    : `（符合條件 ${filtered.length} 支）`;
-
-  // ── Step 2: Build prompt ─────────────────────────────────────
-  const snap = topStocks.map(w => {
-    const d = SD[w.sym] || {};
-    const c = (d.history || []).map(h => h.c);
-    const rsi   = calcRSI(c) || '—';
-    const macd  = calcMACD(c);
-    const ma5   = calcMA(c, 5);
-    const ma20  = calcMA(c, 20);
-    const score = calcScore(w, d);
-    return w.tick + '(' + w.name + ',' + (GRP[w.grp]||w.sec) + ') ' +
-      '評分:' + score + ' 現價:' + fmt(d.price) +
-      ' 今日:' + sgn(d.chgPct||0) + fmt(d.chgPct||0) + '%' +
-      ' RSI:' + rsi +
-      ' MACD:' + (macd ? (macd.macd > 0 ? '多' : '空') : '—') +
-      ' 均線:' + (ma5 && ma20 ? (ma5 > ma20 ? '多頭' : '空頭') : '—');
-  }).join('\n');
-
-  const customQ   = activeScen === 'custom' ? (document.getElementById('pinput')?.value || '') : '';
-  const scenNote  = customQ ? ('用戶要求：' + customQ) : ('分析情境：' + def.prompt);
-  const jsonFmt   = '{"summary":"25字以內","recommend":[{"tick":"代號","name":"名稱","reason":"15字內","signal":"buy"}],"watch":[{"tick":"代號","name":"名稱","reason":"15字內","signal":"watch"}],"risk":[{"tick":"代號","name":"名稱","reason":"15字內","signal":"sell"}],"note":"30字內"}';
-
-  const promptParts = [
-    '你是專業股票分析師。以下是符合「' + def.label + '」' + filterNote + '的股票（依評分排序）：',
-    snap, '',
-    scenNote, '',
-    '請分析後只回傳JSON（不要其他文字）：',
-    jsonFmt,
-    'recommend:最值得關注1-3支，watch:次要1-2支，risk:有風險0-2支。'
-  ];
-  const prompt = promptParts.join('\n');
-
-  // ── Step 3: 立即顯示篩選結果，Groq 在背景執行後更新 ─────────
-  // Show filter results immediately so user sees something right away
-  done(renderFilterResults(topStocks));
-
-  // Then try Groq in background and update if successful
-  try {
-    const text = await groqAI(prompt, '你是專業股票分析師，只回傳JSON，不要其他任何文字。');
-    const m    = text.match(/\{[\s\S]*\}/);
-    if (m) {
-      const data = JSON.parse(m[0]);
-      const out2 = document.getElementById('presult');
-      if (out2) out2.innerHTML = renderPickerCards(data);
-      saveToTracker(data.recommend || [], activeScen);
-      setTimeout(loadTracker, 100);
-    }
-  } catch(e) {
-    console.warn('Groq background error:', e.message);
-    // Filter results already shown, no further action needed
-  }
-}
-
-
-
-
-
-
-function renderFilterResults(stocks){
-  var hd = '<div style="font-size:12px;color:var(--mu);margin-bottom:8px">篩選結果（' + stocks.length + '支）：</div>';
-  var rows = stocks.map(function(w){
-    var d = SD[w.sym]||{}, score=calcScore(w,d), col=ccCol(d.chgPct,w.type);
-    var tickCol = w.type==='tw' ? 'var(--tw)' : 'var(--us)';
-    return '<div onclick="openModal(\'' + w.sym + '\')" style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer">' +
-      '<span class="score-badge ' + getScoreClass(score,w.type) + '">' + score + '</span>' +
-      '<span style="font-family:monospace;font-size:13px;color:' + tickCol + '">' + w.tick + '</span>' +
-      '<span style="font-size:12px;color:var(--mu2)">' + w.name + '</span>' +
-      '<span style="margin-left:auto;font-family:monospace;font-size:12px;color:' + col + '">' + fmt(d.price) + ' ' + sgn(d.chgPct) + fmt(d.chgPct) + '%</span>' +
-      '</div>';
-  }).join('');
-  return hd + rows;
-}
-
-// ── TRACKER ───────────────────────────────────────────────────
-function safeStorage(action, key, val){
-  try{ return action==='get'?localStorage.getItem(key):localStorage.setItem(key,val); }
-  catch(e){ return null; }
-}
-function saveToTracker(recommendations, scen){
-  if(!recommendations.length) return;
-  try{
-    const records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
-    const today   = new Date().toLocaleDateString('zh-TW');
-    recommendations.forEach(r=>{
-      const w = WL.find(x=>x.tick===r.tick);
-      const d = w ? SD[w.sym] : null;
-      if(!d||!d.price) return;
-      // Avoid duplicate same-day same-stock
-      if(records.find(x=>x.date===today&&x.tick===r.tick)) return;
-      records.unshift({ date:today, tick:r.tick, name:r.name||w?.name, entry:d.price, scen, reason:r.reason });
-    });
-    // Keep last 30 records
-    safeStorage('set','sr_tracker', JSON.stringify(records.slice(0,30)));
-  }catch(e){}
-}
-
-function loadTracker(){
-  try{
-    const records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
-    const sec = document.getElementById('tracker-section');
-    const list = document.getElementById('tracker-list');
-    if(!records.length){ sec.style.display='none'; return; }
-    sec.style.display='block';
-    list.innerHTML = records.map(r=>{
-      const w = WL.find(x=>x.tick===r.tick);
-      const d = w ? SD[w.sym] : null;
-      const cur  = d?.price || null;
-      const pnl  = cur && r.entry ? ((cur-r.entry)/r.entry*100) : null;
-      const pnlCol = pnl===null ? 'var(--mu)' : (w?.type==='tw' ? (pnl>0?'var(--dn)':'var(--up)') : (pnl>0?'var(--up)':'var(--dn)'));
-      return `<div class="track-item">
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${w?.type==='tw'?'var(--tw)':'var(--us)'}">${r.tick}</span>
-            <span style="font-size:10px;color:var(--mu)">${r.date}</span>
-          </div>
-          <div style="font-size:10px;color:var(--mu2)">${r.reason||''}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-size:11px;color:var(--mu)">進場 ${fmt(r.entry)}</div>
-          ${cur?`<div class="track-pnl" style="color:${pnlCol}">${pnl>=0?'+':''}${fmt(pnl)}%</div>`:'<div style="font-size:10px;color:var(--mu)">—</div>'}
-        </div>
-        <button onclick="removeTrack('${r.tick}','${r.date}')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:0 0 0 8px">✕</button>
-      </div>`;
-    }).join('');
-  }catch(e){}
-}
-
-function removeTrack(tick, date){
-  try{
-    const records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
-    safeStorage('set','sr_tracker', JSON.stringify(records.filter(r=>!(r.tick===tick&&r.date===date))));
-    loadTracker();
-  }catch(e){}
-}
-
-function clearTracker(){
-  if(!confirm('確定清除全部追蹤記錄？')) return;
-  try{ localStorage.removeItem('sr_tracker'); }catch(e){}
-  loadTracker();
-}
-
-
-async function runPicker(){
-  const q=document.getElementById('pinput').value.trim(); if(!q)return;
-  const btn=document.getElementById('pickbtn'), out=document.getElementById('presult');
-  btn.disabled=true; btn.innerHTML='<span class="spin"></span> 分析中...';
-  out.innerHTML='<div style="color:var(--mu);font-size:12px;padding:8px 0">AI 正在分析自選股資料...</div>';
-
-  const snap=WL.map(w=>{
-    const d=SD[w.sym]||{}, c=(d.history||[]).map(h=>h.c);
-    const rsi=calcRSI(c), macd=calcMACD(c), ma5=calcMA(c,5), ma20=calcMA(c,20), g=GRP[w.grp]||'';
-    return`${w.tick}(${w.name},${g||w.sec},${w.type==='tw'?'台股':'美股'}) 現價:${fmt(d.price)} 今日:${sgn(d.chgPct||0)}${fmt(d.chgPct||0)}% 量:${fmtV(d.vol)} RSI:${rsi||'—'} MACD:${macd?(macd.macd>0?'多':'空'):'—'} 均線:${ma5&&ma20?(ma5>ma20?'多頭':'空頭'):'—'}`;
-  }).join('\n');
-
-  const prompt=`你是專業股票分析師。以下是自選股即時行情與技術指標：
-${snap}
-
-問題：${q}
-
-請分析後，以 JSON 格式回覆（只回 JSON，不要任何其他文字）：
-{
-  "summary": "30字以內的整體市場判斷",
-  "recommend": [
-    {"tick":"代號","name":"名稱","reason":"推薦理由（15字內）","signal":"buy/watch/sell"}
-  ],
-  "watch": [
-    {"tick":"代號","name":"名稱","reason":"觀察理由（15字內）","signal":"watch"}
-  ],
-  "risk": [
-    {"tick":"代號","name":"名稱","reason":"風險說明（15字內）","signal":"sell"}
-  ],
-  "note": "補充說明（50字以內）"
-}
-recommend 放強烈推薦（1-3支），watch 放值得觀察（1-3支），risk 放需注意風險（0-2支）。`;
-
-  try{
-    const text = await groqAI(prompt, '你是專業股票分析師，只回傳JSON，不要其他任何文字。');
-    const m = text.match(/\{[\s\S]*\}/);
-    if(m){
-      try{
-        const data = JSON.parse(m[0]);
-        out.innerHTML = renderPickerCards(data);
-        return;
-      }catch(e){}
-    }
-    // Fallback to plain text
-    out.textContent = text;
-  }catch(e){ out.textContent='分析服務暫時無法使用。'; }
-  finally{ btn.disabled=false; btn.textContent='✦ 分析'; }
-}
-
-function renderPickerCards(data){
-  // ── helpers ──────────────────────────────────────────
-  const getStockInfo = tick => {
-    const w = WL.find(x=>x.tick===tick);
-    const d = w ? SD[w.sym] : null;
-    const c = d ? (d.history||[]).map(h=>h.c) : [];
-    const rsi  = c.length ? calcRSI(c) : null;
-    const ma5  = c.length ? calcMA(c,5)  : null;
-    const ma20 = c.length ? calcMA(c,20) : null;
-    const sig  = d&&w ? getSignal(d,w.type) : null;
-    const col  = d&&w ? ccCol(d.chgPct,w.type) : 'var(--mu2)';
-    return { w, d, rsi, ma5, ma20, sig, col,
-      maLabel: ma5&&ma20 ? (ma5>ma20?'多頭':'空頭') : '' };
-  };
-
-  // ── stock row inside a column ─────────────────────────
-  const stockRow = (item, borderColor) => {
-    const {w,d,rsi,maLabel,sig,col} = getStockInfo(item.tick);
-    return `<div onclick="${w?`openModal('${w.sym}')`:''}"
-      style="padding:9px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:6px;cursor:${w?'pointer':'default'};transition:all .15s"
-      onmouseenter="this.style.background='rgba(255,255,255,.06)'" onmouseleave="this.style.background='rgba(255,255,255,.03)'">
-      <!-- ticker row -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
-        <div style="display:flex;align-items:center;gap:5px">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${w?.type==='tw'?'var(--tw)':'var(--us)'}">${item.tick}</span>
-          ${w?`<span style="font-size:9px;padding:1px 4px;border-radius:3px;background:${w.type==='tw'?'rgba(249,115,22,.15)':'rgba(56,189,248,.15)'};color:${w.type==='tw'?'var(--tw)':'var(--us)'}">${w.type.toUpperCase()}</span>`:''}
-        </div>
-        ${sig?`<span class="sig-badge ${sig.cls}" style="font-size:9px;padding:1px 5px">${sig.label}</span>`:''}
-      </div>
-      <!-- name -->
-      <div style="font-size:10px;color:var(--mu2);margin-bottom:4px">${item.name||w?.name||''}</div>
-      <!-- price row -->
-      ${d?`<div style="display:flex;align-items:baseline;gap:5px;margin-bottom:3px">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:${col}">${fmt(d.price)}</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${col}">${sgn(d.chgPct)}${fmt(d.chgPct)}%</span>
-      </div>`:''}
-      <!-- indicators row -->
-      <div style="display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap">
-        ${rsi?`<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--mu2)">RSI ${rsi}</span>`:''}
-        ${maLabel?`<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--mu2)">${maLabel}</span>`:''}
-      </div>
-      <!-- reason -->
-      <div style="font-size:10px;color:var(--mu2);padding-top:5px;border-top:1px solid rgba(255,255,255,.05);line-height:1.5">${item.reason}</div>
-    </div>`;
-  };
-
-  // ── column header ─────────────────────────────────────
-  const colHeader = (label, color, count) =>
-    `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid ${color}">
-      <span style="font-size:13px;font-weight:600;color:${color}">${label}</span>
-      <span style="font-size:10px;padding:1px 7px;border-radius:10px;background:${color}22;color:${color};font-family:'JetBrains Mono',monospace">${count}</span>
-    </div>`;
-
-  const colStyle = "background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:12px 12px 6px;flex:1;min-width:0";
-
-  const rec   = data.recommend||[];
-  const watch = data.watch||[];
-  const risk  = data.risk||[];
-
-  return `
-    ${data.summary?`<div style="display:flex;align-items:flex-start;gap:8px;background:var(--s1);border:1px solid var(--bd);border-left:3px solid var(--pu);border-radius:8px;padding:10px 13px;margin-bottom:12px">
-      <span style="font-size:10px;color:var(--pu);white-space:nowrap;margin-top:1px;letter-spacing:.5px">📋 市場判斷</span>
-      <span style="font-size:12px;color:var(--tx);line-height:1.6">${data.summary}</span>
-    </div>`:``}
-
-    <div style="display:grid;grid-template-columns:5fr 4fr 3fr;gap:10px;margin-bottom:10px">
-
-      <!-- 強烈推薦 -->
-      <div style="${colStyle}">
-        ${colHeader('🥇 強烈推薦','#f87171', rec.length)}
-        ${rec.length ? rec.map(i=>stockRow(i,'rgba(248,113,113,.4)')).join('') : `<div style="font-size:11px;color:var(--mu);padding:8px 0">—</div>`}
-      </div>
-
-      <!-- 值得關注 -->
-      <div style="${colStyle}">
-        ${colHeader('🥈 值得關注','var(--gd)', watch.length)}
-        ${watch.length ? watch.map(i=>stockRow(i,'rgba(251,191,36,.4)')).join('') : `<div style="font-size:11px;color:var(--mu);padding:8px 0">—</div>`}
-      </div>
-
-      <!-- 注意風險 -->
-      <div style="${colStyle}">
-        ${colHeader('⚠️ 注意風險','#34d399', risk.length)}
-        ${risk.length ? risk.map(i=>stockRow(i,'rgba(52,211,153,.4)')).join('') : `<div style="font-size:11px;color:var(--mu);padding:8px 0">—</div>`}
-      </div>
-
-    </div>
-
-    ${data.note?`<div style="font-size:11px;color:var(--mu2);padding:8px 12px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:7px;line-height:1.6">💡 ${data.note}</div>`:``}
-    <div style="font-size:10px;color:var(--mu);text-align:right;margin-top:6px">點擊股票列可開啟個股詳細分析 ↗</div>`;
-}
-
-// ── TABS ─────────────────────────────────────────────────────
-let curL2 = 'tw_all'; // track sub-tab
-
-function updateSignalCounts(){
-  const buyCnt  = WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='buy';  }).length;
-  const sellCnt = WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='sell'; }).length;
-  const watchCnt= WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='watch';}).length;
-  const buyEl  = document.getElementById('tab-sig_buy');
-  const sellEl = document.getElementById('tab-sig_sell');
-  const watchEl= document.getElementById('tab-sig_watch');
-  if(buyEl)  buyEl.innerHTML  = `🟢 進場訊號${buyCnt>0?` <span style="background:rgba(248,113,113,.2);color:#f87171;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">${buyCnt}</span>`:''}`;
-  if(sellEl) sellEl.innerHTML = `🔴 減碼警示${sellCnt>0?` <span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">${sellCnt}</span>`:''}`;
-  if(watchEl)watchEl.innerHTML= `🟡 持續觀望${watchCnt>0?` <span style="background:rgba(251,191,36,.12);color:var(--gd);border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">${watchCnt}</span>`:''}`;
-}
-
-function showPage(pg){
-  ['overview','stocks'].forEach(p=>{
-    document.getElementById('page-'+p).style.display = p===pg ? 'block' : 'none';
-  });
-}
-
-function switchL1(tab, el){
-  curTab = tab;
-  // Update L1 active
-  document.querySelectorAll('#tabs-l1 .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  // Show/hide L2 sub-tabs only for 台股
-  const l2 = document.getElementById('tabs-l2');
-  if(tab==='tw'){
-    l2.classList.add('visible');
-    // Keep curL2, re-apply
-    curTab = curL2;
-  } else {
-    l2.classList.remove('visible');
-  }
-  updateSignalCounts();
-  if(tab==='overview')    { showPage('overview');    renderOverviewFull(); }
-  else                      { showPage('stocks');     renderGrid(); }
-}
-
-function switchL2(sub, el){
-  curL2 = sub;
-  curTab = sub;
-  document.querySelectorAll('#tabs-l2 .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  showPage('stocks');
-  renderGrid();
-}
-
-// Legacy alias used elsewhere
-function switchTab(tab, el){ switchL1(tab, el); }
-
-// ── REFRESH ──────────────────────────────────────────────────
-async function doRefresh(){
-  const btn=document.getElementById('refreshBtn');
-  btn.innerHTML='<span class="spin"></span>'; btn.disabled=true;
-  await fetchPrices();
-  btn.textContent='↻ 重新整理'; btn.disabled=false;
-}
-
-// ── INIT ─────────────────────────────────────────────────────
-initStatic();
-renderOverviewFull();
-renderMbar();
-// Init picker default scenario
-const _initScen = document.querySelector('.scen[data-scen="rebound"]');
-if(_initScen) selectScen(_initScen);
-fetchPrices().catch(console.warn);
-setInterval(()=>fetchPrices().catch(console.warn), 180000);
 
 // ── Picker listeners ────────────────────────────────────────
 window._pickerReady = false;
