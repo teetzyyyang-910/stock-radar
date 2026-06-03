@@ -374,7 +374,9 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     <button class="tab gr-t"        id="sub-g_carrier"  onclick="switchL2('g_carrier',this)">🔌 載板</button>
     <button class="tab gr-t"        id="sub-g_leo"      onclick="switchL2('g_leo',this)">🛰 低軌衛星</button>
     <button class="tab gr-t"        id="sub-g_passive"  onclick="switchL2('g_passive',this)">⚡ 被動元件</button>
-    <button class="tab gr-t"        id="sub-g_leader"   onclick="switchL2('g_leader',this)">👑 龍頭</button>
+    <button class="tab gr-t"        id="sub-g_leader"      onclick="switchL2('g_leader',this)">👑 龍頭</button>
+    <button class="tab gr-t"        id="sub-g_ai"          onclick="switchL2('g_ai',this)">🤖 AI概念</button>
+    <button class="tab gr-t"        id="sub-g_industrial"  onclick="switchL2('g_industrial',this)">🏭 傳產/工業</button>
   </div>
 </div>
 
@@ -774,7 +776,6 @@ const WL = [
   {sym:'2454.TW',tick:'2454',name:'聯發科',      type:'tw',sec:'IC設計',   grp:'g_leader'},
   {sym:'3481.TW',tick:'3481',name:'群創',        type:'tw',sec:'面板',     grp:'g_panel'},
   {sym:'2409.TW',tick:'2409',name:'友達',        type:'tw',sec:'面板',     grp:'g_panel'},
-  {sym:'6815.TW',tick:'6815',name:'采晶',        type:'tw',sec:'面板',     grp:'g_panel'},
   {sym:'2337.TW',tick:'2337',name:'旺宏',        type:'tw',sec:'記憶體',   grp:'g_memory'},
   {sym:'6770.TW',tick:'6770',name:'力積電',      type:'tw',sec:'記憶體',   grp:'g_memory'},
   {sym:'2344.TW',tick:'2344',name:'華邦電',      type:'tw',sec:'記憶體',   grp:'g_memory'},
@@ -793,7 +794,6 @@ const WL = [
   {sym:'2375.TW',tick:'2375',name:'凱美',        type:'tw',sec:'被動元件', grp:'g_passive'},
   {sym:'2492.TW',tick:'2492',name:'華新科',      type:'tw',sec:'被動元件', grp:'g_passive'},
   {sym:'6173.TW',tick:'6173',name:'信昌電',      type:'tw',sec:'被動元件', grp:'g_passive'},
-  {sym:'6930.TW',tick:'6930',name:'昇達科',      type:'tw',sec:'衛星通訊', grp:'g_leader'},
   {sym:'2383.TW',tick:'2383',name:'台光電',      type:'tw',sec:'CCL基板',  grp:'g_leader'},
   {sym:'QQQ', tick:'QQQ', name:'Nasdaq-100 ETF',type:'us',sec:'科技ETF',  grp:''},
   {sym:'AAPL',tick:'AAPL',name:'Apple Inc.',     type:'us',sec:'消費電子', grp:''},
@@ -803,26 +803,30 @@ const WL = [
   {sym:'MSFT',tick:'MSFT',name:'Microsoft Corp.',type:'us',sec:'雲端軟體', grp:''},
   {sym:'GOOG',tick:'GOOG',name:'Alphabet Inc.',  type:'us',sec:'搜尋/AI',  grp:''},
   // 新增台股
-  {sym:'1504.TW',tick:'1504',name:'東元電機',     type:'tw',sec:'馬達/家電', grp:''},
+  {sym:'1504.TW',tick:'1504',name:'東元電機',     type:'tw',sec:'馬達/家電', grp:'g_industrial'},
   {sym:'3008.TW',tick:'3008',name:'大立光',       type:'tw',sec:'光學鏡頭', grp:''},
   {sym:'2382.TW',tick:'2382',name:'廣達',         type:'tw',sec:'AI伺服器', grp:'g_leader'},
   {sym:'3034.TW',tick:'3034',name:'聯詠',         type:'tw',sec:'面板IC',   grp:'g_panel'},
-  {sym:'2308.TW',tick:'2308',name:'台達電',       type:'tw',sec:'電源管理', grp:'g_leader'},
+  {sym:'2308.TW',tick:'2308',name:'台達電',       type:'tw',sec:'電源管理', grp:'g_industrial'},
+  {sym:'2345.TW',tick:'2345',name:'智邦',         type:'tw',sec:'AI網路',   grp:'g_ai'},
+  {sym:'6669.TW',tick:'6669',name:'緯穎',         type:'tw',sec:'AI伺服器', grp:'g_ai'},
+  {sym:'3711.TW',tick:'3711',name:'日月光投控',   type:'tw',sec:'AI封測',   grp:'g_ai'},
   // 新增美股
   {sym:'TSLA',tick:'TSLA',name:'Tesla Inc.',      type:'us',sec:'EV/AI',   grp:''},
   {sym:'AMD', tick:'AMD', name:'AMD Inc.',        type:'us',sec:'AI/GPU',  grp:''},
   {sym:'ASML',tick:'ASML',name:'ASML Holding',   type:'us',sec:'半導體設備',grp:''},
   {sym:'TSM', tick:'TSM', name:'TSMC ADR',        type:'us',sec:'晶圓代工', grp:''},
 ];
-const GRP={g_panel:'📺 面板',g_memory:'💾 記憶體',g_carrier:'🔌 載板',g_leo:'🛰 低軌衛星',g_passive:'⚡ 被動元件',g_leader:'👑 龍頭'};
+const GRP={g_panel:'📺 面板',g_memory:'💾 記憶體',g_carrier:'🔌 載板',g_leo:'🛰 低軌衛星',g_passive:'⚡ 被動元件',g_leader:'👑 龍頭',g_ai:'🤖 AI概念',g_industrial:'🏭 傳產/工業'};
 const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':62,'2454.TW':1320,
-  '3481.TW':14.2,'2409.TW':17.8,'6815.TW':48,'2337.TW':42,'6770.TW':35,'2344.TW':16.5,'2408.TW':50,
+  '3481.TW':14.2,'2409.TW':17.8,'2337.TW':42,'6770.TW':35,'2344.TW':16.5,'2408.TW':50,
   '3189.TW':98,'4958.TW':210,'3037.TW':155,'8046.TW':195,'2313.TW':48,'6285.TW':380,
   '2367.TW':35,'2485.TW':72,'2355.TW':65,'2327.TW':560,'2484.TW':28,'2375.TW':95,
-  '2492.TW':110,'6173.TW':62,'6930.TW':145,'2383.TW':280,
+  '2492.TW':110,'6173.TW':62,'2383.TW':280,
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176,
-  '1504.TW':55,'3008.TW':2450,'2382.TW':295,'3034.TW':335,'2308.TW':385,
-  'TSLA':248,'AMD':165,'ASML':820,'TSM':185};
+  '1504.TW':55,'3008.TW':3985,'2382.TW':417,'3034.TW':503,'2308.TW':2455,
+  'TSLA':248,'AMD':165,'ASML':820,'TSM':185,
+  '2345.TW':450,'6669.TW':820,'3711.TW':185};
 
 // ── STATE ─────────────────────────────────────────────────────
 let SD={}, IDX={}, IDX_HIST={}, INST={}, SIGNAL_CACHE={}, WATCHLIST_CUSTOM=[], curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbMarket='all', lbExpanded=false, chartType='line';
@@ -1664,7 +1668,7 @@ function renderGrid(){
         <span class="${d.real?'dlive':'dest'}"></span>
         <span>${d.real?'即時行情':'參考數據'}</span>
         <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
-          <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${'${WATCHLIST_CUSTOM.includes(w.tick)?"⭐":"☆"}'}</button>
+          <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;color:var(--gd)" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${WATCHLIST_CUSTOM.includes(w.tick)?'⭐':'☆'}</button>
         </span>
       </div>
     </div>`;
