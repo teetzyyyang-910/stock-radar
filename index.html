@@ -385,9 +385,9 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         AI 選股助理
         <span id="picker-badge" style="font-size:10px;color:var(--mu);margin-left:4px"></span>
       </div>
-      <span style="font-size:10px;color:var(--mu)" id="ptog">▲ 收起</span>
+      <span style="font-size:10px;color:var(--mu)" id="ptog">▼ 展開</span>
     </div>
-    <div class="pbd open" id="pbd">
+    <div class="pbd" id="pbd">
 
       <!-- 情境式選擇 -->
       <div style="font-size:10px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px">📌 選擇分析情境</div>
@@ -553,28 +553,37 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
         <div style="padding:12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#f87171;margin-bottom:8px">🟢 進場訊號</div>
-          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            強訊號：RSI 28–58 且上升（+2）<br>
-            強訊號：MACD 柱狀剛轉正（+2）<br>
-            輔助：均線多頭/MACD偏多/近5日漲（各+1）<br>
-            <em style="color:var(--mu)">總分≥3且含強訊號 → 觸發</em>
+          <div style="font-size:11px;color:var(--mu2);line-height:2">
+            <span style="color:var(--tx)">強訊號（各+2）：</span><br>
+            · RSI 在 28–58 且比前日上升<br>
+            · MACD 柱狀剛從負翻正<br>
+            <span style="color:var(--tx)">輔助訊號（各+1）：</span><br>
+            · 均線多頭排列（MA5 > MA20）<br>
+            · MACD 柱狀偏多（> 0）<br>
+            · 近5日上漲<br>
+            <span style="color:var(--gd)">→ 總分 ≥ 3 且含至少一個強訊號</span>
           </div>
         </div>
         <div style="padding:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#34d399;margin-bottom:8px">🔴 減碼警示</div>
-          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            強訊號：RSI ≥ 68 且下滑（+2）<br>
-            強訊號：MACD 柱狀剛轉負（+2）<br>
-            輔助：均線空頭/MA5下彎/近5日跌（各+1）<br>
-            <em style="color:var(--mu)">總分≥3且含強訊號 → 觸發</em>
+          <div style="font-size:11px;color:var(--mu2);line-height:2">
+            <span style="color:var(--tx)">強訊號（各+2）：</span><br>
+            · RSI ≥ 68 且比前日下降<br>
+            · MACD 柱狀剛從正轉負<br>
+            <span style="color:var(--tx)">輔助訊號（各+1）：</span><br>
+            · 均線空頭排列（MA5 &lt; MA20）<br>
+            · MA5 開始下彎<br>
+            · 近5日下跌超過 1%<br>
+            <span style="color:var(--gd)">→ 總分 ≥ 3 且含至少一個強訊號</span>
           </div>
         </div>
         <div style="padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🟡 持續觀望</div>
-          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            進場或減碼分數 1–2 分<br>
-            或 MACD 即將黃金交叉<br>
-            等待更多確認訊號
+          <div style="font-size:11px;color:var(--mu2);line-height:2">
+            · 進場或減碼分數達 1–2 分<br>
+            · 或 MACD 即將黃金交叉<br>
+            · 訊號尚未明確，等待確認<br>
+            <span style="color:var(--gd)">→ 持續追蹤，不急於行動</span>
           </div>
         </div>
       </div>
@@ -740,7 +749,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=true, lbTab='chg', lbExpanded=false;
+let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false;
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
