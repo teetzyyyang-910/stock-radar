@@ -554,24 +554,26 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <div style="padding:12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#f87171;margin-bottom:8px">🟢 進場訊號</div>
           <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            A. RSI 30–52 且上升<br>
-            B. MA5 接近或穿越 MA20<br>
-            C. MACD 柱狀轉正或擴增
+            強訊號：RSI 28–58 且上升（+2）<br>
+            強訊號：MACD 柱狀剛轉正（+2）<br>
+            輔助：均線多頭/MACD偏多/近5日漲（各+1）<br>
+            <em style="color:var(--mu)">總分≥3且含強訊號 → 觸發</em>
           </div>
         </div>
         <div style="padding:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#34d399;margin-bottom:8px">🔴 減碼警示</div>
           <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            A. RSI &gt; 72 且下降<br>
-            B. MA5 開始下彎<br>
-            C. MACD 柱狀轉負或縮減
+            強訊號：RSI ≥ 68 且下滑（+2）<br>
+            強訊號：MACD 柱狀剛轉負（+2）<br>
+            輔助：均線空頭/MA5下彎/近5日跌（各+1）<br>
+            <em style="color:var(--mu)">總分≥3且含強訊號 → 觸發</em>
           </div>
         </div>
         <div style="padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🟡 持續觀望</div>
           <div style="font-size:11px;color:var(--mu2);line-height:1.8">
-            1–2 個條件成立<br>
-            或 MACD 即將交叉<br>
+            進場或減碼分數 1–2 分<br>
+            或 MACD 即將黃金交叉<br>
             等待更多確認訊號
           </div>
         </div>
@@ -911,97 +913,93 @@ function applyFilters(wList, activeFilters, activeGrps) {
 }
 
 // ── SIGNAL LOGIC ─────────────────────────────────────────────
-// 嚴謹多條件訊號，需同時符合才觸發，減少假訊號
+// 放寬版：任意 2 個以上條件成立即觸發，平衡精準度與覆蓋率
 function getSignal(d, mtype){
   const c = (d.history||[]).map(h=>h.c);
-  if(c.length < 22) return null; // 需要足夠資料
+  if(c.length < 22) return null;
 
-  const len   = c.length;
-  const rsi   = calcRSI(c, 14);
-  const rsiPrev = calcRSI(c.slice(0,-1), 14); // 前一日RSI
-  const ma5   = calcMA(c, 5);
-  const ma5Prev = calcMA(c.slice(0,-1), 5);   // 前一日MA5
-  const ma20  = calcMA(c, 20);
-  const ma20Prev = calcMA(c.slice(0,-1), 20);
-  const macd  = calcMACD(c);
+  const len      = c.length;
+  const rsi      = calcRSI(c, 14);
+  const rsiPrev  = calcRSI(c.slice(0,-1), 14);
+  const ma5      = calcMA(c, 5);
+  const ma5Prev  = calcMA(c.slice(0,-1), 5);
+  const ma20     = calcMA(c, 20);
+  const macd     = calcMACD(c);
   const macdPrev = calcMACD(c.slice(0,-1));
 
-  if(!rsi||!ma5||!ma20||!macd) return null;
+  if(!rsi || !ma5 || !ma20 || !macd) return null;
 
-  const price = c[len-1];
+  const price    = c[len-1];
+  const chg5d    = len >= 5 ? (price - c[len-5]) / c[len-5] * 100 : 0;
 
-  // ── 黃金交叉判斷：MA5 剛穿越 MA20（3日內）或差距在 1% 以內準備穿越 ──
-  const maCrossed  = ma5 > ma20 && ma5Prev <= ma20Prev;   // 今日剛穿
-  const maNearCross = Math.abs(ma5-ma20)/ma20 < 0.01;     // 差距 < 1%
-  const maGolden   = ma5 > ma20;                           // 已在多頭排列
+  // ── 進場條件（各自獨立判斷）─────────────────────────────────
+  // 強訊號（權重高）
+  const rsiLowRising   = rsi >= 28 && rsi <= 58 && rsiPrev && rsi > rsiPrev;  // RSI 低位/中低位回升
+  const macdBull       = macd.hist > 0;                                         // MACD 動能偏多
+  const macdTurningUp  = macd.hist > 0 && macdPrev && macdPrev.hist <= 0;      // MACD 柱狀剛轉正（強）
+  // 中訊號
+  const maGolden       = ma5 > ma20;                                            // 均線多頭排列
+  const maNearOrCross  = ma5 > ma20 || Math.abs(ma5-ma20)/ma20 < 0.015;       // 多頭或接近黃金交叉
+  const risingTrend    = chg5d > 0;                                             // 近5日上漲
 
-  // ── 死亡交叉判斷 ──
-  const maDeadCross = ma5 < ma20 && ma5Prev >= ma20Prev;  // 今日剛死叉
-  const maBearish   = ma5 < ma20;                          // 空頭排列
+  // 進場分數：強訊號各 2 分，中訊號各 1 分
+  let buyScore = 0;
+  if(macdTurningUp)  buyScore += 2;   // 最強：MACD 剛翻正
+  else if(macdBull)  buyScore += 1;   // MACD 偏多
+  if(rsiLowRising)   buyScore += 2;   // RSI 低位回升
+  if(maGolden)       buyScore += 1;   // 均線多頭
+  if(risingTrend)    buyScore += 1;   // 短期上漲
 
-  // ── MACD 動能判斷 ──
-  const macdTurningUp  = macd.hist > 0 && macdPrev && macdPrev.hist <= 0;  // 柱狀剛轉正
-  const macdExpandUp   = macd.hist > 0 && macdPrev && macd.hist > macdPrev.hist; // 連續擴增
-  const macdTurningDn  = macd.hist < 0 && macdPrev && macdPrev.hist >= 0;  // 柱狀剛轉負
-  const macdExpandDn   = macd.hist < 0 && macdPrev && macd.hist < macdPrev.hist; // 連續縮減
+  // ── 減碼條件──────────────────────────────────────────────────
+  const rsiHighFalling = rsi >= 68 && rsiPrev && rsi < rsiPrev;               // RSI 高位下滑（68 起）
+  const macdBear       = macd.hist < 0;                                        // MACD 動能偏空
+  const macdTurningDn  = macd.hist < 0 && macdPrev && macdPrev.hist >= 0;     // MACD 剛轉負（強）
+  const maBearish      = ma5 < ma20;                                           // 均線空頭
+  const ma5Bending     = ma5 < (ma5Prev||ma5);                                // MA5 開始下彎
+  const fallingTrend   = chg5d < -1;                                           // 近5日下跌 > 1%
 
-  // ── MACD 即將交叉（差距 < 5% of price）──
-  const macdNearCross  = Math.abs(macd.macd - macd.signal) / price < 0.005;
+  let sellScore = 0;
+  if(macdTurningDn)   sellScore += 2;
+  else if(macdBear)   sellScore += 1;
+  if(rsiHighFalling)  sellScore += 2;
+  if(maBearish)       sellScore += 1;
+  if(ma5Bending)      sellScore += 1;
+  if(fallingTrend)    sellScore += 1;
 
-  // ── RSI 狀態 ──
-  const rsiRising      = rsi > (rsiPrev||rsi);             // RSI 上升中
-  const rsiFalling     = rsi < (rsiPrev||rsi);             // RSI 下降中
-  const rsiFromOversold = rsi >= 30 && rsi <= 52 && rsiPrev && rsiPrev < 35; // 從超賣回升
-  const rsiOverbought  = rsi > 72 && rsiFalling;           // 超買且回落
-  const rsiNeutral     = rsi >= 45 && rsi <= 58;           // 中性區間
-  const rsiLow         = rsi >= 30 && rsi <= 52 && rsiRising; // 低位回升
-
-  // ═══════════════════════════════════════════════
-  // 🟢 進場訊號：三條件同時成立，高可信度
-  // 條件A：RSI 從低位回升（30–52 且上升）
-  // 條件B：MA5 接近或剛穿越 MA20（黃金交叉確立）
-  // 條件C：MACD 柱狀轉正或連續擴增（動能確認）
-  // ═══════════════════════════════════════════════
-  const buyCondA = rsiFromOversold || rsiLow;
-  const buyCondB = maCrossed || (maGolden && maNearCross) || (maGolden && maCrossed);
-  const buyCondC = macdTurningUp || macdExpandUp;
-
-  if(buyCondA && buyCondB && buyCondC){
+  // ── 判斷結果：分數 >= 3 = 明確訊號，1-2 = 觀察 ──────────────
+  // 進場訊號（分數 >= 3，至少含一個強訊號）
+  if(buyScore >= 3 && (macdTurningUp || rsiLowRising)){
     const buyCls = mtype==='tw' ? 'sig-buy' : 'sig-us-buy';
-    return { type:'buy', label:'🟢 進場訊號', cls: buyCls, detail:'RSI低位回升＋均線金叉＋MACD動能轉正' };
+    const details = [];
+    if(rsiLowRising)  details.push('RSI低位回升');
+    if(macdTurningUp) details.push('MACD翻正');
+    else if(macdBull) details.push('MACD偏多');
+    if(maGolden)      details.push('均線多頭');
+    return { type:'buy', label:'🟢 進場訊號', cls:buyCls, detail:details.join('＋') };
   }
 
-  // ═══════════════════════════════════════════════
-  // 🔴 減碼警示：三條件同時成立，高可信度
-  // 條件A：RSI > 72 且連續下降（高位鈍化）
-  // 條件B：MA5 開始向下（今日 MA5 < 前日 MA5）
-  // 條件C：MACD 柱狀轉負或連續縮減（動能衰退）
-  // ═══════════════════════════════════════════════
-  const sellCondA = rsiOverbought;
-  const sellCondB = maBearish || (maGolden && ma5 < ma5Prev); // 均線空頭或MA5開始下彎
-  const sellCondC = macdTurningDn || macdExpandDn;
-
-  if(sellCondA && sellCondB && sellCondC){
+  // 減碼警示（分數 >= 3，至少含一個強訊號）
+  if(sellScore >= 3 && (macdTurningDn || rsiHighFalling)){
     const sellCls = mtype==='tw' ? 'sig-sell' : 'sig-us-sell';
-    return { type:'sell', label:'🔴 減碼警示', cls: sellCls, detail:'RSI高位鈍化＋均線下彎＋MACD動能衰退' };
+    const details = [];
+    if(rsiHighFalling) details.push('RSI高位下滑');
+    if(macdTurningDn)  details.push('MACD轉負');
+    else if(macdBear)  details.push('MACD偏空');
+    if(maBearish)      details.push('均線空頭');
+    return { type:'sell', label:'🔴 減碼警示', cls:sellCls, detail:details.join('＋') };
   }
 
-  // ═══════════════════════════════════════════════
-  // 🟡 持續觀望：部分條件成立，等待確認
-  // 場景1：MACD 即將黃金交叉（差距極小）
-  // 場景2：RSI 從超賣剛回升，但均線或MACD 尚未確認
-  // 場景3：均線剛死叉但 RSI 未到超賣，等待更明確方向
-  // ═══════════════════════════════════════════════
-  const watchS1 = macdNearCross && rsiNeutral;
-  const watchS2 = (rsiFromOversold || rsiLow) && (buyCondB || buyCondC) && !(buyCondB && buyCondC);
-  const watchS3 = maDeadCross && rsi > 35; // 死叉但未超賣
-  const watchS4 = maCrossed && !macdExpandUp; // 黃金交叉但動能未確認
+  // 持續觀望（進場或減碼分數 1-2，或接近臨界）
+  const macdNearCross = Math.abs(macd.macd - macd.signal) / Math.max(Math.abs(price), 0.01) < 0.005;
+  const watchBuy  = buyScore >= 1 && buyScore < 3;
+  const watchSell = sellScore >= 1 && sellScore < 3;
+  const watchMacd = macdNearCross;
 
-  if(watchS1 || watchS2 || watchS3 || watchS4){
-    const detail = watchS1 ? 'MACD即將交叉'
-                 : watchS2 ? 'RSI回升中，等待均線確認'
-                 : watchS3 ? '均線死叉，等待超賣訊號'
-                 : 'MA黃金交叉，等待MACD確認';
+  if(watchBuy || watchSell || watchMacd){
+    let detail = '';
+    if(watchMacd)       detail = 'MACD即將交叉';
+    else if(watchBuy)   detail = 'RSI回升中，等待確認';
+    else                detail = '技術面轉弱，觀察中';
     return { type:'watch', label:'🟡 觀察中', cls:'sig-watch', detail };
   }
 
