@@ -376,25 +376,25 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 
 <!-- AI PICKER always visible -->
   <div class="picker" id="pickerSection">
-    <div class="phd" onclick="togglePicker()">
+    <div class="phd" id="pickerHd">
       <div class="ptitle">
         <div class="picon">✦</div>
         AI 選股助理
         <span id="picker-badge" style="font-size:10px;color:var(--mu);margin-left:4px"></span>
       </div>
-      <span style="font-size:10px;color:var(--mu)" id="ptog">▼ 展開</span>
+      <span style="font-size:10px;color:var(--mu)" id="ptog">▲ 收起</span>
     </div>
-    <div class="pbd" id="pbd">
+    <div class="pbd open" id="pbd">
 
       <!-- 情境式選擇 -->
       <div style="font-size:10px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px">📌 選擇分析情境</div>
       <div class="scenario-row" id="scenario-row">
-        <button class="scen active" data-scen="rebound"     onclick="selectScen(this)">🔄 短線反彈機會</button>
-        <button class="scen"        data-scen="midterm"     onclick="selectScen(this)">📈 中期布局標的</button>
-        <button class="scen"        data-scen="reduce"      onclick="selectScen(this)">⚠️ 需要減碼的</button>
-        <button class="scen"        data-scen="sector"      onclick="selectScen(this)">🏭 族群最強選股</button>
-        <button class="scen"        data-scen="chipdriven"  onclick="selectScen(this)">🏦 籌碼面驅動</button>
-        <button class="scen"        data-scen="custom"      onclick="selectScen(this)">✏️ 自訂條件</button>
+        <button class="scen active" data-scen="rebound"    >🔄 短線反彈機會</button>
+        <button class="scen"        data-scen="midterm"    >📈 中期布局標的</button>
+        <button class="scen"        data-scen="reduce"     >⚠️ 需要減碼的</button>
+        <button class="scen"        data-scen="sector"     >🏭 族群最強選股</button>
+        <button class="scen"        data-scen="chipdriven" >🏦 籌碼面驅動</button>
+        <button class="scen"        data-scen="custom"     >✏️ 自訂條件</button>
       </div>
 
       <!-- 條件篩選器 -->
@@ -403,22 +403,22 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
           <div class="filter-group">
             <div class="filter-label">技術面條件</div>
             <div class="filter-chips" id="fc-tech">
-              <button class="fchip" data-val="rsi_low"    onclick="toggleFilter(this)">RSI 低位回升</button>
-              <button class="fchip" data-val="rsi_hi"     onclick="toggleFilter(this)">RSI 超買</button>
-              <button class="fchip" data-val="ma_golden"  onclick="toggleFilter(this)">均線多頭</button>
-              <button class="fchip" data-val="ma_dead"    onclick="toggleFilter(this)">均線空頭</button>
-              <button class="fchip" data-val="macd_bull"  onclick="toggleFilter(this)">MACD 多頭</button>
-              <button class="fchip" data-val="macd_bear"  onclick="toggleFilter(this)">MACD 空頭</button>
+              <button class="fchip" data-val="rsi_low"   >RSI 低位回升</button>
+              <button class="fchip" data-val="rsi_hi"    >RSI 超買</button>
+              <button class="fchip" data-val="ma_golden" >均線多頭</button>
+              <button class="fchip" data-val="ma_dead"   >均線空頭</button>
+              <button class="fchip" data-val="macd_bull" >MACD 多頭</button>
+              <button class="fchip" data-val="macd_bear" >MACD 空頭</button>
             </div>
           </div>
           <div class="filter-group">
             <div class="filter-label">其他條件</div>
             <div class="filter-chips" id="fc-other">
-              <button class="fchip" data-val="score_hi"  onclick="toggleFilter(this)">評分 &gt; 70</button>
-              <button class="fchip" data-val="score_lo"  onclick="toggleFilter(this)">評分 &lt; 40</button>
-              <button class="fchip" data-val="tw_only"   onclick="toggleFilter(this)">只看台股</button>
-              <button class="fchip" data-val="us_only"   onclick="toggleFilter(this)">只看美股</button>
-              <button class="fchip" data-val="vol_surge" onclick="toggleFilter(this)">成交量放大</button>
+              <button class="fchip" data-val="score_hi" >評分 &gt; 70</button>
+              <button class="fchip" data-val="score_lo" >評分 &lt; 40</button>
+              <button class="fchip" data-val="tw_only"  >只看台股</button>
+              <button class="fchip" data-val="us_only"  >只看美股</button>
+              <button class="fchip" data-val="vol_surge">成交量放大</button>
             </div>
           </div>
         </div>
@@ -426,12 +426,12 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <div class="filter-group" style="margin-bottom:8px">
           <div class="filter-label">族群篩選（不選 = 全部）</div>
           <div class="filter-chips" id="fc-grp">
-            <button class="fchip" data-val="g_panel"   onclick="toggleFilter(this)">📺 面板</button>
-            <button class="fchip" data-val="g_memory"  onclick="toggleFilter(this)">💾 記憶體</button>
-            <button class="fchip" data-val="g_carrier" onclick="toggleFilter(this)">🔌 載板</button>
-            <button class="fchip" data-val="g_leo"     onclick="toggleFilter(this)">🛰 低軌衛星</button>
-            <button class="fchip" data-val="g_passive" onclick="toggleFilter(this)">⚡ 被動元件</button>
-            <button class="fchip" data-val="g_leader"  onclick="toggleFilter(this)">👑 龍頭</button>
+            <button class="fchip" data-val="g_panel"  >📺 面板</button>
+            <button class="fchip" data-val="g_memory" >💾 記憶體</button>
+            <button class="fchip" data-val="g_carrier">🔌 載板</button>
+            <button class="fchip" data-val="g_leo"    >🛰 低軌衛星</button>
+            <button class="fchip" data-val="g_passive">⚡ 被動元件</button>
+            <button class="fchip" data-val="g_leader" >👑 龍頭</button>
           </div>
         </div>
       </div>
@@ -444,7 +444,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       </div>
 
       <button class="btn btn-gold" id="pickbtn" style="width:100%;justify-content:center;padding:10px;font-size:13px">✦ 開始分析</button>
-      <div class="presult" id="presult" style="margin-top:10px;display:none">AI 選股結果將顯示在這裡...</div>
+      <div class="presult" id="presult" style="margin-top:10px;min-height:20px"></div>
 
       <!-- 推薦追蹤記錄 -->
       <div id="tracker-section" style="margin-top:14px;display:none">
@@ -590,7 +590,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false;
+let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=true, lbTab='chg', lbExpanded=false;
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -1918,16 +1918,18 @@ async function runPicker(){
 
 
 function renderFilterResults(stocks){
-  return `<div style="font-size:12px;color:var(--mu);margin-bottom:8px">篩選結果（${stocks.length}支）：</div>` +
-    stocks.map(w=>{
-      const d=SD[w.sym]||{}, score=calcScore(w,d), col=ccCol(d.chgPct,w.type);
-      return `<div onclick="openModal('${w.sym}')" style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer">
-        <span class="score-badge ${getScoreClass(score,w.type)}">${score}</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${w.type==='tw'?'var(--tw)':'var(--us)'}">${w.tick}</span>
-        <span style="font-size:12px;color:var(--mu2)">${w.name}</span>
-        <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:${col}">${fmt(d.price)} ${sgn(d.chgPct)}${fmt(d.chgPct)}%</span>
-      </div>`;
-    }).join('');
+  var hd = '<div style="font-size:12px;color:var(--mu);margin-bottom:8px">篩選結果（' + stocks.length + '支）：</div>';
+  var rows = stocks.map(function(w){
+    var d = SD[w.sym]||{}, score=calcScore(w,d), col=ccCol(d.chgPct,w.type);
+    var tickCol = w.type==='tw' ? 'var(--tw)' : 'var(--us)';
+    return '<div onclick="openModal('' + w.sym + '')" style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer">' +
+      '<span class="score-badge ' + getScoreClass(score,w.type) + '">' + score + '</span>' +
+      '<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:' + tickCol + '">' + w.tick + '</span>' +
+      '<span style="font-size:12px;color:var(--mu2)">' + w.name + '</span>' +
+      '<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:' + col + '">' + fmt(d.price) + ' ' + sgn(d.chgPct) + fmt(d.chgPct) + '%</span>' +
+      '</div>';
+  }).join('');
+  return hd + rows;
 }
 
 // ── TRACKER ───────────────────────────────────────────────────
@@ -2209,16 +2211,33 @@ if(_initScen) selectScen(_initScen);
 fetchPrices().catch(console.warn);
 setInterval(()=>fetchPrices().catch(console.warn), 180000);
 
-// ── Picker button listener ───────────────────────────────────
+// ── Picker listeners ────────────────────────────────────────
 (function(){
+  // Button
   var pbtn = document.getElementById('pickbtn');
   if(pbtn){
-    pbtn.addEventListener('click', function(){
-      runPicker().catch(function(e){ console.error('runPicker error:', e); });
+    pbtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      runPicker().catch(function(e2){ console.error('runPicker error:', e2); });
     });
-  } else {
-    console.error('pickbtn not found at init');
   }
+  // Header toggle
+  var phd = document.getElementById('pickerHd');
+  if(phd){
+    phd.addEventListener('click', function(){ togglePicker(); });
+  }
+  // Scenario chips
+  document.querySelectorAll('.scen').forEach(function(el){
+    el.addEventListener('click', function(){ selectScen(el); });
+  });
+  // Filter chips
+  document.querySelectorAll('.fchip').forEach(function(el){
+    el.addEventListener('click', function(){ toggleFilter(el); });
+  });
+  // Preset chips
+  document.querySelectorAll('.pchip').forEach(function(el){
+    el.addEventListener('click', function(){ usePreset(el); });
+  });
 })();
 
 // ── Touch: swipe down to close modal on mobile ──
