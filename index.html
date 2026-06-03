@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stock Radar｜台股 × 美股</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1/dist/chartjs-adapter-luxon.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap');
 :root{
@@ -1845,101 +1842,218 @@ async function runModalAI(w, d, chipHTML, op, news){
 
 function setChartType(type){
   chartType = type;
-  const btnLine   = document.getElementById('btn-chart-line');
-  const btnCandle = document.getElementById('btn-chart-candle');
+  var btnLine   = document.getElementById('btn-chart-line');
+  var btnCandle = document.getElementById('btn-chart-candle');
   if(btnLine){
-    btnLine.style.background   = type==='line' ? 'var(--pu)' : 'var(--s2)';
-    btnLine.style.border       = type==='line' ? 'none' : '1px solid var(--bd)';
-    btnLine.style.color        = type==='line' ? '#fff' : 'var(--mu2)';
+    btnLine.style.background = type==='line' ? 'var(--pu)' : 'var(--s2)';
+    btnLine.style.border     = type==='line' ? 'none' : '1px solid var(--bd)';
+    btnLine.style.color      = type==='line' ? '#fff' : 'var(--mu2)';
   }
   if(btnCandle){
     btnCandle.style.background = type==='candlestick' ? 'var(--pu)' : 'var(--s2)';
     btnCandle.style.border     = type==='candlestick' ? 'none' : '1px solid var(--bd)';
     btnCandle.style.color      = type==='candlestick' ? '#fff' : 'var(--mu2)';
   }
-  // Redraw with current data
   if(selSym){
-    const w = WL.find(x=>x.sym===selSym);
-    const d = SD[selSym];
-    if(w && d) drawModalChart(w, d);
+    var w2 = WL.find(function(x){ return x.sym===selSym; });
+    var d2 = SD[selSym];
+    if(w2 && d2) drawModalChart(w2, d2);
   }
+}
+
+// ── Pure Canvas Candlestick Chart ──────────────────────────────
+function drawCandlestickCanvas(canvas, hist, mtype){
+  var ctx  = canvas.getContext('2d');
+  var W    = canvas.width;
+  var H    = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  if(!hist || hist.length < 2) return;
+
+  var isTW  = mtype === 'tw';
+  var upCol  = isTW ? '#f87171' : '#34d399';   // 台股漲紅，美股漲綠
+  var dnCol  = isTW ? '#34d399' : '#f87171';   // 台股跌綠，美股跌紅
+
+  var padL = 8, padR = 52, padT = 20, padB = 28;
+  var chartW = W - padL - padR;
+  var chartH = H - padT - padB;
+
+  // Price range
+  var allH = hist.map(function(h){ return h.h || h.c; });
+  var allL = hist.map(function(h){ return h.l || h.c; });
+  var maxP = Math.max.apply(null, allH);
+  var minP = Math.min.apply(null, allL);
+  var range = maxP - minP || 1;
+  // Add 5% padding
+  maxP += range * 0.05;
+  minP -= range * 0.05;
+  range = maxP - minP;
+
+  function toY(p){ return padT + (1 - (p - minP) / range) * chartH; }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(31,37,53,0.8)';
+  ctx.lineWidth   = 0.5;
+  for(var gi = 0; gi <= 4; gi++){
+    var gy = padT + (gi / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W - padR, gy); ctx.stroke();
+    var gp = maxP - (gi / 4) * range;
+    ctx.fillStyle = '#4a5268';
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(gp.toFixed(gp > 100 ? 0 : 1), W - 2, gy + 3);
+  }
+
+  // MA5 and MA20
+  var closes = hist.map(function(h){ return h.c; });
+  function drawMA(n, color){
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = 1.2;
+    var started = false;
+    for(var i = 0; i < hist.length; i++){
+      if(i < n - 1){ started = false; continue; }
+      var sum = 0;
+      for(var j = i - n + 1; j <= i; j++) sum += closes[j];
+      var ma  = sum / n;
+      var x   = padL + (i + 0.5) / hist.length * chartW;
+      var y   = toY(ma);
+      if(!started){ ctx.moveTo(x, y); started = true; }
+      else { ctx.lineTo(x, y); }
+    }
+    ctx.stroke();
+  }
+  drawMA(5,  '#fbbf24');  // MA5 黃
+  drawMA(20, '#a78bfa');  // MA20 紫
+
+  // Candlestick bars
+  var barW = Math.max(1, Math.floor(chartW / hist.length * 0.6));
+  barW = Math.min(barW, 12); // max 12px wide
+
+  for(var i = 0; i < hist.length; i++){
+    var bar  = hist[i];
+    var o    = bar.o || bar.c;
+    var c    = bar.c;
+    var h    = bar.h || Math.max(o, c);
+    var l    = bar.l || Math.min(o, c);
+    var cx   = padL + (i + 0.5) / hist.length * chartW;
+    var isUp = c >= o;
+    var col  = isUp ? upCol : dnCol;
+
+    // Wick (high-low line)
+    ctx.beginPath();
+    ctx.strokeStyle = col;
+    ctx.lineWidth   = 1;
+    ctx.moveTo(cx, toY(h));
+    ctx.lineTo(cx, toY(l));
+    ctx.stroke();
+
+    // Body (open-close rect)
+    var bodyTop    = toY(Math.max(o, c));
+    var bodyBottom = toY(Math.min(o, c));
+    var bodyH      = Math.max(1, bodyBottom - bodyTop);
+
+    if(isUp){
+      ctx.fillStyle = col;
+      ctx.fillRect(cx - barW/2, bodyTop, barW, bodyH);
+    } else {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(cx - barW/2, bodyTop, barW, bodyH);
+      ctx.fillStyle = col;
+      ctx.fillRect(cx - barW/2, bodyTop, barW, bodyH);
+    }
+  }
+
+  // X-axis date labels
+  ctx.fillStyle   = '#4a5268';
+  ctx.font        = '9px monospace';
+  ctx.textAlign   = 'center';
+  var step = Math.ceil(hist.length / 8);
+  for(var i = 0; i < hist.length; i += step){
+    var bar = hist[i];
+    var t   = bar.t instanceof Date ? bar.t : new Date(bar.t);
+    var lbl = (t.getMonth()+1) + '/' + t.getDate();
+    var x   = padL + (i + 0.5) / hist.length * chartW;
+    ctx.fillText(lbl, x, H - 6);
+  }
+
+  // Legend
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#fbbf24'; ctx.fillRect(padL + 4, 6, 14, 2);
+  ctx.fillStyle = '#6b7590'; ctx.fillText('MA5', padL + 22, 10);
+  ctx.fillStyle = '#a78bfa'; ctx.fillRect(padL + 50, 6, 14, 2);
+  ctx.fillStyle = '#6b7590'; ctx.fillText('MA20', padL + 68, 10);
 }
 
 function drawModalChart(w,d){
   if(mChart){try{mChart.destroy();}catch(e){}mChart=null;}
-  const ex=Chart.getChart(document.getElementById('mchart')); if(ex)ex.destroy();
-  const hist=d.history||[]; if(hist.length<2)return;
-  const{l:col,b:colBg}=chartCol(d.chgPct,w.type);
-  const closes=hist.map(h=>h.c);
-  const ma5arr=closes.map((_,i,a)=>i>=4?+(a.slice(i-4,i+1).reduce((s,v)=>s+v,0)/5).toFixed(2):null);
-  const ma20arr=closes.map((_,i,a)=>i>=19?+(a.slice(i-19,i+1).reduce((s,v)=>s+v,0)/20).toFixed(2):null);
-  const labels=hist.map(h=>h.t instanceof Date ? h.t.toLocaleDateString('zh-TW',{month:'short',day:'numeric'}) : h.t);
+  var exChart = Chart.getChart(document.getElementById('mchart'));
+  if(exChart) exChart.destroy();
 
-  const commonOpts = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{display:true,position:'top',labels:{color:'#6b7590',font:{size:9},boxWidth:16,padding:8}},
-      tooltip:{mode:'index',intersect:false,backgroundColor:'#13161d',borderColor:'#1f2535',borderWidth:1,titleColor:'#6b7590',bodyColor:'#dde1ec',titleFont:{size:9},bodyFont:{size:10}}
-    },
-    scales:{
-      x:{grid:{color:'rgba(31,37,53,.6)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:10}},
-      y:{position:'right',grid:{color:'rgba(31,37,53,.6)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6}}
-    }
-  };
+  var hist = d.history || [];
+  if(hist.length < 2) return;
 
-  if(chartType === 'candlestick' && typeof Chart.controllers !== 'undefined' && typeof window.CandlestickController !== 'undefined'){
-    // K-line chart using chartjs-chart-financial
-    const isTW = w.type === 'tw';
-    const upCol   = isTW ? '#f87171' : '#34d399';
-    const downCol = isTW ? '#34d399' : '#f87171';
-    const ohlc = hist.map(h=>({
-      x: h.t instanceof Date ? h.t.getTime() : new Date(h.t).getTime(),
-      o: h.o || h.c, h: h.h || h.c, l: h.l || h.c, c: h.c
-    }));
-    mChart = new Chart(document.getElementById('mchart'), {
-      type: 'candlestick',
-      data: {
-        datasets:[
-          { label:'K線', data:ohlc,
-            color:{ up:upCol, down:downCol, unchanged:'#94a3b8' },
-            borderColor:{ up:upCol, down:downCol, unchanged:'#94a3b8' },
-            order:3
-          },
-          { type:'line', label:'MA5', data:ma5arr, borderColor:'#fbbf24', borderWidth:1.5,
-            fill:false, tension:.3, pointRadius:0, spanGaps:true, order:2 },
-          { type:'line', label:'MA20', data:ma20arr, borderColor:'#a78bfa', borderWidth:1.5,
-            fill:false, tension:.3, pointRadius:0, spanGaps:true, order:1 }
-        ]
-      },
-      options:{
-        ...commonOpts,
-        scales:{
-          x:{ type:'time', time:{unit:'day',displayFormats:{day:'M/d'}},
-              grid:{color:'rgba(31,37,53,.6)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:10} },
-          y:{ position:'right', grid:{color:'rgba(31,37,53,.6)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6} }
-        }
-      }
-    });
-  } else {
-    // Fallback line chart (also used when chartType==='line')
-    if(chartType === 'candlestick'){
-      // Plugin not loaded yet, show notice
-      const cv = document.getElementById('mchart');
-      const ctx = cv.getContext('2d');
-      if(ctx){ ctx.fillStyle='#4a5268'; ctx.font='12px sans-serif';
-        ctx.fillText('K線圖載入中，請稍候再切換...', 20, 100); }
-    }
-    mChart=new Chart(document.getElementById('mchart'),{type:'line',
-      data:{labels,
-        datasets:[
-          {data:closes,label:'收盤',borderColor:col,borderWidth:2,fill:true,backgroundColor:colBg,tension:.3,pointRadius:0,pointHoverRadius:3,order:3},
-          {data:ma5arr,label:'MA5',borderColor:'#fbbf24',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:2},
-          {data:ma20arr,label:'MA20',borderColor:'#a78bfa',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:1},
-        ]},
-      options:{...commonOpts}
-    });
+  var canvas = document.getElementById('mchart');
+  if(!canvas) return;
+
+  if(chartType === 'candlestick'){
+    // Use pure Canvas 2D — no plugin needed
+    // Set canvas pixel dimensions to match display size
+    var rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = rect.width  || 800;
+    canvas.height = rect.height || 190;
+    drawCandlestickCanvas(canvas, hist, w.type);
+    return; // Don't use Chart.js for candlestick
   }
+
+  // Line chart (Chart.js)
+  var colObj  = chartCol(d.chgPct, w.type);
+  var col     = colObj.l;
+  var colBg   = colObj.b;
+  var closes  = hist.map(function(h){ return h.c; });
+  var ma5arr  = closes.map(function(_,i,a){
+    if(i<4) return null;
+    return +(a.slice(i-4,i+1).reduce(function(s,v){return s+v;},0)/5).toFixed(2);
+  });
+  var ma20arr = closes.map(function(_,i,a){
+    if(i<19) return null;
+    return +(a.slice(i-19,i+1).reduce(function(s,v){return s+v;},0)/20).toFixed(2);
+  });
+  var labels  = hist.map(function(h){
+    var t = h.t instanceof Date ? h.t : new Date(h.t);
+    return (t.getMonth()+1) + '/' + t.getDate();
+  });
+
+  mChart = new Chart(canvas, {
+    type:'line',
+    data:{labels:labels, datasets:[
+      {data:closes, label:'收盤', borderColor:col, borderWidth:2, fill:true,
+       backgroundColor:colBg, tension:.3, pointRadius:0, pointHoverRadius:3, order:3},
+      {data:ma5arr,  label:'MA5',  borderColor:'#fbbf24', borderWidth:1.2,
+       fill:false, tension:.3, pointRadius:0, spanGaps:true, order:2},
+      {data:ma20arr, label:'MA20', borderColor:'#a78bfa', borderWidth:1.2,
+       fill:false, tension:.3, pointRadius:0, spanGaps:true, order:1},
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true, position:'top',
+          labels:{color:'#6b7590', font:{size:9}, boxWidth:16, padding:8}},
+        tooltip:{mode:'index', intersect:false,
+          backgroundColor:'#13161d', borderColor:'#1f2535', borderWidth:1,
+          titleColor:'#6b7590', bodyColor:'#dde1ec',
+          titleFont:{size:9}, bodyFont:{size:10}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(31,37,53,.8)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:10}},
+        y:{position:'right', grid:{color:'rgba(31,37,53,.8)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6}}
+      }
+    }
+  });
 }
+
+
 function parseTwDate(str){
   if(!str)return new Date();
   const p=str.split('/');
