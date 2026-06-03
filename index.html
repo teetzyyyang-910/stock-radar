@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stock Radar｜台股 × 美股</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1/dist/chartjs-adapter-luxon.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap');
 :root{
@@ -431,6 +434,18 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             </div>
           </div>
         </div>
+        <!-- 價量篩選 -->
+        <div class="filter-group" style="margin-bottom:8px">
+          <div class="filter-label">價量條件</div>
+          <div class="filter-chips" id="fc-pricevol">
+            <button class="fchip" data-val="pv_surge"    onclick="toggleFilter(this)">💹 價漲量增</button>
+            <button class="fchip" data-val="break_day"   onclick="toggleFilter(this)">📈 突破前日高</button>
+            <button class="fchip" data-val="break_week"  onclick="toggleFilter(this)">📈 突破前週高</button>
+            <button class="fchip" data-val="break_month" onclick="toggleFilter(this)">📈 突破前月高</button>
+            <button class="fchip" data-val="above_dkz5"  onclick="toggleFilter(this)">⚓ 站上MA5扣抵</button>
+            <button class="fchip" data-val="above_dkz20" onclick="toggleFilter(this)">⚓ 站上MA20扣抵</button>
+          </div>
+        </div>
         <!-- 族群選擇 -->
         <div class="filter-group" style="margin-bottom:8px">
           <div class="filter-label">族群篩選（不選 = 全部）</div>
@@ -652,7 +667,15 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <div id="m-time" style="font-size:10px;color:var(--mu);margin-top:3px"></div>
       </div>
     </div>
-    <div class="chartbox"><canvas id="mchart"></canvas></div>
+    <div class="chartbox" style="position:relative">
+        <div style="position:absolute;top:4px;right:4px;z-index:5;display:flex;gap:4px">
+          <button onclick="setChartType('line')" id="btn-chart-line"
+            style="padding:3px 10px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">折線</button>
+          <button onclick="setChartType('candlestick')" id="btn-chart-candle"
+            style="padding:3px 10px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">K線</button>
+        </div>
+        <canvas id="mchart"></canvas>
+      </div>
     <div class="m3col">
       <div class="mpanel">
         <div class="plabel"><span class="pico pico-tech">📈</span>技術指標</div>
@@ -755,7 +778,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false;
+let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -894,34 +917,73 @@ function getScoreClass(score, mtype) {
 }
 
 // ── FILTER ENGINE ──────────────────────────────────────────────
+// ── 扣抵值計算 ────────────────────────────────────────────────
+function calcDKZ(closes, n) {
+  // 扣抵值 = n日後，被扣掉的那根K棒價格
+  // 也就是當前最舊的那根 (closes[len-n]) 被扣掉後均線的變化
+  // 簡化：扣抵值 = closes[len - n]，若今日收盤 > 扣抵值，均線向上
+  if (closes.length < n + 1) return null;
+  return closes[closes.length - n];
+}
+
 function applyFilters(wList, activeFilters, activeGrps) {
   return wList.filter(w => {
     const d = SD[w.sym];
     if (!d) return false;
-    const closes = d.history.map(h=>h.c);
-    const rsi  = calcRSI(closes)||50;
-    const ma5  = calcMA(closes,5);
-    const ma20 = calcMA(closes,20);
-    const macd = calcMACD(closes);
-    const score = calcScore(w, d);
-    const vol5 = d.history.slice(-5).reduce((s,h)=>s+(h.vol||0),0)/5;
+    const hist   = d.history || [];
+    const closes = hist.map(h=>h.c);
+    const highs  = hist.map(h=>h.h||h.c);
+    const len    = closes.length;
+    const rsi    = calcRSI(closes)||50;
+    const ma5    = calcMA(closes,5);
+    const ma20   = calcMA(closes,20);
+    const macd   = calcMACD(closes);
+    const score  = calcScore(w, d);
+    const vol5   = hist.slice(-5).reduce((s,h)=>s+(h.vol||0),0)/5;
+    const price  = d.price || closes[len-1];
 
     // Grp filter
     if (activeGrps.size > 0 && w.grp && !activeGrps.has(w.grp)) return false;
     if (activeGrps.size > 0 && !w.grp) return false;
 
     for (const f of activeFilters) {
-      if (f==='rsi_low'   && !(rsi>=30 && rsi<=50))         return false;
-      if (f==='rsi_hi'    && !(rsi>70))                     return false;
-      if (f==='ma_golden' && !(ma5&&ma20&&ma5>ma20))        return false;
-      if (f==='ma_dead'   && !(ma5&&ma20&&ma5<ma20))        return false;
-      if (f==='macd_bull' && !(macd&&macd.hist>0))          return false;
-      if (f==='macd_bear' && !(macd&&macd.hist<0))          return false;
-      if (f==='score_hi'  && score<70)                      return false;
-      if (f==='score_lo'  && score>40)                      return false;
-      if (f==='tw_only'   && w.type!=='tw')                 return false;
-      if (f==='us_only'   && w.type!=='us')                 return false;
-      if (f==='vol_surge' && vol5>0 && d.vol/vol5<1.3)     return false;
+      if (f==='rsi_low'   && !(rsi>=30 && rsi<=50))              return false;
+      if (f==='rsi_hi'    && !(rsi>70))                          return false;
+      if (f==='ma_golden' && !(ma5&&ma20&&ma5>ma20))             return false;
+      if (f==='ma_dead'   && !(ma5&&ma20&&ma5<ma20))             return false;
+      if (f==='macd_bull' && !(macd&&macd.hist>0))               return false;
+      if (f==='macd_bear' && !(macd&&macd.hist<0))               return false;
+      if (f==='score_hi'  && score<70)                           return false;
+      if (f==='score_lo'  && score>40)                           return false;
+      if (f==='tw_only'   && w.type!=='tw')                      return false;
+      if (f==='us_only'   && w.type!=='us')                      return false;
+      if (f==='vol_surge' && vol5>0 && d.vol/vol5<1.3)          return false;
+      // 價漲量增
+      if (f==='pv_surge'){
+        if(!(d.chgPct > 0 && vol5 > 0 && d.vol > vol5 * 1.2)) return false;
+      }
+      // 突破高點
+      if (f==='break_day' && len >= 2){
+        const prevHigh = highs[len-2];
+        if(!(price > prevHigh)) return false;
+      }
+      if (f==='break_week' && len >= 6){
+        const weekHigh = Math.max(...highs.slice(-6,-1));
+        if(!(price > weekHigh)) return false;
+      }
+      if (f==='break_month' && len >= 22){
+        const monthHigh = Math.max(...highs.slice(-22,-1));
+        if(!(price > monthHigh)) return false;
+      }
+      // 扣抵值
+      if (f==='above_dkz5'){
+        const dkz = calcDKZ(closes, 5);
+        if(dkz === null || !(price > dkz)) return false;
+      }
+      if (f==='above_dkz20'){
+        const dkz = calcDKZ(closes, 20);
+        if(dkz === null || !(price > dkz)) return false;
+      }
     }
     return true;
   });
@@ -1024,7 +1086,15 @@ function getSignal(d, mtype){
 // ── GENERATE HISTORY ─────────────────────────────────────────
 function genHist(price,chgPct){
   const hist=[];let v=price/(1+chgPct/100);
-  for(let i=29;i>=0;i--){ v*=(1+(Math.random()-0.495)*0.018); const d=new Date();d.setDate(d.getDate()-i);hist.push({t:d,c:+v.toFixed(2)}); }
+  for(let i=29;i>=0;i--){
+    v*=(1+(Math.random()-0.495)*0.018);
+    const c=+v.toFixed(2);
+    const o=+(c*(1+(Math.random()-0.5)*0.008)).toFixed(2);
+    const h=+(Math.max(o,c)*(1+Math.random()*0.008)).toFixed(2);
+    const l=+(Math.min(o,c)*(1-Math.random()*0.008)).toFixed(2);
+    const d=new Date();d.setDate(d.getDate()-i);
+    hist.push({t:d,c,o,h,l,vol:0});
+  }
   hist[hist.length-1].c=price; return hist;
 }
 function mkEntry(sym,price,chgPct,vol,h52,l52,isReal){
@@ -1033,6 +1103,7 @@ function mkEntry(sym,price,chgPct,vol,h52,l52,isReal){
     vol:vol||0,high52:h52||+(p*1.28).toFixed(2),low52:l52||+(p*0.72).toFixed(2),
     history:genHist(p,cp),real:!!isReal,histReal:false};
 }
+// genHist now includes synthetic OHLC
 function initStatic(){
   WL.forEach(w=>{const p=BASE[w.sym]||100,cp=(Math.random()-0.48)*2.5;
     SD[w.sym]=mkEntry(w.sym,p,cp,Math.floor(Math.random()*3e6+5e5),null,null,false);});
@@ -1673,10 +1744,10 @@ async function openModal(sym){
     try{
       if(w.type==='tw'){
         const j=await safeFetch(`${PROXY}/twse/history?symbol=${w.tick}`);
-        if(j.history?.length){ const h=j.history.map(r=>({t:parseTwDate(r.date),c:+r.close})).filter(r=>r.c>0); if(h.length>2){d.history=h;d.histReal=true;} }
+        if(j.history?.length){ const h=j.history.map(r=>({t:parseTwDate(r.date),c:+r.close,o:+(r.open||r.close),h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0})).filter(r=>r.c>0); if(h.length>2){d.history=h;d.histReal=true;} }
       }else{
         const j=await safeFetch(`${PROXY}/us/history?symbol=${w.sym}`);
-        if(j.history?.length){ const h=j.history.map(r=>({t:new Date(r.date),c:+r.close})).filter(r=>r.c>0); if(h.length>2){d.history=h;d.histReal=true;} }
+        if(j.history?.length){ const h=j.history.map(r=>({t:new Date(r.date),c:+r.close,o:+(r.open||r.close),h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0})).filter(r=>r.c>0); if(h.length>2){d.history=h;d.histReal=true;} }
       }
     }catch(e){}
   }
@@ -1772,26 +1843,102 @@ async function runModalAI(w, d, chipHTML, op, news){
   }catch(e){out.textContent='分析服務暫時無法使用。';}
 }
 
+function setChartType(type){
+  chartType = type;
+  const btnLine   = document.getElementById('btn-chart-line');
+  const btnCandle = document.getElementById('btn-chart-candle');
+  if(btnLine){
+    btnLine.style.background   = type==='line' ? 'var(--pu)' : 'var(--s2)';
+    btnLine.style.border       = type==='line' ? 'none' : '1px solid var(--bd)';
+    btnLine.style.color        = type==='line' ? '#fff' : 'var(--mu2)';
+  }
+  if(btnCandle){
+    btnCandle.style.background = type==='candlestick' ? 'var(--pu)' : 'var(--s2)';
+    btnCandle.style.border     = type==='candlestick' ? 'none' : '1px solid var(--bd)';
+    btnCandle.style.color      = type==='candlestick' ? '#fff' : 'var(--mu2)';
+  }
+  // Redraw with current data
+  if(selSym){
+    const w = WL.find(x=>x.sym===selSym);
+    const d = SD[selSym];
+    if(w && d) drawModalChart(w, d);
+  }
+}
+
 function drawModalChart(w,d){
   if(mChart){try{mChart.destroy();}catch(e){}mChart=null;}
   const ex=Chart.getChart(document.getElementById('mchart')); if(ex)ex.destroy();
   const hist=d.history||[]; if(hist.length<2)return;
   const{l:col,b:colBg}=chartCol(d.chgPct,w.type);
   const closes=hist.map(h=>h.c);
-  const ma5arr=closes.map((_,i,a)=>i>=4?a.slice(i-4,i+1).reduce((s,v)=>s+v,0)/5:null);
-  const ma20arr=closes.map((_,i,a)=>i>=19?a.slice(i-19,i+1).reduce((s,v)=>s+v,0)/20:null);
-  mChart=new Chart(document.getElementById('mchart'),{type:'line',
-    data:{labels:hist.map(h=>h.t.toLocaleDateString('zh-TW',{month:'short',day:'numeric'})),
-      datasets:[
-        {data:closes,label:'收盤',borderColor:col,borderWidth:2,fill:true,backgroundColor:colBg,tension:.3,pointRadius:0,pointHoverRadius:3,order:3},
-        {data:ma5arr,label:'MA5',borderColor:'#fbbf24',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:2},
-        {data:ma20arr,label:'MA20',borderColor:'#a78bfa',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:1},
-      ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'top',labels:{color:'#6b7590',font:{size:9},boxWidth:16,padding:8}},
-        tooltip:{mode:'index',intersect:false,backgroundColor:'#13161d',borderColor:'#1f2535',borderWidth:1,titleColor:'#6b7590',bodyColor:'#dde1ec',titleFont:{size:9},bodyFont:{size:10}}},
-      scales:{x:{grid:{color:'rgba(31,37,53,.8)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:8}},
-        y:{position:'right',grid:{color:'rgba(31,37,53,.8)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6}}}}});
+  const ma5arr=closes.map((_,i,a)=>i>=4?+(a.slice(i-4,i+1).reduce((s,v)=>s+v,0)/5).toFixed(2):null);
+  const ma20arr=closes.map((_,i,a)=>i>=19?+(a.slice(i-19,i+1).reduce((s,v)=>s+v,0)/20).toFixed(2):null);
+  const labels=hist.map(h=>h.t instanceof Date ? h.t.toLocaleDateString('zh-TW',{month:'short',day:'numeric'}) : h.t);
+
+  const commonOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true,position:'top',labels:{color:'#6b7590',font:{size:9},boxWidth:16,padding:8}},
+      tooltip:{mode:'index',intersect:false,backgroundColor:'#13161d',borderColor:'#1f2535',borderWidth:1,titleColor:'#6b7590',bodyColor:'#dde1ec',titleFont:{size:9},bodyFont:{size:10}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(31,37,53,.6)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:10}},
+      y:{position:'right',grid:{color:'rgba(31,37,53,.6)'},ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6}}
+    }
+  };
+
+  if(chartType === 'candlestick' && typeof Chart.controllers !== 'undefined' && typeof window.CandlestickController !== 'undefined'){
+    // K-line chart using chartjs-chart-financial
+    const isTW = w.type === 'tw';
+    const upCol   = isTW ? '#f87171' : '#34d399';
+    const downCol = isTW ? '#34d399' : '#f87171';
+    const ohlc = hist.map(h=>({
+      x: h.t instanceof Date ? h.t.getTime() : new Date(h.t).getTime(),
+      o: h.o || h.c, h: h.h || h.c, l: h.l || h.c, c: h.c
+    }));
+    mChart = new Chart(document.getElementById('mchart'), {
+      type: 'candlestick',
+      data: {
+        datasets:[
+          { label:'K線', data:ohlc,
+            color:{ up:upCol, down:downCol, unchanged:'#94a3b8' },
+            borderColor:{ up:upCol, down:downCol, unchanged:'#94a3b8' },
+            order:3
+          },
+          { type:'line', label:'MA5', data:ma5arr, borderColor:'#fbbf24', borderWidth:1.5,
+            fill:false, tension:.3, pointRadius:0, spanGaps:true, order:2 },
+          { type:'line', label:'MA20', data:ma20arr, borderColor:'#a78bfa', borderWidth:1.5,
+            fill:false, tension:.3, pointRadius:0, spanGaps:true, order:1 }
+        ]
+      },
+      options:{
+        ...commonOpts,
+        scales:{
+          x:{ type:'time', time:{unit:'day',displayFormats:{day:'M/d'}},
+              grid:{color:'rgba(31,37,53,.6)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:10} },
+          y:{ position:'right', grid:{color:'rgba(31,37,53,.6)'}, ticks:{color:'#4a5268',font:{size:8},maxTicksLimit:6} }
+        }
+      }
+    });
+  } else {
+    // Fallback line chart (also used when chartType==='line')
+    if(chartType === 'candlestick'){
+      // Plugin not loaded yet, show notice
+      const cv = document.getElementById('mchart');
+      const ctx = cv.getContext('2d');
+      if(ctx){ ctx.fillStyle='#4a5268'; ctx.font='12px sans-serif';
+        ctx.fillText('K線圖載入中，請稍候再切換...', 20, 100); }
+    }
+    mChart=new Chart(document.getElementById('mchart'),{type:'line',
+      data:{labels,
+        datasets:[
+          {data:closes,label:'收盤',borderColor:col,borderWidth:2,fill:true,backgroundColor:colBg,tension:.3,pointRadius:0,pointHoverRadius:3,order:3},
+          {data:ma5arr,label:'MA5',borderColor:'#fbbf24',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:2},
+          {data:ma20arr,label:'MA20',borderColor:'#a78bfa',borderWidth:1.2,fill:false,tension:.3,pointRadius:0,spanGaps:true,order:1},
+        ]},
+      options:{...commonOpts}
+    });
+  }
 }
 function parseTwDate(str){
   if(!str)return new Date();
