@@ -358,6 +358,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     <button class="tab tw-t"        id="tab-tw"           onclick="switchL1('tw',this)">🇹🇼 台股</button>
     <button class="tab us-t"        id="tab-us"           onclick="switchL1('us',this)">🇺🇸 美股</button>
     <span style="width:1px;background:var(--bd);margin:8px 5px;flex-shrink:0;align-self:stretch;"></span>
+    <button class="tab" id="tab-custom_wl" onclick="switchL1('custom_wl',this)" style="color:var(--gd)">⭐ 自選</button>
+    <span style="width:1px;background:var(--bd);margin:8px 5px;flex-shrink:0;align-self:stretch;"></span>
     <button class="tab sig-buy-t"   id="tab-sig_buy"      onclick="switchL1('sig_buy',this)">🟢 進場訊號</button>
     <button class="tab sig-sell-t"  id="tab-sig_sell"     onclick="switchL1('sig_sell',this)">🔴 減碼警示</button>
     <button class="tab sig-watch-t" id="tab-sig_watch"    onclick="switchL1('sig_watch',this)">🟡 持續觀望</button>
@@ -800,6 +802,17 @@ const WL = [
   {sym:'NOK', tick:'NOK', name:'Nokia Corp.',    type:'us',sec:'電信設備', grp:''},
   {sym:'MSFT',tick:'MSFT',name:'Microsoft Corp.',type:'us',sec:'雲端軟體', grp:''},
   {sym:'GOOG',tick:'GOOG',name:'Alphabet Inc.',  type:'us',sec:'搜尋/AI',  grp:''},
+  // 新增台股
+  {sym:'1504.TW',tick:'1504',name:'東元電機',     type:'tw',sec:'馬達/家電', grp:''},
+  {sym:'3008.TW',tick:'3008',name:'大立光',       type:'tw',sec:'光學鏡頭', grp:''},
+  {sym:'2382.TW',tick:'2382',name:'廣達',         type:'tw',sec:'AI伺服器', grp:'g_leader'},
+  {sym:'3034.TW',tick:'3034',name:'聯詠',         type:'tw',sec:'面板IC',   grp:'g_panel'},
+  {sym:'2308.TW',tick:'2308',name:'台達電',       type:'tw',sec:'電源管理', grp:'g_leader'},
+  // 新增美股
+  {sym:'TSLA',tick:'TSLA',name:'Tesla Inc.',      type:'us',sec:'EV/AI',   grp:''},
+  {sym:'AMD', tick:'AMD', name:'AMD Inc.',        type:'us',sec:'AI/GPU',  grp:''},
+  {sym:'ASML',tick:'ASML',name:'ASML Holding',   type:'us',sec:'半導體設備',grp:''},
+  {sym:'TSM', tick:'TSM', name:'TSMC ADR',        type:'us',sec:'晶圓代工', grp:''},
 ];
 const GRP={g_panel:'📺 面板',g_memory:'💾 記憶體',g_carrier:'🔌 載板',g_leo:'🛰 低軌衛星',g_passive:'⚡ 被動元件',g_leader:'👑 龍頭'};
 const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':62,'2454.TW':1320,
@@ -807,10 +820,12 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   '3189.TW':98,'4958.TW':210,'3037.TW':155,'8046.TW':195,'2313.TW':48,'6285.TW':380,
   '2367.TW':35,'2485.TW':72,'2355.TW':65,'2327.TW':560,'2484.TW':28,'2375.TW':95,
   '2492.TW':110,'6173.TW':62,'6930.TW':145,'2383.TW':280,
-  'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
+  'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176,
+  '1504.TW':55,'3008.TW':2450,'2382.TW':295,'3034.TW':335,'2308.TW':385,
+  'TSLA':248,'AMD':165,'ASML':820,'TSM':185};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, INST={}, SIGNAL_CACHE={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
+let SD={}, IDX={}, IDX_HIST={}, INST={}, SIGNAL_CACHE={}, WATCHLIST_CUSTOM=[], curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbMarket='all', lbExpanded=false, chartType='line';
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -1258,10 +1273,14 @@ async function fetchPrices(){
     });
   }catch(e){console.warn('US:',e.message);}
 
-  // Fetch index data
+  // Fetch index data + history
   try {
     const ij = await safeFetch(`${PROXY}/index`);
-    if (ij.data) IDX = ij.data;
+    if (ij.data) {
+      IDX = ij.data;
+      if(ij.data.taiex?.history)  IDX_HIST.taiex  = ij.data.taiex.history;
+      if(ij.data.nasdaq?.history) IDX_HIST.nasdaq = ij.data.nasdaq.history;
+    }
   } catch(e) {}
 
   renderAll();
@@ -1288,12 +1307,43 @@ function renderAll(){
   if(curTab==='overview') renderOverviewFull();
   else renderGrid();
 }
+function drawSparkline(canvasId, history, color){
+  const cv = document.getElementById(canvasId);
+  if(!cv || !history || history.length < 2) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+  const vals = history.map(h=>h.close).filter(v=>v!=null);
+  if(vals.length < 2) return;
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const range = max - min || 1;
+  const toX = (i) => (i / (vals.length-1)) * (W-2) + 1;
+  const toY = (v) => H - 4 - ((v-min)/range) * (H-8);
+  // Fill
+  ctx.beginPath();
+  ctx.moveTo(toX(0), H);
+  vals.forEach((v,i) => ctx.lineTo(toX(i), toY(v)));
+  ctx.lineTo(toX(vals.length-1), H);
+  ctx.closePath();
+  ctx.fillStyle = color.replace(')',',0.1)').replace('rgb','rgba');
+  ctx.fill();
+  // Line
+  ctx.beginPath();
+  vals.forEach((v,i) => i===0 ? ctx.moveTo(toX(i),toY(v)) : ctx.lineTo(toX(i),toY(v)));
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
 function renderOverviewFull(){
   renderOverview();
   // Render leaderboard into the #lb-table-wrap that overview just created
   requestAnimationFrame(()=>{
     const wrap = document.getElementById('lb-table-wrap');
     if(wrap) renderLbTable(wrap);
+    // Draw index sparklines
+    if(IDX_HIST.taiex)  drawSparkline('spark-taiex',  IDX_HIST.taiex,  'rgb(249,115,22)');
+    if(IDX_HIST.nasdaq) drawSparkline('spark-nasdaq',  IDX_HIST.nasdaq, 'rgb(56,189,248)');
   });
 }
 
@@ -1373,26 +1423,36 @@ function renderOverview(){
   <!-- Index row -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
     <div class="ov-card" style="border-top:2px solid var(--tw);padding:14px 18px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:11px;color:var(--mu);letter-spacing:.5px">🇹🇼 台灣加權指數</div>
-        <span style="font-size:9px;color:var(--mu2)">${taiex?'即時':'—'}</span>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div style="font-size:11px;color:var(--mu);letter-spacing:.5px">🇹🇼 台灣加權指數</div>
+            <span style="font-size:9px;color:var(--mu2)">${taiex?'即時':'—'}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:${tCol}">${taiex?taiex.price.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${tCol}">${taiex?sgn(taiex.chgPct)+fmt(taiex.chgPct)+'%':'—'}</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${tCol};margin-top:2px">${taiex?sgn(taiex.chg)+taiex.chg.toLocaleString('en-US',{maximumFractionDigits:0})+'點':'—'}</div>
+        </div>
+        <canvas id="spark-taiex" width="100" height="50" style="flex-shrink:0;opacity:.85"></canvas>
       </div>
-      <div style="display:flex;align-items:baseline;gap:10px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:${tCol}">${taiex?taiex.price.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${tCol}">${taiex?sgn(taiex.chgPct)+fmt(taiex.chgPct)+'%':'—'}</div>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${tCol};margin-top:2px">${taiex?sgn(taiex.chg)+taiex.chg.toLocaleString('en-US',{maximumFractionDigits:0})+'點':'—'}</div>
     </div>
     <div class="ov-card" style="border-top:2px solid var(--us);padding:14px 18px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:11px;color:var(--mu);letter-spacing:.5px">🇺🇸 那斯達克指數</div>
-        <span style="font-size:9px;color:var(--mu2)">${nasdaq?'即時':'—'}</span>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div style="font-size:11px;color:var(--mu);letter-spacing:.5px">🇺🇸 那斯達克指數</div>
+            <span style="font-size:9px;color:var(--mu2)">${nasdaq?'即時':'—'}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:${nCol}">${nasdaq?nasdaq.price.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${nCol}">${nasdaq?sgn(nasdaq.chgPct)+fmt(nasdaq.chgPct)+'%':'—'}</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${nCol};margin-top:2px">${nasdaq?sgn(nasdaq.chg)+fmt(nasdaq.chg):'—'}</div>
+        </div>
+        <canvas id="spark-nasdaq" width="100" height="50" style="flex-shrink:0;opacity:.85"></canvas>
       </div>
-      <div style="display:flex;align-items:baseline;gap:10px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:${nCol}">${nasdaq?nasdaq.price.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${nCol}">${nasdaq?sgn(nasdaq.chgPct)+fmt(nasdaq.chgPct)+'%':'—'}</div>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${nCol};margin-top:2px">${nasdaq?sgn(nasdaq.chg)+fmt(nasdaq.chg):'—'}</div>
     </div>
   </div>
 
@@ -1452,7 +1512,14 @@ function renderOverview(){
   </div>
   <div style="margin-top:14px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:13px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase">🏆 排行榜</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="font-size:13px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase">🏆 排行榜</div>
+        <div style="display:flex;gap:4px">
+          <button class="lb-tab${lbMarket==='all'?' active':''}" onclick="switchLbMarket('all')" style="font-size:10px;padding:3px 10px">全部</button>
+          <button class="lb-tab${lbMarket==='tw'?' active':''}" onclick="switchLbMarket('tw')" style="font-size:10px;padding:3px 10px">🇹🇼 台股</button>
+          <button class="lb-tab${lbMarket==='us'?' active':''}" onclick="switchLbMarket('us')" style="font-size:10px;padding:3px 10px">🇺🇸 美股</button>
+        </div>
+      </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="lb-tab${lbTab==='chg'?' active':''}" onclick="switchLbTab('chg')">📈 漲跌幅</button>
         <button class="lb-tab${lbTab==='vol'?' active':''}" onclick="switchLbTab('vol')">💹 成交量</button>
@@ -1475,7 +1542,12 @@ function renderLeaderboard() {
 }
 
 function renderLbTable(wrap) {
-  const all = WL.map(w=>({w,d:SD[w.sym]})).filter(x=>x.d);
+  const allStocks = WL.concat(WATCHLIST_CUSTOM.map(tick=>{
+    const found = WL.find(w=>w.tick===tick);
+    return found || null;
+  }).filter(Boolean));
+  const marketFilter = lbMarket==='tw' ? (x=>x.w.type==='tw') : lbMarket==='us' ? (x=>x.w.type==='us') : (()=>true);
+  const all = WL.map(w=>({w,d:SD[w.sym]})).filter(x=>x.d).filter(marketFilter);
   const withScore = all.map(({w,d})=>{
     const c=(d.history||[]).map(h=>h.c);
     const rsi=calcRSI(c)||50,ma5=calcMA(c,5),ma20=calcMA(c,20),macd=calcMACD(c);
@@ -1545,10 +1617,12 @@ function toggleLbExpand(){
 }
 
 function switchLbTab(t){ lbTab=t; const wrap=document.getElementById('lb-table-wrap'); if(wrap) renderLbTable(wrap); }
+function switchLbMarket(m){ lbMarket=m; const wrap=document.getElementById('lb-table-wrap'); if(wrap) renderLbTable(wrap); }
 
 // ── GRID ─────────────────────────────────────────────────────
 function getVis(){
   if(curTab==='all')     return WL;
+  if(curTab==='custom_wl') return WL.filter(w => WATCHLIST_CUSTOM.includes(w.tick));
   if(curTab==='tw' || curTab==='tw_all') return WL.filter(w=>w.type==='tw');
   if(curTab==='us')      return WL.filter(w=>w.type==='us');
   if(curTab==='sig_buy')   return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='buy'; });
@@ -1586,7 +1660,13 @@ function renderGrid(){
         <div><div class="sk">52W高</div><div class="sv" style="color:var(--dn)">${fmt(d.high52)}</div></div>
         <div><div class="sk">52W低</div><div class="sv" style="color:var(--up)">${fmt(d.low52)}</div></div>
       </div>
-      <div class="dsrc"><span class="${d.real?'dlive':'dest'}"></span><span>${d.real?'即時行情':'參考數據'}</span><span style="margin-left:auto">${new Date().toLocaleDateString('zh-TW')}</span></div>
+      <div class="dsrc">
+        <span class="${d.real?'dlive':'dest'}"></span>
+        <span>${d.real?'即時行情':'參考數據'}</span>
+        <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${'${WATCHLIST_CUSTOM.includes(w.tick)?"⭐":"☆"}'}</button>
+        </span>
+      </div>
     </div>`;
   }).join('');
   requestAnimationFrame(()=>{
@@ -2603,6 +2683,8 @@ function switchL1(tab, el){
     l2.classList.remove('visible');
   }
   updateSignalCounts();
+  const cwBar = document.getElementById('custom-wl-bar');
+  if(cwBar) cwBar.style.display = tab==='custom_wl' ? 'block' : 'none';
   if(tab === 'overview')  { showPage('overview'); renderOverviewFull(); }
   else if(tab === 'guide'){ showPage('guide'); }
   else                    { showPage('stocks'); renderGrid(); }
@@ -2631,6 +2713,60 @@ function doRefresh(){
 }
 
 // ── TRACKER ──────────────────────────────────────────────────
+// ── 自選清單 ─────────────────────────────────────────────────
+function loadCustomWl(){
+  try { WATCHLIST_CUSTOM = JSON.parse(safeStorage('get','sr_custom_wl')||'[]'); }
+  catch(e){ WATCHLIST_CUSTOM = []; }
+  updateCustomWlBadge();
+}
+
+function saveCustomWl(){
+  safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM));
+  updateCustomWlBadge();
+}
+
+function toggleCustomWl(tick){
+  const idx = WATCHLIST_CUSTOM.indexOf(tick);
+  if(idx >= 0) WATCHLIST_CUSTOM.splice(idx, 1);
+  else WATCHLIST_CUSTOM.push(tick);
+  saveCustomWl();
+  renderAll(); // refresh cards to update ☆/⭐
+}
+
+function updateCustomWlBadge(){
+  const tab = document.getElementById('tab-custom_wl');
+  if(!tab) return;
+  const cnt = WATCHLIST_CUSTOM.length;
+  tab.innerHTML = '⭐ 自選' + (cnt > 0 ? ` <span style="background:rgba(251,191,36,.2);color:var(--gd);border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">${cnt}</span>` : '');
+}
+
+function searchCustomWl(q){
+  const res = document.getElementById('custom-wl-results');
+  if(!res) return;
+  const query = (q||'').trim().toUpperCase();
+  if(!query){ res.innerHTML=''; return; }
+  const matches = WL.filter(w =>
+    w.tick.toUpperCase().includes(query) ||
+    w.name.includes(query)
+  ).slice(0, 8);
+  res.innerHTML = matches.map(w => {
+    const inList = WATCHLIST_CUSTOM.includes(w.tick);
+    return `<button onclick="toggleCustomWl('${w.tick}');searchCustomWl(document.getElementById('custom-wl-search').value)"
+      style="padding:4px 12px;border-radius:16px;font-size:11px;cursor:pointer;font-family:inherit;
+      background:${inList?'rgba(251,191,36,.15)':'var(--s2)'};
+      border:1px solid ${inList?'var(--gd)':'var(--bd)'};
+      color:${inList?'var(--gd)':'var(--mu2)'}"
+      >${inList?'⭐':'☆'} ${w.tick} ${w.name}</button>`;
+  }).join('');
+}
+
+function clearCustomWl(){
+  if(!confirm('確定清空自選清單？')) return;
+  WATCHLIST_CUSTOM = [];
+  saveCustomWl();
+  renderGrid();
+}
+
 function safeStorage(action, key, val){
   try { return action==='get' ? localStorage.getItem(key) : localStorage.setItem(key, val); }
   catch(e){ return null; }
@@ -2703,6 +2839,7 @@ function clearTracker(){
 initStatic();
 renderOverviewFull();
 renderMbar();
+loadCustomWl();
 var _initScen = document.querySelector('.scen[data-scen="rebound"]');
 if(_initScen) selectScen(_initScen);
 updateFilterSummary();
