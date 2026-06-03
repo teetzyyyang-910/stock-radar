@@ -443,6 +443,15 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             <button class="fchip" data-val="above_dkz20" onclick="toggleFilter(this)">⚓ 站上MA20扣抵</button>
           </div>
         </div>
+        <!-- 法人篩選 -->
+        <div class="filter-group" style="margin-bottom:8px">
+          <div class="filter-label">法人動向 <span style="color:var(--mu);font-weight:400">（需額外載入，較慢）</span></div>
+          <div class="filter-chips" id="fc-inst">
+            <button class="fchip" data-val="inst_foreign" onclick="toggleFilter(this)">🏦 外資買超</button>
+            <button class="fchip" data-val="inst_trust"   onclick="toggleFilter(this)">🏦 投信買超</button>
+            <button class="fchip" data-val="inst_total"   onclick="toggleFilter(this)">🏦 三大法人買超</button>
+          </div>
+        </div>
         <!-- 族群選擇 -->
         <div class="filter-group" style="margin-bottom:8px">
           <div class="filter-label">族群篩選（不選 = 全部）</div>
@@ -775,7 +784,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
+let SD={}, IDX={}, INST={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -914,6 +923,34 @@ function getScoreClass(score, mtype) {
 }
 
 // ── FILTER ENGINE ──────────────────────────────────────────────
+// ── 法人資料批次抓取 ───────────────────────────────────────────
+async function fetchAllInstitutional(onProgress){
+  var twStocks = WL.filter(function(w){ return w.type==='tw'; });
+  var total    = twStocks.length;
+  var done     = 0;
+
+  await Promise.allSettled(twStocks.map(async function(w){
+    if(INST[w.tick]) { done++; return; } // use cache
+    try {
+      var j = await safeFetch(PROXY + '/twse/institutional?symbol=' + w.tick);
+      if(j.ok){
+        INST[w.tick] = {
+          foreign_net: j.latest ? (j.latest.foreign_net || 0) : 0,
+          trust_net:   j.latest ? (j.latest.trust_net   || 0) : 0,
+          total_net:   j.latest ? (j.latest.total_net   || 0) : 0,
+          sum5_total:  j.sum5  ? (j.sum5.total          || 0) : 0,
+        };
+      } else {
+        INST[w.tick] = { foreign_net:0, trust_net:0, total_net:0, sum5_total:0 };
+      }
+    } catch(e) {
+      INST[w.tick] = { foreign_net:0, trust_net:0, total_net:0, sum5_total:0 };
+    }
+    done++;
+    if(onProgress) onProgress(done, total);
+  }));
+}
+
 // ── 扣抵值計算 ────────────────────────────────────────────────
 function calcDKZ(closes, n) {
   // 扣抵值 = n日後，被扣掉的那根K棒價格
@@ -980,6 +1017,19 @@ function applyFilters(wList, activeFilters, activeGrps) {
       if (f==='above_dkz20'){
         const dkz = calcDKZ(closes, 20);
         if(dkz === null || !(price > dkz)) return false;
+      }
+      // 法人篩選（需 INST 快取已載入）
+      if (f==='inst_foreign'){
+        const inst = INST[w.tick];
+        if(!inst || inst.foreign_net <= 0) return false;
+      }
+      if (f==='inst_trust'){
+        const inst = INST[w.tick];
+        if(!inst || inst.trust_net <= 0) return false;
+      }
+      if (f==='inst_total'){
+        const inst = INST[w.tick];
+        if(!inst || inst.total_net <= 0) return false;
       }
     }
     return true;
@@ -2217,6 +2267,24 @@ async function runPicker(){
   try { sorted = allStocks.slice().sort(def.sort); } catch(e){}
   var topStocks = sorted.slice(0, 12);
 
+  // Check if institutional filters are selected — fetch if needed
+  var needsInst = ['inst_foreign','inst_trust','inst_total'].some(function(f){ return activeFilters.has(f); });
+  if(needsInst){
+    var twTotal = WL.filter(function(w){ return w.type==='tw'; }).length;
+    var alreadyCached = Object.keys(INST).length;
+    if(alreadyCached < twTotal){
+      out.innerHTML = '<div style="padding:16px;text-align:center">' +
+        '<span class="spin"></span>' +
+        '<div id="inst-progress" style="font-size:12px;color:var(--mu2);margin-top:8px">載入法人資料 0/' + twTotal + '...</div>' +
+        '<div style="font-size:10px;color:var(--mu);margin-top:4px">首次需要約 10–20 秒</div>' +
+        '</div>';
+      await fetchAllInstitutional(function(done, total){
+        var el = document.getElementById('inst-progress');
+        if(el) el.textContent = '載入法人資料 ' + done + '/' + total + '...';
+      });
+    }
+  }
+
   // Show loading indicator while Groq runs in background
   out.innerHTML = '<div style="padding:20px;text-align:center;color:var(--mu2)"><span class="spin"></span><br><br><span style="font-size:12px">AI 分析中，請稍候...</span></div>';
   btn.disabled = false;
@@ -2233,7 +2301,8 @@ async function runPicker(){
     var score = calcScore(w, d);
     var macdStr = macd ? (macd.macd > 0 ? '多' : '空') : '—';
     var maStr = (ma5 && ma20) ? (ma5 > ma20 ? '多頭' : '空頭') : '—';
-    return w.tick + '(' + w.name + ') 評分:' + score + ' 現價:' + fmt(d.price) + ' RSI:' + rsi + ' MACD:' + macdStr + ' 均線:' + maStr;
+    var instInfo = INST[w.tick] ? ' 外資:' + (INST[w.tick].foreign_net>0?'+':'') + (INST[w.tick].foreign_net/1000).toFixed(0) + '張 法人:' + (INST[w.tick].total_net>0?'+':'') + (INST[w.tick].total_net/1000).toFixed(0) + '張' : '';
+    return w.tick + '(' + w.name + ') 評分:' + score + ' 現價:' + fmt(d.price) + ' RSI:' + rsi + ' MACD:' + macdStr + ' 均線:' + maStr + instInfo;
   }).join('\n');
 
   var pinput = document.getElementById('pinput');
