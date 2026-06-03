@@ -581,8 +581,20 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 
     <!-- 訊號說明 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">🎯 訊號邏輯（需三條件同時成立）</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase">🎯 訊號邏輯</div>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 日線指標 · 收盤後更新</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">🔒 需連續 2 次確認才觸發</span>
+      </div>
+
+      <!-- 穩定性機制說明 -->
+      <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--mu2);line-height:1.8">
+        <strong style="color:var(--pu)">穩定性門檻：</strong>每 3 分鐘計算一次，同一訊號需<strong style="color:var(--tx)">連續 2 次</strong>計算結果相同才顯示。避免價格短暫波動造成訊號頻繁橫跳。<br>
+        訊號基於<strong style="color:var(--tx)">日線技術指標</strong>，需個股歷史資料載入後才啟動（合成資料期間不顯示）。
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+
         <div style="padding:12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#f87171;margin-bottom:8px">🟢 進場訊號</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
@@ -593,9 +605,10 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             · 均線多頭排列（MA5 > MA20）<br>
             · MACD 柱狀偏多（> 0）<br>
             · 近5日上漲<br>
-            <span style="color:var(--gd)">→ 總分 ≥ 3 且含至少一個強訊號</span>
+            <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
         </div>
+
         <div style="padding:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#34d399;margin-bottom:8px">🔴 減碼警示</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
@@ -606,18 +619,26 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             · 均線空頭排列（MA5 &lt; MA20）<br>
             · MA5 開始下彎<br>
             · 近5日下跌超過 1%<br>
-            <span style="color:var(--gd)">→ 總分 ≥ 3 且含至少一個強訊號</span>
+            <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
         </div>
+
         <div style="padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🟡 持續觀望</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
             · 進場或減碼分數達 1–2 分<br>
             · 或 MACD 即將黃金交叉<br>
-            · 訊號尚未明確，等待確認<br>
-            <span style="color:var(--gd)">→ 持續追蹤，不急於行動</span>
+            · 訊號尚未達到確認標準<br>
+            <span style="color:var(--gd)">→ 同樣需連續 2 次確認<br>→ 持續追蹤，不急行動</span>
           </div>
         </div>
+
+      </div>
+
+      <!-- 訊號 tooltip 說明 -->
+      <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.7">
+        💡 卡片上的訊號徽章可 hover 查看詳細觸發條件（如「RSI低位回升＋MACD翻正」）<br>
+        💡 Tab 上顯示「日線」標示，提醒此為日線技術指標，非盤中即時訊號
       </div>
     </div>
 
@@ -789,7 +810,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, INST={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
+let SD={}, IDX={}, INST={}, SIGNAL_CACHE={}, curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbExpanded=false, chartType='line';
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -1042,8 +1063,9 @@ function applyFilters(wList, activeFilters, activeGrps) {
 }
 
 // ── SIGNAL LOGIC ─────────────────────────────────────────────
-// 放寬版：任意 2 個以上條件成立即觸發，平衡精準度與覆蓋率
-function getSignal(d, mtype){
+// 計算原始訊號（不含穩定性判斷）
+function calcRawSignal(d, mtype){
+  if(!d || !d.histReal) return null; // 只在真實歷史資料下計算
   const c = (d.history||[]).map(h=>h.c);
   if(c.length < 22) return null;
 
@@ -1058,34 +1080,30 @@ function getSignal(d, mtype){
 
   if(!rsi || !ma5 || !ma20 || !macd) return null;
 
-  const price    = c[len-1];
-  const chg5d    = len >= 5 ? (price - c[len-5]) / c[len-5] * 100 : 0;
+  const price  = c[len-1];
+  const chg5d  = len >= 5 ? (price - c[len-5]) / c[len-5] * 100 : 0;
 
-  // ── 進場條件（各自獨立判斷）─────────────────────────────────
-  // 強訊號（權重高）
-  const rsiLowRising   = rsi >= 28 && rsi <= 58 && rsiPrev && rsi > rsiPrev;  // RSI 低位/中低位回升
-  const macdBull       = macd.hist > 0;                                         // MACD 動能偏多
-  const macdTurningUp  = macd.hist > 0 && macdPrev && macdPrev.hist <= 0;      // MACD 柱狀剛轉正（強）
-  // 中訊號
-  const maGolden       = ma5 > ma20;                                            // 均線多頭排列
-  const maNearOrCross  = ma5 > ma20 || Math.abs(ma5-ma20)/ma20 < 0.015;       // 多頭或接近黃金交叉
-  const risingTrend    = chg5d > 0;                                             // 近5日上漲
+  // ── 進場條件 ──────────────────────────────────────────────
+  const rsiLowRising  = rsi >= 28 && rsi <= 58 && rsiPrev && rsi > rsiPrev;
+  const macdBull      = macd.hist > 0;
+  const macdTurningUp = macd.hist > 0 && macdPrev && macdPrev.hist <= 0;
+  const maGolden      = ma5 > ma20;
+  const risingTrend   = chg5d > 0;
 
-  // 進場分數：強訊號各 2 分，中訊號各 1 分
   let buyScore = 0;
-  if(macdTurningUp)  buyScore += 2;   // 最強：MACD 剛翻正
-  else if(macdBull)  buyScore += 1;   // MACD 偏多
-  if(rsiLowRising)   buyScore += 2;   // RSI 低位回升
-  if(maGolden)       buyScore += 1;   // 均線多頭
-  if(risingTrend)    buyScore += 1;   // 短期上漲
+  if(macdTurningUp)  buyScore += 2;
+  else if(macdBull)  buyScore += 1;
+  if(rsiLowRising)   buyScore += 2;
+  if(maGolden)       buyScore += 1;
+  if(risingTrend)    buyScore += 1;
 
-  // ── 減碼條件──────────────────────────────────────────────────
-  const rsiHighFalling = rsi >= 68 && rsiPrev && rsi < rsiPrev;               // RSI 高位下滑（68 起）
-  const macdBear       = macd.hist < 0;                                        // MACD 動能偏空
-  const macdTurningDn  = macd.hist < 0 && macdPrev && macdPrev.hist >= 0;     // MACD 剛轉負（強）
-  const maBearish      = ma5 < ma20;                                           // 均線空頭
-  const ma5Bending     = ma5 < (ma5Prev||ma5);                                // MA5 開始下彎
-  const fallingTrend   = chg5d < -1;                                           // 近5日下跌 > 1%
+  // ── 減碼條件 ──────────────────────────────────────────────
+  const rsiHighFalling = rsi >= 68 && rsiPrev && rsi < rsiPrev;
+  const macdBear       = macd.hist < 0;
+  const macdTurningDn  = macd.hist < 0 && macdPrev && macdPrev.hist >= 0;
+  const maBearish      = ma5 < ma20;
+  const ma5Bending     = ma5 < (ma5Prev||ma5);
+  const fallingTrend   = chg5d < -1;
 
   let sellScore = 0;
   if(macdTurningDn)   sellScore += 2;
@@ -1095,45 +1113,69 @@ function getSignal(d, mtype){
   if(ma5Bending)      sellScore += 1;
   if(fallingTrend)    sellScore += 1;
 
-  // ── 判斷結果：分數 >= 3 = 明確訊號，1-2 = 觀察 ──────────────
-  // 進場訊號（分數 >= 3，至少含一個強訊號）
-  if(buyScore >= 3 && (macdTurningUp || rsiLowRising)){
-    const buyCls = mtype==='tw' ? 'sig-buy' : 'sig-us-buy';
-    const details = [];
-    if(rsiLowRising)  details.push('RSI低位回升');
-    if(macdTurningUp) details.push('MACD翻正');
-    else if(macdBull) details.push('MACD偏多');
-    if(maGolden)      details.push('均線多頭');
-    return { type:'buy', label:'🟢 進場訊號', cls:buyCls, detail:details.join('＋') };
-  }
-
-  // 減碼警示（分數 >= 3，至少含一個強訊號）
-  if(sellScore >= 3 && (macdTurningDn || rsiHighFalling)){
-    const sellCls = mtype==='tw' ? 'sig-sell' : 'sig-us-sell';
-    const details = [];
-    if(rsiHighFalling) details.push('RSI高位下滑');
-    if(macdTurningDn)  details.push('MACD轉負');
-    else if(macdBear)  details.push('MACD偏空');
-    if(maBearish)      details.push('均線空頭');
-    return { type:'sell', label:'🔴 減碼警示', cls:sellCls, detail:details.join('＋') };
-  }
-
-  // 持續觀望（進場或減碼分數 1-2，或接近臨界）
   const macdNearCross = Math.abs(macd.macd - macd.signal) / Math.max(Math.abs(price), 0.01) < 0.005;
-  const watchBuy  = buyScore >= 1 && buyScore < 3;
-  const watchSell = sellScore >= 1 && sellScore < 3;
-  const watchMacd = macdNearCross;
 
-  if(watchBuy || watchSell || watchMacd){
-    let detail = '';
-    if(watchMacd)       detail = 'MACD即將交叉';
-    else if(watchBuy)   detail = 'RSI回升中，等待確認';
-    else                detail = '技術面轉弱，觀察中';
-    return { type:'watch', label:'🟡 觀察中', cls:'sig-watch', detail };
+  if(buyScore >= 3 && (macdTurningUp || rsiLowRising)){
+    const d=[];
+    if(rsiLowRising)  d.push('RSI低位回升');
+    if(macdTurningUp) d.push('MACD翻正');
+    else if(macdBull) d.push('MACD偏多');
+    if(maGolden)      d.push('均線多頭');
+    return { type:'buy', detail:d.join('＋') };
   }
-
+  if(sellScore >= 3 && (macdTurningDn || rsiHighFalling)){
+    const d=[];
+    if(rsiHighFalling) d.push('RSI高位下滑');
+    if(macdTurningDn)  d.push('MACD轉負');
+    else if(macdBear)  d.push('MACD偏空');
+    if(maBearish)      d.push('均線空頭');
+    return { type:'sell', detail:d.join('＋') };
+  }
+  if(buyScore>=1 || sellScore>=1 || macdNearCross){
+    const detail = macdNearCross ? 'MACD即將交叉'
+                 : buyScore>=1   ? 'RSI回升中，等待確認'
+                 : '技術面轉弱，觀察中';
+    return { type:'watch', detail };
+  }
   return null;
 }
+
+// ── 穩定性門檻：連續 2 次相同才確認 ─────────────────────────
+function getSignal(sym, d, mtype){
+  const raw     = calcRawSignal(d, mtype);
+  const rawType = raw ? raw.type : null;
+
+  if(!SIGNAL_CACHE[sym]){
+    SIGNAL_CACHE[sym] = { prev:null, confirmed:null, detail:'' };
+  }
+  const cache = SIGNAL_CACHE[sym];
+
+  if(rawType !== null && rawType === cache.prev){
+    // 連續 2 次相同 → 確認
+    cache.confirmed = rawType;
+    cache.detail    = raw.detail || '';
+  } else {
+    // 方向改變 → 更新 prev，若新方向與已確認相反則清除
+    if(rawType !== null) cache.prev = rawType;
+    if(cache.confirmed && rawType && rawType !== cache.confirmed){
+      cache.confirmed = null;
+      cache.detail    = '';
+    }
+  }
+
+  const confirmed = cache.confirmed;
+  if(!confirmed) return null;
+
+  const buyCls  = mtype==='tw' ? 'sig-buy'  : 'sig-us-buy';
+  const sellCls = mtype==='tw' ? 'sig-sell' : 'sig-us-sell';
+  const tooltip = '日線訊號 · ' + cache.detail;
+
+  if(confirmed==='buy')   return { type:'buy',   label:'🟢 進場訊號', cls:buyCls,      detail:cache.detail, tooltip };
+  if(confirmed==='sell')  return { type:'sell',  label:'🔴 減碼警示', cls:sellCls,     detail:cache.detail, tooltip };
+  if(confirmed==='watch') return { type:'watch', label:'🟡 觀察中',   cls:'sig-watch', detail:cache.detail, tooltip };
+  return null;
+}
+
 
 // ── GENERATE HISTORY ─────────────────────────────────────────
 function genHist(price,chgPct){
@@ -1472,7 +1514,7 @@ function renderLbTable(wrap) {
     ${rows.map(({w,d,rsi,techScore},i)=>{
       const col=ccCol(d.chgPct,w.type);
       const rk=i===0?'color:var(--gd);font-weight:700':i===1?'color:var(--mu2);font-weight:700':i===2?'color:var(--tw);font-weight:700':'color:var(--mu)';
-      const sig=getSignal(d,w.type), gl=GRP[w.grp]||'';
+      const sig=getSignal(w.sym,d,w.type), gl=GRP[w.grp]||'';
       const mv=lbTab==='vol'?fmtV(d.vol):lbTab==='score'?techScore+'/10':sgn(d.chgPct)+fmt(d.chgPct)+'%';
       const mc=lbTab==='score'?'var(--pu)':lbTab==='vol'?'var(--gd)':col;
       const rc=rsi>70?'var(--gd)':rsi<30?'var(--pu)':'var(--mu2)';
@@ -1509,9 +1551,9 @@ function getVis(){
   if(curTab==='all')     return WL;
   if(curTab==='tw' || curTab==='tw_all') return WL.filter(w=>w.type==='tw');
   if(curTab==='us')      return WL.filter(w=>w.type==='us');
-  if(curTab==='sig_buy')   return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='buy'; });
-  if(curTab==='sig_sell')  return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='sell'; });
-  if(curTab==='sig_watch') return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(d,w.type); return s&&s.type==='watch'; });
+  if(curTab==='sig_buy')   return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='buy'; });
+  if(curTab==='sig_sell')  return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='sell'; });
+  if(curTab==='sig_watch') return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='watch'; });
   return WL.filter(w=>w.grp===curTab);
 }
 function renderGrid(){
@@ -1520,7 +1562,7 @@ function renderGrid(){
   minic={};
   grid.innerHTML=vis.map(w=>{
     const d=SD[w.sym]; if(!d)return`<div class="scard ${w.type}"><div class="skel" style="height:12px;width:60px;margin-bottom:4px"></div><div class="skel" style="height:8px;width:100px"></div></div>`;
-    const col=ccCol(d.chgPct,w.type), gl=GRP[w.grp]||'', sig=getSignal(d,w.type);
+    const col=ccCol(d.chgPct,w.type), gl=GRP[w.grp]||'', sig=getSignal(w.sym,d,w.type);
     const score=calcScore(w,d), scoreCls=getScoreClass(score,w.type);
     // Volume vs avg
     const avgVol=d.vol*0.9; const volStrong=d.vol>avgVol*1.3;
@@ -1537,7 +1579,7 @@ function renderGrid(){
         </div>
       </div>
       <canvas class="mc" id="mc_${w.sym.replace(/[^a-z0-9]/gi,'_')}" style="height:46px;max-height:46px;display:block;"></canvas>
-      ${sig?`<div><span class="sig-badge ${sig.cls}" title="${sig.detail||''}">${sig.label}</span>${sig.detail?`<div style="font-size:10px;color:var(--mu2);margin-top:3px;line-height:1.4">${sig.detail}</div>`:''}</div>`:''}
+      ${sig?`<div><span class="sig-badge ${sig.cls}" title="${sig.tooltip||sig.detail||''}" title="${sig.detail||''}">${sig.label}</span>${sig.detail?`<div style="font-size:10px;color:var(--mu2);margin-top:3px;line-height:1.4">${sig.detail}</div>`:''}</div>`:''}
       <div class="cstats">
         <div><div class="sk">成交量</div><div class="sv ${volStrong?'vol-strong':''}">${fmtV(d.vol)}${volStrong?' ▲':''}</div></div>
         <div><div class="sk">昨收</div><div class="sv">${fmt(d.prev)}</div></div>
@@ -1764,7 +1806,7 @@ function renderNewsHTML(news){
 async function openModal(sym){
   selSym=sym;
   const w=WL.find(x=>x.sym===sym), d=SD[sym]; if(!w||!d)return;
-  const col=ccCol(d.chgPct,w.type), gl=GRP[w.grp]||'', sig=getSignal(d,w.type);
+  const col=ccCol(d.chgPct,w.type), gl=GRP[w.grp]||'', sig=getSignal(w.sym,d,w.type);
 
   document.getElementById('m-tick').textContent=w.tick;
   document.getElementById('m-tick').className=`tick ${w.type}`;
@@ -2527,15 +2569,15 @@ initPickerListeners();
 
 // ── SIGNAL COUNTS ────────────────────────────────────────────
 function updateSignalCounts(){
-  var buyCnt  = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='buy'; }).length;
-  var sellCnt = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='sell'; }).length;
-  var watchCnt= WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='watch'; }).length;
+  var buyCnt  = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='buy'; }).length;
+  var sellCnt = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='sell'; }).length;
+  var watchCnt= WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='watch'; }).length;
   var buyEl  = document.getElementById('tab-sig_buy');
   var sellEl = document.getElementById('tab-sig_sell');
   var watchEl= document.getElementById('tab-sig_watch');
-  if(buyEl)   buyEl.innerHTML   = '🟢 進場訊號' + (buyCnt>0  ? ' <span style="background:rgba(248,113,113,.2);color:#f87171;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+buyCnt+'</span>'  : '');
-  if(sellEl)  sellEl.innerHTML  = '🔴 減碼警示' + (sellCnt>0 ? ' <span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+sellCnt+'</span>' : '');
-  if(watchEl) watchEl.innerHTML = '🟡 持續觀望' + (watchCnt>0? ' <span style="background:rgba(251,191,36,.12);color:var(--gd);border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+watchCnt+'</span>' : '');
+  if(buyEl)   buyEl.innerHTML   = '🟢 進場訊號 <span style="font-size:9px;color:var(--mu);opacity:.7">日線</span>' + (buyCnt>0  ? ' <span style="background:rgba(248,113,113,.2);color:#f87171;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+buyCnt+'</span>'  : '');
+  if(sellEl)  sellEl.innerHTML  = '🔴 減碼警示 <span style="font-size:9px;color:var(--mu);opacity:.7">日線</span>' + (sellCnt>0 ? ' <span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+sellCnt+'</span>' : '');
+  if(watchEl) watchEl.innerHTML = '🟡 持續觀望 <span style="font-size:9px;color:var(--mu);opacity:.7">日線</span>' + (watchCnt>0? ' <span style="background:rgba(251,191,36,.12);color:var(--gd);border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+watchCnt+'</span>' : '');
 }
 
 // ── PAGE SHOW ────────────────────────────────────────────────
