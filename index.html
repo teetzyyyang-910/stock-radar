@@ -1948,6 +1948,145 @@ initPickerListeners();
     }
   });
 })();
+
+// ── SIGNAL COUNTS ────────────────────────────────────────────
+function updateSignalCounts(){
+  var buyCnt  = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='buy'; }).length;
+  var sellCnt = WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='sell'; }).length;
+  var watchCnt= WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(d,w.type); return s&&s.type==='watch'; }).length;
+  var buyEl  = document.getElementById('tab-sig_buy');
+  var sellEl = document.getElementById('tab-sig_sell');
+  var watchEl= document.getElementById('tab-sig_watch');
+  if(buyEl)   buyEl.innerHTML   = '🟢 進場訊號' + (buyCnt>0  ? ' <span style="background:rgba(248,113,113,.2);color:#f87171;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+buyCnt+'</span>'  : '');
+  if(sellEl)  sellEl.innerHTML  = '🔴 減碼警示' + (sellCnt>0 ? ' <span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+sellCnt+'</span>' : '');
+  if(watchEl) watchEl.innerHTML = '🟡 持續觀望' + (watchCnt>0? ' <span style="background:rgba(251,191,36,.12);color:var(--gd);border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700">'+watchCnt+'</span>' : '');
+}
+
+// ── PAGE SHOW ────────────────────────────────────────────────
+function showPage(pg){
+  ['overview','stocks'].forEach(function(p){
+    document.getElementById('page-'+p).style.display = p===pg ? 'block' : 'none';
+  });
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+var curL2 = 'tw_all';
+
+function switchL1(tab, el){
+  curTab = tab;
+  document.querySelectorAll('#tabs-l1 .tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  var l2 = document.getElementById('tabs-l2');
+  if(tab === 'tw'){
+    l2.classList.add('visible');
+    curTab = curL2;
+  } else {
+    l2.classList.remove('visible');
+  }
+  updateSignalCounts();
+  if(tab === 'overview') { showPage('overview'); renderOverviewFull(); }
+  else { showPage('stocks'); renderGrid(); }
+}
+
+function switchL2(sub, el){
+  curL2 = sub;
+  curTab = sub;
+  document.querySelectorAll('#tabs-l2 .tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  showPage('stocks');
+  renderGrid();
+}
+
+function switchTab(tab, el){ switchL1(tab, el); }
+
+// ── REFRESH ──────────────────────────────────────────────────
+function doRefresh(){
+  var btn = document.getElementById('refreshBtn');
+  btn.innerHTML = '<span class="spin"></span>';
+  btn.disabled = true;
+  fetchPrices().catch(console.warn).finally(function(){
+    btn.textContent = '↻ 重新整理';
+    btn.disabled = false;
+  });
+}
+
+// ── TRACKER ──────────────────────────────────────────────────
+function safeStorage(action, key, val){
+  try { return action==='get' ? localStorage.getItem(key) : localStorage.setItem(key, val); }
+  catch(e){ return null; }
+}
+
+function saveToTracker(recommendations, scen){
+  if(!recommendations || !recommendations.length) return;
+  try {
+    var records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
+    var today = new Date().toLocaleDateString('zh-TW');
+    recommendations.forEach(function(r){
+      var w = WL.find(function(x){ return x.tick===r.tick; });
+      var d = w ? SD[w.sym] : null;
+      if(!d||!d.price) return;
+      if(records.find(function(x){ return x.date===today&&x.tick===r.tick; })) return;
+      records.unshift({ date:today, tick:r.tick, name:r.name||w&&w.name, entry:d.price, scen:scen, reason:r.reason });
+    });
+    safeStorage('set','sr_tracker', JSON.stringify(records.slice(0,30)));
+  } catch(e){}
+}
+
+function loadTracker(){
+  try {
+    var records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
+    var sec  = document.getElementById('tracker-section');
+    var list = document.getElementById('tracker-list');
+    if(!records.length){ if(sec) sec.style.display='none'; return; }
+    if(sec) sec.style.display='block';
+    if(!list) return;
+    list.innerHTML = records.map(function(r){
+      var w   = WL.find(function(x){ return x.tick===r.tick; });
+      var d   = w ? SD[w.sym] : null;
+      var cur = d ? d.price : null;
+      var pnl = cur && r.entry ? ((cur-r.entry)/r.entry*100) : null;
+      var tw  = w && w.type==='tw';
+      var pnlCol = pnl===null ? 'var(--mu)' : (tw ? (pnl>0?'var(--dn)':'var(--up)') : (pnl>0?'var(--up)':'var(--dn)'));
+      return '<div class="track-item">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">' +
+            '<span style="font-family:monospace;font-size:12px;font-weight:700;color:'+(w&&w.type==='tw'?'var(--tw)':'var(--us)')+'">'+r.tick+'</span>' +
+            '<span style="font-size:10px;color:var(--mu)">'+r.date+'</span>' +
+          '</div>' +
+          '<div style="font-size:10px;color:var(--mu2)">'+(r.reason||'')+'</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-size:11px;color:var(--mu)">進場 '+fmt(r.entry)+'</div>' +
+          (cur ? '<div class="track-pnl" style="color:'+pnlCol+'">'+(pnl>=0?'+':'')+fmt(pnl)+'%</div>' : '<div style="font-size:10px;color:var(--mu)">—</div>') +
+        '</div>' +
+        '<button onclick="removeTrack(\''+r.tick+'\',\''+r.date+'\')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:0 0 0 8px">✕</button>' +
+      '</div>';
+    }).join('');
+  } catch(e){}
+}
+
+function removeTrack(tick, date){
+  try {
+    var records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
+    safeStorage('set','sr_tracker', JSON.stringify(records.filter(function(r){ return !(r.tick===tick&&r.date===date); })));
+    loadTracker();
+  } catch(e){}
+}
+
+function clearTracker(){
+  if(!confirm('確定清除全部追蹤記錄？')) return;
+  try { localStorage.removeItem('sr_tracker'); } catch(e){}
+  loadTracker();
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+initStatic();
+renderOverviewFull();
+renderMbar();
+var _initScen = document.querySelector('.scen[data-scen="rebound"]');
+if(_initScen) selectScen(_initScen);
+fetchPrices().catch(console.warn);
+setInterval(function(){ fetchPrices().catch(console.warn); }, 180000);
 </script>
 </body>
 </html>
