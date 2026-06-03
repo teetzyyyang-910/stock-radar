@@ -376,7 +376,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 <!-- PAGE CONTENT -->
 <div id="page-overview" style="display:block"></div>
 
-<!-- AI PICKER always visible -->
+<div id="page-stocks" style="display:none">
+  <!-- AI PICKER always visible -->
   <div class="picker" id="pickerSection">
     <div class="phd" id="pickerHd">
       <div class="ptitle">
@@ -458,7 +459,6 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       </div>
     </div>
   </div>
-<div id="page-stocks" style="display:none">
   <div class="sgrid" id="sgrid"></div>
 </div>
 
@@ -488,7 +488,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📈 個股卡片</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 右上角圓形數字 = 綜合評分（0–100）</li>
+          <li>• <strong style="color:var(--tx)">右上角圓形數字 = 綜合評分（0–100）</strong>，分數越高代表技術面越強</li>
+          <li>• 評分 ≥ 70 顯示高亮色，45–69 金色，&lt; 45 偏空色</li>
           <li>• 台股：漲紅跌綠｜美股：漲綠跌紅</li>
           <li>• 訊號徽章：🟢進場 / 🔴減碼 / 🟡觀察</li>
           <li>• 點擊卡片開啟個股詳細分析頁</li>
