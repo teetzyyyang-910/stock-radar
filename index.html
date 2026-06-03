@@ -473,6 +473,11 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         </div>
       </div>
 
+      <!-- Filter summary + clear -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:6px 10px;background:var(--s3);border-radius:7px">
+        <div id="filter-summary" style="font-size:11px;color:var(--mu)">無篩選條件（顯示全部）</div>
+        <button onclick="clearFilters()" style="font-size:10px;color:var(--mu2);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap">✕ 清除篩選</button>
+      </div>
       <button class="btn btn-gold" id="pickbtn" style="width:100%;justify-content:center;padding:10px;font-size:13px">✦ 開始分析</button>
       <div class="presult" id="presult" style="margin-top:10px;min-height:20px"></div>
 
@@ -2187,45 +2192,90 @@ function togglePicker(){
 
 function selectScen(el){
   if(!el) return;
-  const scen = el.dataset.scen;
+  var scen = el.dataset.scen;
   activeScen = scen;
-  document.querySelectorAll('.scen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.scen').forEach(function(s){ s.classList.remove('active'); });
   el.classList.add('active');
-  // Auto-set filters based on scenario
-  const def = SCENARIOS[scen];
-  activeFilters = new Set(def.filters);
-  document.querySelectorAll('.fchip').forEach(c=>{
-    c.classList.toggle('on', activeFilters.has(c.dataset.val));
-  });
-  // Show custom input only for custom scenario
-  document.getElementById('custom-input-wrap').style.display = scen==='custom' ? 'block' : 'none';
+  // Only show/hide custom input — do NOT touch activeFilters
+  var customWrap = document.getElementById('custom-input-wrap');
+  if(customWrap) customWrap.style.display = scen === 'custom' ? 'block' : 'none';
+  // Update scenario label in UI
+  var badge = document.getElementById('picker-badge');
+  var def   = SCENARIOS[scen];
+  if(badge && def) badge.textContent = '· ' + def.label;
 }
 
 function toggleFilter(el){
-  const val = el.dataset.val;
-  // Handle mutual exclusions
-  if(val==='tw_only' && activeFilters.has('us_only')) activeFilters.delete('us_only');
-  if(val==='us_only' && activeFilters.has('tw_only')) activeFilters.delete('tw_only');
-  if(val==='rsi_low' && activeFilters.has('rsi_hi')) activeFilters.delete('rsi_hi');
-  if(val==='rsi_hi'  && activeFilters.has('rsi_low')) activeFilters.delete('rsi_low');
-  if(val==='score_hi' && activeFilters.has('score_lo')) activeFilters.delete('score_lo');
-  if(val==='score_lo' && activeFilters.has('score_hi')) activeFilters.delete('score_hi');
-  if(val==='ma_golden' && activeFilters.has('ma_dead')) activeFilters.delete('ma_dead');
-  if(val==='ma_dead'   && activeFilters.has('ma_golden')) activeFilters.delete('ma_golden');
-  // Check if it's a group filter
-  const grpKeys = ['g_panel','g_memory','g_carrier','g_leo','g_passive','g_leader'];
-  if(grpKeys.includes(val)){
+  var val  = el.dataset.val;
+  var grpKeys = ['g_panel','g_memory','g_carrier','g_leo','g_passive','g_leader'];
+  var instKeys= ['inst_foreign','inst_trust','inst_total'];
+
+  // Mutual exclusions
+  var pairs = [
+    ['rsi_low','rsi_hi'],
+    ['score_hi','score_lo'],
+    ['ma_golden','ma_dead'],
+    ['macd_bull','macd_bear'],
+    ['tw_only','us_only'],
+  ];
+  pairs.forEach(function(pair){
+    if(val === pair[0] && activeFilters.has(pair[1])){ activeFilters.delete(pair[1]); }
+    if(val === pair[1] && activeFilters.has(pair[0])){ activeFilters.delete(pair[0]); }
+  });
+
+  // us_only + institutional = nonsense → warn and skip
+  if(instKeys.indexOf(val) >= 0 && activeFilters.has('us_only')){
+    alert('法人資料僅限台股，請先取消「只看美股」');
+    return;
+  }
+  if(val === 'us_only'){
+    var hasInst = instKeys.some(function(k){ return activeFilters.has(k); });
+    if(hasInst){
+      alert('已選擇法人篩選（僅限台股），無法同時選「只看美股」');
+      return;
+    }
+  }
+
+  // Toggle
+  if(grpKeys.indexOf(val) >= 0){
     if(activeGrps.has(val)) activeGrps.delete(val);
     else activeGrps.add(val);
   } else {
     if(activeFilters.has(val)) activeFilters.delete(val);
     else activeFilters.add(val);
   }
-  // Refresh UI
-  document.querySelectorAll('.fchip').forEach(c=>{
-    const v = c.dataset.val;
-    c.classList.toggle('on', grpKeys.includes(v) ? activeGrps.has(v) : activeFilters.has(v));
+
+  // Refresh chip UI
+  document.querySelectorAll('.fchip').forEach(function(c){
+    var v = c.dataset.val;
+    c.classList.toggle('on', grpKeys.indexOf(v) >= 0 ? activeGrps.has(v) : activeFilters.has(v));
   });
+
+  // Show filter summary
+  updateFilterSummary();
+}
+
+function updateFilterSummary(){
+  var el = document.getElementById('filter-summary');
+  if(!el) return;
+  var active = [...activeFilters, ...activeGrps];
+  if(active.length === 0){
+    el.textContent = '無篩選條件（顯示全部）';
+    el.style.color = 'var(--mu)';
+  } else {
+    var labels = {
+      rsi_low:'RSI低位回升', rsi_hi:'RSI超買', ma_golden:'均線多頭', ma_dead:'均線空頭',
+      macd_bull:'MACD多頭', macd_bear:'MACD空頭', score_hi:'評分>70', score_lo:'評分<40',
+      tw_only:'只看台股', us_only:'只看美股', vol_surge:'成交量放大',
+      pv_surge:'價漲量增', break_day:'突破前日高', break_week:'突破前週高',
+      break_month:'突破前月高', above_dkz5:'站上MA5扣抵', above_dkz20:'站上MA20扣抵',
+      inst_foreign:'外資買超', inst_trust:'投信買超', inst_total:'三大法人買超',
+      g_panel:'面板', g_memory:'記憶體', g_carrier:'載板',
+      g_leo:'低軌衛星', g_passive:'被動元件', g_leader:'龍頭',
+    };
+    el.textContent = '篩選中：' + active.map(function(k){ return labels[k]||k; }).join(' + ');
+    el.style.color = 'var(--gd)';
+  }
 }
 
 async function runPicker(){
@@ -2308,7 +2358,20 @@ async function runPicker(){
   var pinput = document.getElementById('pinput');
   var customQ = (activeScen === 'custom' && pinput) ? pinput.value : '';
   var scenNote = customQ ? ('用戶要求：' + customQ) : ('情境：' + def.prompt);
-  var promptStr = '股票分析師。「' + def.label + '」篩選結果：\n' + snap + '\n\n' + scenNote + '\n\n只回傳JSON：{"summary":"25字","recommend":[{"tick":"代號","name":"名稱","reason":"15字","signal":"buy"}],"watch":[{"tick":"代號","name":"名稱","reason":"15字","signal":"watch"}],"risk":[{"tick":"代號","name":"名稱","reason":"15字","signal":"sell"}],"note":"30字"}\nrecommend:1-3支，watch:1-2支，risk:0-2支。';
+  // Build filter description for AI context
+  var filterLabels = {
+    rsi_low:'RSI低位回升', rsi_hi:'RSI超買', ma_golden:'均線多頭', ma_dead:'均線空頭',
+    macd_bull:'MACD多頭', macd_bear:'MACD空頭', score_hi:'高評分', score_lo:'低評分',
+    tw_only:'台股', us_only:'美股', vol_surge:'成交量放大',
+    pv_surge:'價漲量增', break_day:'突破前日高', break_week:'突破前週高',
+    break_month:'突破前月高', above_dkz5:'站上MA5扣抵', above_dkz20:'站上MA20扣抵',
+    inst_foreign:'外資買超', inst_trust:'投信買超', inst_total:'三大法人買超',
+  };
+  var filterDesc = [...activeFilters].map(function(f){ return filterLabels[f]||f; });
+  var grpDesc    = [...activeGrps].map(function(g){ return ({g_panel:'面板',g_memory:'記憶體',g_carrier:'載板',g_leo:'低軌衛星',g_passive:'被動元件',g_leader:'龍頭'})[g]||g; });
+  var allDesc    = filterDesc.concat(grpDesc);
+  var filterCtx  = allDesc.length > 0 ? '篩選條件：' + allDesc.join('、') : '無額外篩選條件';
+  var promptStr = '你是專業股票分析師。以下是「' + def.label + '」情境下的股票（' + filterCtx + '），依評分排序：\n' + snap + '\n\n' + scenNote + '\n\n只回傳JSON：{"summary":"25字","recommend":[{"tick":"代號","name":"名稱","reason":"15字","signal":"buy"}],"watch":[{"tick":"代號","name":"名稱","reason":"15字","signal":"watch"}],"risk":[{"tick":"代號","name":"名稱","reason":"15字","signal":"sell"}],"note":"30字"}\nrecommend:1-3支，watch:1-2支，risk:0-2支。';
 
   // Call Groq in background
   try {
@@ -2407,6 +2470,13 @@ function renderPickerCards(data){
 
 
 // ── Picker listeners ────────────────────────────────────────
+function clearFilters(){
+  activeFilters = new Set();
+  activeGrps    = new Set();
+  document.querySelectorAll('.fchip').forEach(function(c){ c.classList.remove('on'); });
+  updateFilterSummary();
+}
+
 window._pickerReady = false;
 function initPickerListeners(){
   if(window._pickerReady) return;
@@ -2593,6 +2663,7 @@ renderOverviewFull();
 renderMbar();
 var _initScen = document.querySelector('.scen[data-scen="rebound"]');
 if(_initScen) selectScen(_initScen);
+updateFilterSummary();
 fetchPrices().catch(console.warn);
 setInterval(function(){ fetchPrices().catch(console.warn); }, 180000);
 </script>
