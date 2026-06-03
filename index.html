@@ -1824,6 +1824,82 @@ async function runPicker(){
 
 
 
+function renderFilterResults(stocks){
+  if(!stocks || !stocks.length) return '<div style="color:var(--mu);padding:12px">無符合條件的股票</div>';
+  var hd = '<div style="font-size:12px;color:var(--mu);margin-bottom:8px">篩選結果（' + stocks.length + '支）：</div>';
+  var rows = stocks.map(function(w){
+    var d = SD[w.sym]||{};
+    var score = calcScore(w,d);
+    var col = ccCol(d.chgPct, w.type);
+    var tickCol = w.type==='tw' ? 'var(--tw)' : 'var(--us)';
+    var scoreCls = getScoreClass(score, w.type);
+    return '<div onclick="openModal(\'' + w.sym + '\')" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);cursor:pointer">' +
+      '<span class="score-badge ' + scoreCls + '" style="width:28px;height:28px;font-size:11px">' + score + '</span>' +
+      '<div style="flex:1">' +
+        '<span style="font-family:monospace;font-size:13px;font-weight:700;color:' + tickCol + '">' + w.tick + '</span>' +
+        '<span style="font-size:11px;color:var(--mu2);margin-left:6px">' + w.name + '</span>' +
+      '</div>' +
+      '<span style="font-family:monospace;font-size:12px;color:' + col + '">' + fmt(d.price) + ' ' + sgn(d.chgPct) + fmt(d.chgPct) + '%</span>' +
+      '</div>';
+  }).join('');
+  return hd + rows;
+}
+
+function renderPickerCards(data){
+  var ST = {
+    buy:   {border:'rgba(248,113,113,.35)', bg:'rgba(248,113,113,.06)', badge:'rgba(248,113,113,.18)', badgeText:'#f87171', label:'🥇 強烈推薦'},
+    watch: {border:'rgba(251,191,36,.3)',   bg:'rgba(251,191,36,.05)',  badge:'rgba(251,191,36,.18)',  badgeText:'var(--gd)', label:'🥈 值得關注'},
+    sell:  {border:'rgba(52,211,153,.3)',   bg:'rgba(52,211,153,.05)',  badge:'rgba(52,211,153,.18)',  badgeText:'#34d399',  label:'⚠️ 注意風險'},
+  };
+
+  function makeCard(item, type){
+    var st = ST[type]||ST.watch;
+    var w  = WL.find(function(x){ return x.tick===item.tick; });
+    var d  = w ? SD[w.sym] : null;
+    var col = d && w ? ccCol(d.chgPct, w.type) : 'var(--mu2)';
+    var c   = d ? (d.history||[]).map(function(h){ return h.c; }) : [];
+    var rsi = c.length ? calcRSI(c) : null;
+    var ma5 = c.length ? calcMA(c,5) : null;
+    var ma20= c.length ? calcMA(c,20): null;
+    var maLabel = ma5&&ma20 ? (ma5>ma20?'多頭':'空頭') : '';
+    var tickCol = w ? (w.type==='tw'?'var(--tw)':'var(--us)') : 'var(--mu)';
+    var mktag = w ? ('<span style="font-size:8px;padding:1px 4px;border-radius:3px;background:' + (w.type==='tw'?'rgba(249,115,22,.15)':'rgba(56,189,248,.15)') + ';color:' + tickCol + '">' + w.type.toUpperCase() + '</span>') : '';
+    var priceRow = d ? ('<div style="font-family:monospace;font-size:15px;font-weight:700;color:' + col + '">' + fmt(d.price) + ' <span style="font-size:10px">' + sgn(d.chgPct) + fmt(d.chgPct) + '%</span></div>') : '';
+    var indRow = '<div style="display:flex;gap:4px;margin:3px 0">' +
+      (rsi ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--mu2)">RSI ' + rsi + '</span>' : '') +
+      (maLabel ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--mu2)">' + maLabel + '</span>' : '') +
+      '</div>';
+    var sym = w ? w.sym : '';
+    return '<div onclick="' + (sym ? "openModal('" + sym + "')" : '') + '" style="background:' + st.bg + ';border:1px solid ' + st.border + ';border-radius:10px;padding:10px 12px;cursor:' + (sym?'pointer':'default') + ';transition:opacity .15s;margin-bottom:6px" onmouseenter="this.style.opacity=\'.85\'" onmouseleave="this.style.opacity=\'1\'">' +
+      '<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-family:monospace;font-size:14px;font-weight:700;color:' + tickCol + '">' + item.tick + '</span>' + mktag + '</div>' +
+      '<div style="font-size:11px;color:var(--mu2);margin-bottom:4px">' + (item.name||w&&w.name||'') + '</div>' +
+      priceRow + indRow +
+      '<div style="font-size:10px;color:var(--mu2);padding-top:4px;border-top:1px solid rgba(255,255,255,.05);line-height:1.5">' + (item.reason||'') + '</div>' +
+      '</div>';
+  }
+
+  function makeSection(items, type){
+    if(!items||!items.length) return '';
+    var st = ST[type]||ST.watch;
+    var cards = items.map(function(item){ return makeCard(item, type); }).join('');
+    return '<div style="margin-bottom:10px">' +
+      '<div style="margin-bottom:7px"><span style="background:' + st.badge + ';color:' + st.badgeText + ';padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700">' + st.label + '</span></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px">' + cards + '</div>' +
+      '</div>';
+  }
+
+  var summaryHtml = data.summary ? '<div style="display:flex;align-items:flex-start;gap:8px;background:var(--s1);border:1px solid var(--bd);border-left:3px solid var(--pu);border-radius:8px;padding:10px 13px;margin-bottom:12px"><span style="font-size:10px;color:var(--pu);white-space:nowrap">📋 市場判斷</span><span style="font-size:12px;color:var(--tx);line-height:1.6">' + data.summary + '</span></div>' : '';
+  var noteHtml = data.note ? '<div style="font-size:11px;color:var(--mu2);padding:8px 12px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:7px;line-height:1.6;margin-top:8px">💡 ' + data.note + '</div>' : '';
+
+  return summaryHtml +
+    makeSection(data.recommend, 'buy') +
+    makeSection(data.watch, 'watch') +
+    makeSection(data.risk, 'sell') +
+    noteHtml +
+    '<div style="font-size:10px;color:var(--mu);text-align:right;margin-top:6px">點擊卡片開啟個股詳細分析 ↗</div>';
+}
+
+
 // ── Picker listeners ────────────────────────────────────────
 window._pickerReady = false;
 function initPickerListeners(){
