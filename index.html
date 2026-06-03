@@ -1777,10 +1777,10 @@ async function runPicker(){
   // Sort safely
   let sorted = allStocks.slice();
   try { sorted = allStocks.slice().sort(def.sort); } catch(e) { console.warn('sort error', e); }
-  const top = sorted.slice(0, 12);
+  const topStocks = sorted.slice(0, 12);
 
   // Step 2: show filter results immediately
-  const filterHTML = renderFilterResults(top);
+  const filterHTML = renderFilterResults(topStocks);
   out.style.display = 'block';
   out.innerHTML = filterHTML;
   // Scroll picker into view
@@ -1789,7 +1789,7 @@ async function runPicker(){
   btn.textContent = '✦ 開始分析';
 
   // Step 3: build prompt
-  const snap = top.map(function(w){
+  const snap = topStocks.map(function(w){
     const d = SD[w.sym] || {};
     const c = (d.history || []).map(function(h){ return h.c; });
     const rsi = calcRSI(c) || '—';
@@ -1849,9 +1849,9 @@ async function runPicker(){
   // If fewer than 3 results, relax to all stocks in chosen groups
   const pool   = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
   const sorted = [...pool].sort(def.sort);
-  const top    = sorted.slice(0, 12);
+  const topStocks    = sorted.slice(0, 12);
 
-  if (top.length === 0) {
+  if (topStocks.length === 0) {
     done('<div style="color:var(--mu);font-size:13px;padding:16px 0;text-align:center">⚠ 無股票資料，請等待行情載入後再試</div>');
     return;
   }
@@ -1861,7 +1861,7 @@ async function runPicker(){
     : `（符合條件 ${filtered.length} 支）`;
 
   // ── Step 2: Build prompt ─────────────────────────────────────
-  const snap = top.map(w => {
+  const snap = topStocks.map(w => {
     const d = SD[w.sym] || {};
     const c = (d.history || []).map(h => h.c);
     const rsi   = calcRSI(c) || '—';
@@ -1893,7 +1893,7 @@ async function runPicker(){
 
   // ── Step 3: 立即顯示篩選結果，Groq 在背景執行後更新 ─────────
   // Show filter results immediately so user sees something right away
-  done(renderFilterResults(top));
+  done(renderFilterResults(topStocks));
 
   // Then try Groq in background and update if successful
   try {
