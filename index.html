@@ -891,7 +891,7 @@ async function fetchTwBatch(ticks){
         updated.push(q.sym);
       });
       // Log missing (from new worker response)
-      if(j.missing?.length) console.log('Still missing:', j.missing.join(','));
+      // if(j.missing?.length) console.log('Still missing:', j.missing.join(','));
     }catch(e){console.warn('TW batch err:',e.message);}
   }
   return updated;
@@ -2216,7 +2216,6 @@ setInterval(()=>fetchPrices().catch(console.warn), 180000);
     pbtn.addEventListener('click', function(){
       runPicker().catch(function(e){ console.error('runPicker error:', e); });
     });
-    console.log('Picker button listener attached');
   } else {
     console.error('pickbtn not found at init');
   }
