@@ -2592,27 +2592,18 @@ async function fetchAndDrawChart(w, d){
   var yRange   = rangeMap[kRange] || '3mo';
   try {
     if(w.type === 'tw'){
-      // Always fetch at least 2 months to avoid sparse data at month start
-      var monthsNeeded = kRange==='1m'?2 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
-      var allHistory = [];
-      for(var m = monthsNeeded-1; m >= 0; m--){
-        var dt = new Date();
-        dt.setDate(1); // prevent day overflow when subtracting months
-        dt.setMonth(dt.getMonth() - m);
-        var mStr = dt.getFullYear() + ('0'+(dt.getMonth()+1)).slice(-2);
-        try {
-          var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
-          if(j.history && j.history.length > 0) allHistory = allHistory.concat(j.history);
-        } catch(e){}
-      }
-      // For 1M view, keep last 30 bars only
-      if(kRange==='1m' && allHistory.length > 30) allHistory = allHistory.slice(-30);
-      if(allHistory.length > 2){
-        d.history = allHistory.map(function(r){
-          return {t:parseTwDate(r.date),c:+r.close,o:+(r.open||r.close),h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
-        }).filter(function(r){ return r.c>0; });
-        d.histReal = true;
-      }
+      var rangeMap2 = {'1m':'1mo','3m':'3mo','6m':'6mo','1y':'1y'};
+      var twRange2  = rangeMap2[kRange] || '3mo';
+      try {
+        var jTW = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range='+twRange2);
+        if(jTW.history && jTW.history.length > 2){
+          d.history = jTW.history.map(function(r){
+            return {t:new Date(r.date),c:+r.close,o:+(r.open||r.close),
+                    h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
+          }).filter(function(r){ return r.c>0; });
+          d.histReal = true;
+        }
+      } catch(eTW){ console.warn('TW Yahoo hist error:', eTW.message); }
     } else {
       var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range='+yRange);
       if(j.history && j.history.length > 2){
