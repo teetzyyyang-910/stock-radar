@@ -2322,9 +2322,19 @@ async function fetchChipHTML(w){
 async function fetchOperation(w, d, chipSummary){
   const c=(d.history||[]).map(h=>h.c);
   const rsi=calcRSI(c), macd=calcMACD(c), ma5=calcMA(c,5), ma20=calcMA(c,20), ma60=calcMA(c,Math.min(60,c.length)), bb=calcBB(c);
+  // Get fundamentals from cache if available
+  const fundData = FUND[w.sym];
+  const fundStr = fundData && fundData.ok ? (
+    [fundData.pe ? `P/E ${fundData.pe.toFixed(1)}x` : '',
+     fundData.yield ? `殖利率 ${fundData.yield}%` : '',
+     fundData.pbRatio ? `P/B ${fundData.pbRatio.toFixed(2)}x` : '']
+    .filter(Boolean).join('、') || '無'
+  ) : '無';
+
   const prompt=`你是專業股票分析師，請根據以下多維度資料，提供操作建議。
 股票：${w.tick} ${w.name}（${w.type==='tw'?'台股':'美股'}，${w.sec}）
 現價：${fmt(d.price)}，今日：${sgn(d.chgPct)}${fmt(d.chgPct)}%
+基本面：${fundStr}
 成交量：${fmtV(d.vol)}
 52週高/低：${fmt(d.high52)}/${fmt(d.low52)}
 技術面：MA5=${fmt(ma5)} MA20=${fmt(ma20)} MA60=${fmt(ma60)} RSI=${rsi} MACD=${macd?(macd.macd>0?'多':'空'):'—'} 布林=${bb?(bb.pos*100).toFixed(0)+'%':'—'}
@@ -2531,9 +2541,18 @@ async function runModalAI(w, d, chipHTML, op, news){
   const c=(d.history||[]).map(h=>h.c);
   const rsi=calcRSI(c), macd=calcMACD(c), ma5=calcMA(c,5), ma20=calcMA(c,20);
   const newsText=news.slice(0,3).map(n=>`・${n.title}：${n.summary||''}`).join('\n')||'無';
+  const fundData2 = FUND[w.sym];
+  const fundStr2 = fundData2 && fundData2.ok ? (
+    [fundData2.pe ? `P/E ${fundData2.pe.toFixed(1)}x` : '',
+     fundData2.yield ? `殖利率 ${fundData2.yield}%` : '',
+     fundData2.pbRatio ? `P/B ${fundData2.pbRatio.toFixed(2)}x` : '']
+    .filter(Boolean).join('、') || '無'
+  ) : '無';
+
   const prompt=`你是專業股票分析師，根據以下資料提供200字綜合分析：
 股票：${w.tick} ${w.name}（${w.type==='tw'?'台股':'美股'}，${w.sec}）
 現價：${fmt(d.price)}，今日：${sgn(d.chgPct)}${fmt(d.chgPct)}%
+基本面：${fundStr2}
 技術面：MA排列${ma5&&ma20?(ma5>ma20?'多頭':'空頭'):'—'}，RSI ${rsi||'—'}，MACD ${macd?(macd.macd>0?'多頭':'空頭'):'—'}
 籌碼：${((chipHTML&&typeof chipHTML==='object'?(chipHTML.inst||'')+(chipHTML.margin||''):chipHTML||'')).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'無'}
 操作建議：評分${op.score}/10，建議${op.action}，目標${fmt(op.target)}
