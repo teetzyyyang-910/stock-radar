@@ -1492,6 +1492,11 @@ async function fetchPrices(){
       IDX = ij.data;
       if(ij.data.taiex?.history)  IDX_HIST.taiex  = ij.data.taiex.history;
       if(ij.data.nasdaq?.history) IDX_HIST.nasdaq = ij.data.nasdaq.history;
+      // Redraw sparklines now that we have data
+      setTimeout(function(){
+        if(IDX_HIST.taiex)  drawSparkline('spark-taiex',  IDX_HIST.taiex,  'rgb(249,115,22)');
+        if(IDX_HIST.nasdaq) drawSparkline('spark-nasdaq', IDX_HIST.nasdaq, 'rgb(56,189,248)');
+      }, 100);
     }
   } catch(e) {}
 
@@ -1551,12 +1556,15 @@ function renderOverviewFull(){
   renderOverview();
   // Render leaderboard into the #lb-table-wrap that overview just created
   requestAnimationFrame(()=>{
-    if(typeof _lastThermoVal !== 'undefined') drawThermoCanvas(_lastThermoVal, _lastThermoCol);
+    var _tv = window._lastThermoVal, _tc = window._lastThermoCol;
+    if(_tv !== undefined && _tc !== undefined) drawThermoCanvas(_tv, _tc);
     const wrap = document.getElementById('lb-table-wrap');
     if(wrap) renderLbTable(wrap);
     // Draw index sparklines
     if(IDX_HIST.taiex)  drawSparkline('spark-taiex',  IDX_HIST.taiex,  'rgb(249,115,22)');
-    if(IDX_HIST.nasdaq) drawSparkline('spark-nasdaq',  IDX_HIST.nasdaq, 'rgb(56,189,248)');
+    if(IDX_HIST.nasdaq) drawSparkline('spark-nasdaq', IDX_HIST.nasdaq, 'rgb(56,189,248)');
+    // Also draw after index data loads
+    window._sparkDrawn = true;
   });
 }
 
@@ -1680,6 +1688,7 @@ function renderOverview(){
   const tempClamped=Math.max(0,Math.min(100,temp));
   window._lastThermoVal=tempClamped;
   const tempColor=tempClamped>70?'var(--dn)':tempClamped>50?'var(--gd)':tempClamped>30?'var(--up)':'var(--up)';
+  window._lastThermoCol=tempColor;
   const tempLabel=tempClamped>75?'過熱⚠':tempClamped>60?'偏多📈':tempClamped>40?'中性📊':tempClamped>25?'偏空📉':'極度悲觀😨';
 
   // Group performance
@@ -1841,7 +1850,7 @@ function renderLbTable(wrap) {
   else if(lbTab==='vol') sorted=[...withScore].sort((a,b)=>b.d.vol-a.d.vol);
   else                   sorted=[...withScore].sort((a,b)=>b.techScore-a.techScore);
 
-  const dispN = lbExpanded ? sorted.length : Math.min(10, sorted.length);
+  const dispN = lbExpanded ? sorted.length : Math.min(5, sorted.length);
   const rows  = sorted.slice(0, dispN);
 
   const expandBtn = document.getElementById('lb-expand-btn');
@@ -2301,11 +2310,14 @@ async function openModal(sym){
 
   // Reset
   document.getElementById('m-tech').innerHTML='<div class="skel-line" style="height:12px;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:70%;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:50%"></div>';
-  document.getElementById('m-chip').innerHTML='<div class="spin"></div>';
+  var _mci = document.getElementById('m-chip-inst');
+  var _mcm = document.getElementById('m-chip-margin');
+  if(_mci) _mci.innerHTML='<div class="skel-line" style="height:12px;width:80%;margin-bottom:6px"></div>';
+  if(_mcm) _mcm.innerHTML='';
   document.getElementById('m-vol-panel').innerHTML='<div class="spin"></div>';
   document.getElementById('m-op').innerHTML='<div class="spin"></div> 分析中...';
   const fundEl = document.getElementById('m-fund');
-  if(fundEl) fundEl.innerHTML='<div class="skel-line" style="height:12px;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:60%"></div>';
+  const fundElR = document.getElementById('m-fund'); if(fundElR) fundElR.innerHTML='<div class="skel-line" style="height:12px;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:60%"></div>';
   document.getElementById('m-news').innerHTML='<div class="spin"></div> 搜尋中...';
   document.getElementById('m-ai').textContent='載入資料後自動生成...';
 
@@ -2334,7 +2346,10 @@ async function openModal(sym){
     fetchChipHTML(w),
     fetchFundamentals(w),
   ]);
-  document.getElementById('m-chip').innerHTML = chipHTML;
+  const chipInstEl   = document.getElementById('m-chip-inst');
+  const chipMarginEl = document.getElementById('m-chip-margin');
+  if(chipInstEl)   chipInstEl.innerHTML   = (chipHTML && chipHTML.inst)   ? chipHTML.inst   : (chipHTML || '');
+  if(chipMarginEl) chipMarginEl.innerHTML = (chipHTML && chipHTML.margin) ? chipHTML.margin : '';
   const fundEl2 = document.getElementById('m-fund');
   if(fundEl2) fundEl2.innerHTML = renderFundHTML(fund, w.type);
 
@@ -2393,7 +2408,7 @@ async function triggerOp(){
   }
 }
 
-function triggerAI(){
+async function triggerAI(){
   const ctx = window._aiCtx;
   if(!ctx) return;
   document.getElementById('m-ai').textContent = '';
