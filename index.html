@@ -2404,7 +2404,6 @@ async function openModal(sym){
   if(_mcm) _mcm.innerHTML='';
   document.getElementById('m-vol-panel').innerHTML='<div class="spin"></div>';
   document.getElementById('m-op').innerHTML='<div class="spin"></div> 分析中...';
-  const fundEl = document.getElementById('m-fund');
   const fundElR = document.getElementById('m-fund');
   if(fundElR) fundElR.innerHTML = w.type==='us'
     ? renderFundHTML({usLink:true}, 'us', w)
@@ -2437,6 +2436,8 @@ async function openModal(sym){
     fetchChipHTML(w),
     fetchFundamentals(w),
   ]);
+  console.log('[DEBUG] chipHTML:', typeof chipHTML, chipHTML && chipHTML.inst ? 'has inst('+chipHTML.inst.length+')' : 'no inst');
+  console.log('[DEBUG] fund:', JSON.stringify(fund));
   const chipInstEl   = document.getElementById('m-chip-inst');
   const chipMarginEl = document.getElementById('m-chip-margin');
   const instContent   = (chipHTML && chipHTML.inst)   ? chipHTML.inst   : (typeof chipHTML==='string' ? chipHTML : '');
