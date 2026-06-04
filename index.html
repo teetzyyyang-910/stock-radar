@@ -1415,8 +1415,11 @@ function mkEntry(sym,price,chgPct,vol,h52,l52,isReal){
 }
 // genHist now includes synthetic OHLC
 function initStatic(){
-  WL.forEach(w=>{const p=BASE[w.sym]||100,cp=(Math.random()-0.48)*2.5;
-    SD[w.sym]=mkEntry(w.sym,p,cp,Math.floor(Math.random()*3e6+5e5),null,null,false);});
+  WL.forEach(w=>{
+    if(SD[w.sym] && SD[w.sym].histReal) return; // preserve real history
+    const p=BASE[w.sym]||100,cp=(Math.random()-0.48)*2.5;
+    SD[w.sym]=mkEntry(w.sym,p,cp,Math.floor(Math.random()*3e6+5e5),null,null,false);
+  });
 }
 
 // ── FETCH PRICES with retry ──────────────────────────────────
@@ -1431,12 +1434,15 @@ async function fetchTwBatch(ticks){
         if(q.price==null || isNaN(q.price)) return;
         var prev = SD[q.sym+'.TW'];
         var prevPrice = prev ? prev.price : null;
-        SD[q.sym+'.TW'] = mkEntry(q.sym+'.TW', q.price, q.chgPct, q.vol, null, null, true);
+        var newTW = mkEntry(q.sym+'.TW', q.price, q.chgPct, q.vol, null, null, true);
+        if(prev && prev.histReal && prev.history && prev.history.length > 5){
+          newTW.history = prev.history; newTW.histReal = true;
+        }
+        SD[q.sym+'.TW'] = newTW;
         updated.push(q.sym);
         // Flash animation on price change
         if(prevPrice && prevPrice !== q.price){
-          var isTW = true;
-          var priceUp = isTW ? q.chgPct >= 0 : q.chgPct > 0;
+          var priceUp = q.chgPct >= 0;
           setTimeout(function(sym, up){
             var el = document.querySelector('[data-sym="'+sym+'"] .sprice');
             if(el){ el.classList.remove('price-flash-up','price-flash-dn');
@@ -1482,7 +1488,13 @@ async function fetchPrices(){
     const j=await safeFetch(`${PROXY}/us/quote?symbols=${usS.join(',')}`);
     (j.data||[]).forEach(q=>{
       if(q.price==null)return;
-      SD[q.sym]=mkEntry(q.sym,q.price,q.chgPct,q.vol,q.high52,q.low52,true);
+      var prevUS = SD[q.sym];
+      var newUS  = mkEntry(q.sym,q.price,q.chgPct,q.vol,q.high52,q.low52,true);
+      if(prevUS && prevUS.histReal && prevUS.history && prevUS.history.length > 5){
+        newUS.history  = prevUS.history;
+        newUS.histReal = true;
+      }
+      SD[q.sym] = newUS;
       real++;
     });
   }catch(e){console.warn('US:',e.message);}
@@ -2103,13 +2115,18 @@ function buildTechHTML(hist,mtype){
 
 // ── FUNDAMENTALS ─────────────────────────────────────────────
 async function fetchFundamentals(w){
-  if(FUND[w.sym]) return FUND[w.sym]; // cache
+  if(FUND[w.sym] !== undefined) return FUND[w.sym]; // cache (including failed results)
   try {
     var sym = w.type === 'tw' ? w.tick + '.TW' : w.sym;
     var j   = await safeFetch(PROXY + '/fundamentals?symbol=' + sym);
-    if(j.ok) FUND[w.sym] = j;
-    return j.ok ? j : null;
-  } catch(e){ return null; }
+    // Cache all results including ok:false (e.g. usLink:true)
+    FUND[w.sym] = j;
+    return j;
+  } catch(e){
+    // Cache failure too to avoid repeated failed requests
+    FUND[w.sym] = { ok: false, usLink: w.type === 'us', symbol: w.sym };
+    return FUND[w.sym];
+  }
 }
 
 function renderFundHTML(fund, mtype, w){
@@ -2428,7 +2445,13 @@ async function openModal(sym){
     margBtn.innerHTML = hasMargin ? '融資融券 <span style="color:#34d399;font-size:9px">●</span>' : '融資融券';
   }
   const fundEl2 = document.getElementById('m-fund');
-  if(fundEl2) fundEl2.innerHTML = renderFundHTML(fund, w.type, w);
+  if(fundEl2){
+    if(!fund){
+      // Fetch failed completely - show fallback
+      fund = { ok: false, usLink: w.type === 'us', symbol: w.sym };
+    }
+    fundEl2.innerHTML = renderFundHTML(fund, w.type, w);
+  }
 
   // Operation suggestion (uses Groq - show manual button)
   document.getElementById('m-op').innerHTML = `<div style="text-align:center;padding:10px 0">
