@@ -1646,8 +1646,18 @@ function renderOverview(){
     <div class="ov-card c-all"><div class="ov-label">監控</div><div class="ov-val">${all.length}</div><div class="ov-sub">支股票</div></div>
     <div class="ov-card c-up"><div class="ov-label">上漲</div><div class="ov-val" style="color:var(--dn)">${ups.length}</div><div class="ov-sub">支</div></div>
     <div class="ov-card c-dn"><div class="ov-label">下跌</div><div class="ov-val" style="color:var(--up)">${dns.length}</div><div class="ov-sub">支</div></div>
-    <div class="ov-card c-best"><div class="ov-label">今日最強</div><div class="ov-val" style="color:var(--dn);font-size:14px">${best?.w.tick||'—'}</div><div class="ov-sub">${best?sgn(best.d.chgPct)+fmt(best.d.chgPct)+'%':''}</div></div>
-    <div class="ov-card c-worst"><div class="ov-label">今日最弱</div><div class="ov-val" style="color:var(--up);font-size:14px">${worst?.w.tick||'—'}</div><div class="ov-sub">${worst?sgn(worst.d.chgPct)+fmt(worst.d.chgPct)+'%':''}</div></div>
+    <div class="ov-card c-best" style="cursor:pointer" onclick="openModal('${best?.w.sym||''}')" title="${best?.w.name||''}">
+      <div class="ov-label">今日最強</div>
+      <div class="ov-val" style="color:var(--dn);font-size:13px">${best?.w.tick||'—'}</div>
+      <div style="font-size:10px;color:var(--mu2);margin-bottom:2px">${best?.w.name||''}</div>
+      <div class="ov-sub" style="color:var(--dn)">${best?sgn(best.d.chgPct)+fmt(best.d.chgPct)+'%':''}</div>
+    </div>
+    <div class="ov-card c-worst" style="cursor:pointer" onclick="openModal('${worst?.w.sym||''}')" title="${worst?.w.name||''}">
+      <div class="ov-label">今日最弱</div>
+      <div class="ov-val" style="color:var(--up);font-size:13px">${worst?.w.tick||'—'}</div>
+      <div style="font-size:10px;color:var(--mu2);margin-bottom:2px">${worst?.w.name||''}</div>
+      <div class="ov-sub" style="color:var(--up)">${worst?sgn(worst.d.chgPct)+fmt(worst.d.chgPct)+'%':''}</div>
+    </div>
     <div class="ov-card c-avg"><div class="ov-label">平均漲跌</div><div class="ov-val" style="color:${avg>=0?'var(--dn)':'var(--up)'};font-size:16px">${sgn(avg)}${fmt(avg)}%</div><div class="ov-sub">自選股均值</div></div>
   </div>
 
@@ -1823,14 +1833,16 @@ function switchLbMarket(m){
 
 // ── GRID ─────────────────────────────────────────────────────
 function getVis(){
-  if(curTab==='all')     return WL;
-  if(curTab==='custom_wl') return WL.filter(w => WATCHLIST_CUSTOM.includes(w.tick));
-  if(curTab==='tw' || curTab==='tw_all') return WL.filter(w=>w.type==='tw');
-  if(curTab==='us')      return WL.filter(w=>w.type==='us');
-  if(curTab==='sig_buy')   return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='buy'; });
-  if(curTab==='sig_sell')  return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='sell'; });
-  if(curTab==='sig_watch') return WL.filter(w=>{ const d=SD[w.sym]; if(!d)return false; const s=getSignal(w.sym,d,w.type); return s&&s.type==='watch'; });
-  return WL.filter(w=>w.grp===curTab);
+  if(curTab==='all')         return WL;
+  if(curTab==='custom_wl')   return WL.filter(function(w){ return WATCHLIST_CUSTOM.includes(w.tick); });
+  if(curTab==='tw' || curTab==='tw_all') return WL.filter(function(w){ return w.type==='tw'; });
+  if(curTab==='us' || curTab==='us_all') return WL.filter(function(w){ return w.type==='us'; });
+  if(curTab==='g_us_tech')   return WL.filter(function(w){ return w.grp==='g_us_tech'; });
+  if(curTab==='g_us_power')  return WL.filter(function(w){ return w.grp==='g_us_power'; });
+  if(curTab==='sig_buy')     return WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='buy'; });
+  if(curTab==='sig_sell')    return WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='sell'; });
+  if(curTab==='sig_watch')   return WL.filter(function(w){ var d=SD[w.sym]; if(!d)return false; var s=getSignal(w.sym,d,w.type); return s&&s.type==='watch'; });
+  return WL.filter(function(w){ return w.grp===curTab; });
 }
 function renderGrid(){
   const vis=getVis(), grid=document.getElementById('sgrid');
