@@ -2304,8 +2304,10 @@ async function fetchChipHTML(w){
       })();
       html+='<!-- MARGIN -->';
       html+=`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--bd)">📅 收盤後更新，通常 18:00 後有數據</div>`;
-      html+=`<div class="chip-row"><span class="chip-name">融資餘額</span><span class="chip-val">${fmtW(mb)}${trendSvg}</span></div>
-        <div class="chip-row"><span class="chip-name">融券餘額</span><span class="chip-val">${fmtW(sb)}</span></div>
+      const marginDate = md.margin?.trend?.[0]?.date ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px">📅 資料日期：${md.margin.trend[0].date}</div>` : '';
+      html+=marginDate;
+      html+=`<div class="chip-row"><span class="chip-name">融資餘額(張)</span><span class="chip-val">${fmtW(mb)}</span></div>
+        <div class="chip-row"><span class="chip-name">融券餘額(張)</span><span class="chip-val">${fmtW(sb)}</span></div>
         <div class="chip-row"><span class="chip-name">券資比</span><span class="chip-val">${sr!=null?sr+'%':'—'}</span></div>`;
     }
     // Split inst and margin
