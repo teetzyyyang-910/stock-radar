@@ -2277,8 +2277,10 @@ async function fetchChipHTML(w){
       const fn=d.latest?.foreign_net||0, tn=d.latest?.trust_net||0, t5=d.sum5?.total||0;
       const fc=fn>=0?'var(--dn)':'var(--up)', tc=tn>=0?'var(--dn)':'var(--up)', t5c=t5>=0?'var(--dn)':'var(--up)';
       const fmtNet = function(v){ return v===0 ? '持平' : (v>0?'+':'')+fmtW(v); };
-      html+=`<div class="chip-row"><span class="chip-name">外資今日</span><span class="chip-val" style="color:${fc}">${fmtNet(fn)}</span></div>
-        <div class="chip-row"><span class="chip-name">投信今日</span><span class="chip-val" style="color:${tc}">${fmtNet(tn)}</span></div>
+      const instDate = d.latest?.date ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px">📅 資料日期：${d.latest.date}</div>` : '';
+      html+=instDate;
+      html+=`<div class="chip-row"><span class="chip-name">外資買賣超</span><span class="chip-val" style="color:${fc}">${fmtNet(fn)}</span></div>
+        <div class="chip-row"><span class="chip-name">投信買賣超</span><span class="chip-val" style="color:${tc}">${fmtNet(tn)}</span></div>
         <div class="chip-row"><span class="chip-name">三大法人5日</span><span class="chip-val" style="color:${t5c}">${fmtNet(t5)}</span></div>`;
     }
     if(margR.status==='fulfilled'&&margR.value.ok){
