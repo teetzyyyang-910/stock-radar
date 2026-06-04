@@ -1593,7 +1593,7 @@ function drawThermoCanvas(tc, tempColor){
 
   // Tube background
   ctx.beginPath();
-  ctx.roundRect(16, 8, 14, 100, 7);
+  ctx.rect(16, 8, 14, 100);
   ctx.strokeStyle = '#262d40';
   ctx.lineWidth = 2;
   ctx.stroke();
@@ -1607,7 +1607,7 @@ function drawThermoCanvas(tc, tempColor){
     grad.addColorStop(0.5, '#fbbf24');
     grad.addColorStop(1, '#34d399');
     ctx.beginPath();
-    ctx.roundRect(18, fy, 10, fh, 4);
+    ctx.rect(18, fy, 10, fh);
     ctx.fillStyle = grad;
     ctx.fill();
   }
