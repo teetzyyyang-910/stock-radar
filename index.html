@@ -1582,6 +1582,32 @@ function renderMbar(){
 }
 
 // ── OVERVIEW ─────────────────────────────────────────────────
+function buildThermoSVG(tc,tempColor){
+  tc = Math.max(0,Math.min(100,tc));
+  var fy = Math.round(10+(1-tc/100)*96);
+  var fh = Math.round((tc/100)*96);
+  var ay = Math.round(10+(1-tc/100)*96);
+  var ticks='';
+  [0,25,50,75,100].forEach(function(v){
+    var ty=Math.round(106-v/100*96);
+    ticks+='<line x1="30" y1="'+ty+'" x2="35" y2="'+ty+'" stroke="#4a5268" stroke-width="1.5"/>';
+    ticks+='<text x="37" y="'+(ty+4)+'" fill="#6b7590" font-size="8" font-family="monospace">'+v+'</text>';
+  });
+  return '<svg width="48" height="155" viewBox="0 0 48 155" xmlns="http://www.w3.org/2000/svg">'
+    +'<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="#f87171"/>'
+    +'<stop offset="50%" stop-color="#fbbf24"/>'
+    +'<stop offset="100%" stop-color="#34d399"/>'
+    +'</linearGradient></defs>'
+    +'<rect x="16" y="8" width="14" height="100" rx="7" fill="none" stroke="#262d40" stroke-width="2"/>'
+    +'<rect x="18" y="'+fy+'" width="10" height="'+fh+'" fill="url(#tg)" rx="4"/>'
+    +'<circle cx="23" cy="126" r="14" fill="none" stroke="#262d40" stroke-width="2"/>'
+    +'<circle cx="23" cy="126" r="11" fill="url(#tg)"/>'
+    +ticks
+    +'<polygon points="16,'+ay+' 12,'+(ay-4)+' 12,'+(ay+4)+'" fill="'+tempColor+'"/>'
+    +'</svg>';
+}
+
 function renderOverview(){
   const pg=document.getElementById('page-overview');
   const all=WL.map(w=>({w,d:SD[w.sym]})).filter(x=>x.d);
@@ -1679,21 +1705,7 @@ function renderOverview(){
     <div class="thermo-card">
       <div class="ov-label" style="margin-bottom:10px;font-size:12px">🌡️ 市場溫度計</div>
       <div style="display:flex;align-items:flex-end;gap:16px">
-        <svg width="48" height="155" viewBox="0 0 48 155" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f87171"/>
-              <stop offset="50%" stop-color="#fbbf24"/>
-              <stop offset="100%" stop-color="#34d399"/>
-            </linearGradient>
-          </defs>
-          <rect x="16" y="8" width="14" height="100" rx="7" fill="none" stroke="#262d40" stroke-width="2"/>
-          <rect x="18" y="${Math.round(10+(1-tempClamped/100)*96)}" width="10" height="${Math.round((tempClamped/100)*96)}" fill="url(#tg)" rx="4"/>
-          <circle cx="23" cy="126" r="14" fill="none" stroke="#262d40" stroke-width="2"/>
-          <circle cx="23" cy="126" r="11" fill="url(#tg)"/>
-          ${[0,25,50,75,100].map(v=>`<line x1="30" y1="${Math.round(106-v/100*96)}" x2="35" y2="${Math.round(106-v/100*96)}" stroke="#4a5268" stroke-width="1.5"/><text x="37" y="${Math.round(110-v/100*96)}" fill="#6b7590" font-size="8" font-family="monospace">${v}</text>`).join('')}
-          <polygon points="${16},${Math.round(10+(1-tempClamped/100)*96)} ${12},${Math.round(10+(1-tempClamped/100)*96)-4} ${12},${Math.round(10+(1-tempClamped/100)*96)+4}" fill="${tempColor}"/>
-        </svg>
+        ${buildThermoSVG(tempClamped,tempColor)}
         <div style="flex:1">
           <div class="thermo-val" style="color:${tempColor};line-height:1">${tempClamped}°</div>
           <div class="thermo-label" style="margin-bottom:14px">${tempLabel}</div>
@@ -2122,7 +2134,7 @@ async function fetchChipHTML(w){
         const vals=trend.map(function(t){return t.bal;}).filter(function(v){return v>0;});
         if(vals.length<2) return '';
         const mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
-        const pts=vals.map(function(v,i){return ((i/(vals.length-1))*60)+','+(18-((v-mn)/rng)*16);}).join(' ');
+        var pts=vals.map(function(v,i){return parseFloat(((i/(vals.length-1))*60).toFixed(1))+','+parseFloat((18-((v-mn)/rng)*16).toFixed(1));}).join(' ');
         const col=vals[vals.length-1]>vals[0]?'#f87171':'#34d399';
         return '<svg width="64" height="20" style="vertical-align:middle;margin-left:4px"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
       })();
