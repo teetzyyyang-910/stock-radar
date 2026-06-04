@@ -409,15 +409,22 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   </div>
   <!-- L2 Sub-tabs (shown when 台股 is active) -->
   <div class="tabs-l2" id="tabs-l2">
-    <button class="tab gr-t active" id="sub-tw_all"     onclick="switchL2('tw_all',this)">全部台股</button>
-    <button class="tab gr-t"        id="sub-g_panel"    onclick="switchL2('g_panel',this)">📺 面板</button>
-    <button class="tab gr-t"        id="sub-g_memory"   onclick="switchL2('g_memory',this)">💾 記憶體</button>
-    <button class="tab gr-t"        id="sub-g_carrier"  onclick="switchL2('g_carrier',this)">🔌 載板</button>
-    <button class="tab gr-t"        id="sub-g_leo"      onclick="switchL2('g_leo',this)">🛰 低軌衛星</button>
-    <button class="tab gr-t"        id="sub-g_passive"  onclick="switchL2('g_passive',this)">⚡ 被動元件</button>
-    <button class="tab gr-t"        id="sub-g_leader"      onclick="switchL2('g_leader',this)">👑 龍頭</button>
-    <button class="tab gr-t"        id="sub-g_ai"          onclick="switchL2('g_ai',this)">🤖 AI概念</button>
-    <button class="tab gr-t"        id="sub-g_industrial"  onclick="switchL2('g_industrial',this)">🏭 傳產/工業</button>
+    <button class="tab gr-t active" id="sub-tw_all"       onclick="switchL2('tw_all',this)">全部台股</button>
+    <button class="tab gr-t"        id="sub-g_panel"      onclick="switchL2('g_panel',this)">📺 面板</button>
+    <button class="tab gr-t"        id="sub-g_memory"     onclick="switchL2('g_memory',this)">💾 記憶體</button>
+    <button class="tab gr-t"        id="sub-g_carrier"    onclick="switchL2('g_carrier',this)">🔌 載板</button>
+    <button class="tab gr-t"        id="sub-g_leo"        onclick="switchL2('g_leo',this)">🛰 低軌衛星</button>
+    <button class="tab gr-t"        id="sub-g_passive"    onclick="switchL2('g_passive',this)">⚡ 被動元件</button>
+    <button class="tab gr-t"        id="sub-g_leader"     onclick="switchL2('g_leader',this)">👑 龍頭</button>
+    <button class="tab gr-t"        id="sub-g_ai"         onclick="switchL2('g_ai',this)">🤖 AI概念</button>
+    <button class="tab gr-t"        id="sub-g_industrial" onclick="switchL2('g_industrial',this)">🏭 傳產/工業</button>
+    <button class="tab gr-t"        id="sub-g_power"      onclick="switchL2('g_power',this)">🔋 電力/能源</button>
+  </div>
+  <!-- L2 Sub-tabs (美股) -->
+  <div class="tabs-l2" id="tabs-l2-us">
+    <button class="tab us-t active" id="sub-us_all"       onclick="switchL2US('us_all',this)">全部美股</button>
+    <button class="tab us-t"        id="sub-g_us_tech"    onclick="switchL2US('g_us_tech',this)">🖥 科技/ETF</button>
+    <button class="tab us-t"        id="sub-g_us_power"   onclick="switchL2US('g_us_power',this)">⚡ 電力/能源</button>
   </div>
 </div>
 
@@ -843,13 +850,13 @@ const WL = [
   {sym:'2492.TW',tick:'2492',name:'華新科',      type:'tw',sec:'被動元件', grp:'g_passive'},
   {sym:'6173.TW',tick:'6173',name:'信昌電',      type:'tw',sec:'被動元件', grp:'g_passive'},
   {sym:'2383.TW',tick:'2383',name:'台光電',      type:'tw',sec:'CCL基板',  grp:'g_leader'},
-  {sym:'QQQ', tick:'QQQ', name:'Nasdaq-100 ETF',type:'us',sec:'科技ETF',  grp:''},
-  {sym:'AAPL',tick:'AAPL',name:'Apple Inc.',     type:'us',sec:'消費電子', grp:''},
-  {sym:'NVDA',tick:'NVDA',name:'NVIDIA Corp.',   type:'us',sec:'AI/GPU',   grp:''},
-  {sym:'DRAM',tick:'DRAM',name:'VanEck DRAM ETF',type:'us',sec:'記憶體',  grp:''},
+  {sym:'QQQ', tick:'QQQ', name:'Nasdaq-100 ETF',type:'us',sec:'科技ETF',  grp:'g_us_tech'},
+  {sym:'AAPL',tick:'AAPL',name:'Apple Inc.',     type:'us',sec:'消費電子', grp:'g_us_tech'},
+  {sym:'NVDA',tick:'NVDA',name:'NVIDIA Corp.',   type:'us',sec:'AI/GPU',   grp:'g_us_tech'},
+  {sym:'DRAM',tick:'DRAM',name:'VanEck DRAM ETF',type:'us',sec:'記憶體',  grp:'g_us_tech'},
   {sym:'NOK', tick:'NOK', name:'Nokia Corp.',    type:'us',sec:'電信設備', grp:''},
-  {sym:'MSFT',tick:'MSFT',name:'Microsoft Corp.',type:'us',sec:'雲端軟體', grp:''},
-  {sym:'GOOG',tick:'GOOG',name:'Alphabet Inc.',  type:'us',sec:'搜尋/AI',  grp:''},
+  {sym:'MSFT',tick:'MSFT',name:'Microsoft Corp.',type:'us',sec:'雲端軟體', grp:'g_us_tech'},
+  {sym:'GOOG',tick:'GOOG',name:'Alphabet Inc.',  type:'us',sec:'搜尋/AI',  grp:'g_us_tech'},
   // 新增台股
   {sym:'1504.TW',tick:'1504',name:'東元電機',     type:'tw',sec:'馬達/家電', grp:'g_industrial'},
   {sym:'3008.TW',tick:'3008',name:'大立光',       type:'tw',sec:'光學鏡頭', grp:''},
@@ -860,12 +867,23 @@ const WL = [
   {sym:'6669.TW',tick:'6669',name:'緯穎',         type:'tw',sec:'AI伺服器', grp:'g_ai'},
   {sym:'3711.TW',tick:'3711',name:'日月光投控',   type:'tw',sec:'AI封測',   grp:'g_ai'},
   // 新增美股
-  {sym:'TSLA',tick:'TSLA',name:'Tesla Inc.',      type:'us',sec:'EV/AI',   grp:''},
-  {sym:'AMD', tick:'AMD', name:'AMD Inc.',        type:'us',sec:'AI/GPU',  grp:''},
-  {sym:'ASML',tick:'ASML',name:'ASML Holding',   type:'us',sec:'半導體設備',grp:''},
-  {sym:'TSM', tick:'TSM', name:'TSMC ADR',        type:'us',sec:'晶圓代工', grp:''},
+  {sym:'TSLA',tick:'TSLA',name:'Tesla Inc.',        type:'us',sec:'EV/AI',    grp:'g_us_tech'},
+  {sym:'AMD', tick:'AMD', name:'AMD Inc.',          type:'us',sec:'AI/GPU',   grp:'g_us_tech'},
+  {sym:'ASML',tick:'ASML',name:'ASML Holding',     type:'us',sec:'半導體設備',grp:'g_us_tech'},
+  {sym:'TSM', tick:'TSM', name:'TSMC ADR',          type:'us',sec:'晶圓代工', grp:'g_us_tech'},
+  // 電力/能源
+  {sym:'VST', tick:'VST', name:'Vistra Energy',     type:'us',sec:'電力',     grp:'g_us_power'},
+  {sym:'CEG', tick:'CEG', name:'Constellation Energy',type:'us',sec:'核能電力',grp:'g_us_power'},
+  {sym:'VOO', tick:'VOO', name:'Vanguard S&P 500',  type:'us',sec:'大盤ETF',  grp:'g_us_tech'},
+  {sym:'VPU', tick:'VPU', name:'Vanguard Utilities',type:'us',sec:'公用事業ETF',grp:'g_us_power'},
+  // 台股電力
+  {sym:'1605.TW',tick:'1605',name:'華新',           type:'tw',sec:'電線電纜', grp:'g_power'},
+  {sym:'1514.TW',tick:'1514',name:'亞力',           type:'tw',sec:'配電設備', grp:'g_power'},
+  {sym:'1609.TW',tick:'1609',name:'大亞',           type:'tw',sec:'電線電纜', grp:'g_power'},
+  // 湧德
+  {sym:'3689.TW',tick:'3689',name:'湧德',           type:'tw',sec:'連接器',   grp:'g_passive'},
 ];
-const GRP={g_panel:'📺 面板',g_memory:'💾 記憶體',g_carrier:'🔌 載板',g_leo:'🛰 低軌衛星',g_passive:'⚡ 被動元件',g_leader:'👑 龍頭',g_ai:'🤖 AI概念',g_industrial:'🏭 傳產/工業'};
+const GRP={g_panel:'📺 面板',g_memory:'💾 記憶體',g_carrier:'🔌 載板',g_leo:'🛰 低軌衛星',g_passive:'⚡ 被動元件',g_leader:'👑 龍頭',g_ai:'🤖 AI概念',g_industrial:'🏭 傳產/工業',g_power:'🔋 電力/能源',g_us_tech:'🖥 科技/ETF',g_us_power:'⚡ 電力/能源'};
 const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':62,'2454.TW':1320,
   '3481.TW':14.2,'2409.TW':17.8,'2337.TW':42,'6770.TW':35,'2344.TW':16.5,'2408.TW':50,
   '3189.TW':98,'4958.TW':210,'3037.TW':155,'8046.TW':195,'2313.TW':48,'6285.TW':380,
@@ -874,7 +892,9 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   'QQQ':503,'AAPL':211,'NVDA':1085,'DRAM':24,'NOK':4.8,'MSFT':428,'GOOG':176,
   '1504.TW':55,'3008.TW':3985,'2382.TW':417,'3034.TW':503,'2308.TW':2455,
   'TSLA':248,'AMD':165,'ASML':820,'TSM':185,
-  '2345.TW':450,'6669.TW':820,'3711.TW':185};
+  '2345.TW':450,'6669.TW':820,'3711.TW':185,
+  'VST':108,'CEG':245,'VOO':530,'VPU':155,
+  '1605.TW':78,'1514.TW':145,'1609.TW':42,'3689.TW':68}; 
 
 // ── STATE ─────────────────────────────────────────────────────
 let SD={}, IDX={}, IDX_HIST={}, INST={}, SIGNAL_CACHE={}, WATCHLIST_CUSTOM=[], kRange='3m', curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbMarket='all', lbExpanded=false, chartType='line';
@@ -2794,12 +2814,19 @@ function switchL1(tab, el){
   curTab = tab;
   document.querySelectorAll('#tabs-l1 .tab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
-  var l2 = document.getElementById('tabs-l2');
+  var l2   = document.getElementById('tabs-l2');
+  var l2us = document.getElementById('tabs-l2-us');
   if(tab === 'tw'){
     l2.classList.add('visible');
+    if(l2us) l2us.classList.remove('visible');
     curTab = curL2;
+  } else if(tab === 'us'){
+    if(l2us) l2us.classList.add('visible');
+    l2.classList.remove('visible');
+    curTab = curL2US;
   } else {
     l2.classList.remove('visible');
+    if(l2us) l2us.classList.remove('visible');
   }
   updateSignalCounts();
   const cwBar = document.getElementById('custom-wl-bar');
@@ -2813,6 +2840,16 @@ function switchL2(sub, el){
   curL2 = sub;
   curTab = sub;
   document.querySelectorAll('#tabs-l2 .tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  showPage('stocks');
+  renderGrid();
+}
+
+var curL2US = 'us_all';
+function switchL2US(sub, el){
+  curL2US = sub;
+  curTab  = sub;
+  document.querySelectorAll('#tabs-l2-us .tab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
   showPage('stocks');
   renderGrid();
