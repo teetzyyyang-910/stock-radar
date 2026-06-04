@@ -299,31 +299,72 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   .m3col{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:640px){
-  .wrap{padding:0 12px;}
+  /* Layout */
+  .wrap{padding:0 10px;}
   .ov-stats{grid-template-columns:repeat(2,1fr);gap:8px;}
   .thermo-row{grid-template-columns:1fr;}
   .m2col,.m3col{grid-template-columns:1fr;}
   .op-grid{grid-template-columns:1fr 1fr;}
   .sgrid{grid-template-columns:1fr;}
-  /* Card compact on mobile */
-  .scard{padding:12px;}
-  .sprice{font-size:17px!important;}
-  .tick{font-size:14px!important;}
-  /* Header compact */
-  .bname{font-size:20px!important;}
+
+  /* Header */
+  .bname{font-size:18px!important;}
   .bsub{display:none;}
-  /* Thermo SVG hide on mobile, show big number only */
-  .thermo-svg{display:none;}
-  /* Leaderboard scroll */
+  header{flex-wrap:wrap;gap:6px;}
+  .hact{flex-direction:row!important;align-items:center;gap:6px;}
+  #stbar{font-size:10px!important;padding:3px 8px!important;}
+
+  /* Market bar */
+  .mbar-inner{animation-duration:60s;}
+
+  /* Index cards — hide sparkline on mobile */
+  #spark-taiex,#spark-nasdaq{display:none;}
+
+  /* Cards */
+  .scard{padding:10px;}
+  .sprice{font-size:16px!important;}
+  .tick{font-size:13px!important;}
+  .sname{font-size:11px!important;}
+  .schg{font-size:10px!important;}
+  .cstats{grid-template-columns:1fr 1fr;}
+  .mc{height:38px!important;max-height:38px!important;}
+
+  /* Tabs */
+  .tab{padding:7px 10px;font-size:11px;}
+  .tabs-l2 .tab{font-size:10px;padding:5px 9px;}
+
+  /* Picker / AI assistant */
+  .filter-grid{grid-template-columns:1fr!important;}
+  .filter-group{padding:8px 10px;}
+  .fchip{font-size:10px;padding:2px 8px;}
+  .scen{font-size:10px;padding:4px 9px;}
+  #filter-summary{font-size:10px;}
+  .scenario-row{gap:4px;}
+
+  /* Leaderboard */
   .lb-table{font-size:11px;}
-  .lb-table th,.lb-table td{padding:7px 8px;}
-  /* Op grid single col on very small */
+  .lb-table th,.lb-table td{padding:6px 7px;}
+
+  /* Modal bottom sheet */
+  .mprice{font-size:22px!important;}
+  .chartbox{height:150px!important;max-height:150px!important;}
+
+  /* Custom WL bar */
+  #custom-wl-bar .pinput{font-size:12px;}
+
+  /* Op grid */
   .op-grid{grid-template-columns:1fr;}
-  /* Footer compact */
+
+  /* Thermo SVG */
+  .thermo-svg{display:none;}
+
+  /* Footer */
   footer{font-size:9px;padding:8px 0;}
+
+  /* Leaderboard market/sort buttons */
+  .lb-mkt-btn,.lb-sort-btn{font-size:9px!important;padding:2px 7px!important;}
 }
 @media(min-width:641px){
-  /* Desktop: modal centered with scroll */
   .overlay{overflow-y:auto;}
   .sheet-handle{display:none!important;}
 }
@@ -704,11 +745,18 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       </div>
     </div>
     <div class="chartbox" style="position:relative">
-        <div style="position:absolute;top:4px;right:4px;z-index:5;display:flex;gap:4px">
+        <div style="position:absolute;top:4px;right:4px;z-index:5;display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end">
+          <!-- Chart type -->
           <button onclick="setChartType('line')" id="btn-chart-line"
-            style="padding:3px 10px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">折線</button>
+            style="padding:2px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">折線</button>
           <button onclick="setChartType('candlestick')" id="btn-chart-candle"
-            style="padding:3px 10px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">K線</button>
+            style="padding:2px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">K線</button>
+          <!-- Time range -->
+          <span style="width:1px;background:var(--bd);margin:0 2px"></span>
+          <button onclick="setKRange('1m')" id="btn-kr-1m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1M</button>
+          <button onclick="setKRange('3m')" id="btn-kr-3m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">3M</button>
+          <button onclick="setKRange('6m')" id="btn-kr-6m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">6M</button>
+          <button onclick="setKRange('1y')" id="btn-kr-1y" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1Y</button>
         </div>
         <canvas id="mchart"></canvas>
       </div>
@@ -829,7 +877,7 @@ const BASE={'0050.TW':196,'0056.TW':37.5,'2330.TW':1080,'2317.TW':175,'2449.TW':
   '2345.TW':450,'6669.TW':820,'3711.TW':185};
 
 // ── STATE ─────────────────────────────────────────────────────
-let SD={}, IDX={}, IDX_HIST={}, INST={}, SIGNAL_CACHE={}, WATCHLIST_CUSTOM=[], curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbMarket='all', lbExpanded=false, chartType='line';
+let SD={}, IDX={}, IDX_HIST={}, INST={}, SIGNAL_CACHE={}, WATCHLIST_CUSTOM=[], kRange='3m', curTab='overview', selSym=null, mChart=null, volChart=null, minic={}, pickOpen=false, lbTab='chg', lbMarket='all', lbExpanded=false, chartType='line';
 
 // ── CLOCK ─────────────────────────────────────────────────────
 setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); },1000);
@@ -1519,15 +1567,15 @@ function renderOverview(){
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div style="font-size:13px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase">🏆 排行榜</div>
         <div style="display:flex;gap:4px">
-          <button class="lb-tab${lbMarket==='all'?' active':''}" onclick="switchLbMarket('all')" style="font-size:10px;padding:3px 10px">全部</button>
-          <button class="lb-tab${lbMarket==='tw'?' active':''}" onclick="switchLbMarket('tw')" style="font-size:10px;padding:3px 10px">🇹🇼 台股</button>
-          <button class="lb-tab${lbMarket==='us'?' active':''}" onclick="switchLbMarket('us')" style="font-size:10px;padding:3px 10px">🇺🇸 美股</button>
+          <button class="lb-tab lb-mkt-btn active" data-val="all" onclick="switchLbMarket('all')" style="font-size:10px;padding:3px 10px">全部</button>
+          <button class="lb-tab lb-mkt-btn" data-val="tw" onclick="switchLbMarket('tw')" style="font-size:10px;padding:3px 10px">🇹🇼 台股</button>
+          <button class="lb-tab lb-mkt-btn" data-val="us" onclick="switchLbMarket('us')" style="font-size:10px;padding:3px 10px">🇺🇸 美股</button>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="lb-tab${lbTab==='chg'?' active':''}" onclick="switchLbTab('chg')">📈 漲跌幅</button>
-        <button class="lb-tab${lbTab==='vol'?' active':''}" onclick="switchLbTab('vol')">💹 成交量</button>
-        <button class="lb-tab${lbTab==='score'?' active':''}" onclick="switchLbTab('score')">⭐ 綜合評分</button>
+        <button class="lb-tab lb-sort-btn active" data-val="chg" onclick="switchLbTab('chg')">📈 漲跌幅</button>
+        <button class="lb-tab lb-sort-btn" data-val="vol" onclick="switchLbTab('vol')">💹 成交量</button>
+        <button class="lb-tab lb-sort-btn" data-val="score" onclick="switchLbTab('score')">⭐ 綜合評分</button>
       </div>
     </div>
     <div id="lb-table-wrap"></div>
@@ -1620,8 +1668,22 @@ function toggleLbExpand(){
   if(wrap) renderLbTable(wrap);
 }
 
-function switchLbTab(t){ lbTab=t; const wrap=document.getElementById('lb-table-wrap'); if(wrap) renderLbTable(wrap); }
-function switchLbMarket(m){ lbMarket=m; const wrap=document.getElementById('lb-table-wrap'); if(wrap) renderLbTable(wrap); }
+function switchLbTab(t){
+  lbTab = t;
+  document.querySelectorAll('.lb-sort-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.val === t);
+  });
+  const wrap = document.getElementById('lb-table-wrap');
+  if(wrap) renderLbTable(wrap);
+}
+function switchLbMarket(m){
+  lbMarket = m;
+  document.querySelectorAll('.lb-mkt-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.val === m);
+  });
+  const wrap = document.getElementById('lb-table-wrap');
+  if(wrap) renderLbTable(wrap);
+}
 
 // ── GRID ─────────────────────────────────────────────────────
 function getVis(){
@@ -1929,7 +1991,7 @@ async function openModal(sym){
       }
     }catch(e){}
   }
-  drawModalChart(w,d);
+  fetchAndDrawChart(w, d);
   document.getElementById('m-vol-panel').innerHTML = buildVolHTML(d);
   drawVolChart(d.history, w.type);
   document.getElementById('m-tech').innerHTML=buildTechHTML(d.history,w.type);
@@ -2019,6 +2081,59 @@ async function runModalAI(w, d, chipHTML, op, news){
     const text=await groqAI(prompt,system);
     let i=0; const t=setInterval(()=>{out.textContent+=text[i++]; if(i>=text.length)clearInterval(t);},12);
   }catch(e){out.textContent='分析服務暫時無法使用。';}
+}
+
+function setKRange(range){
+  kRange = range;
+  ['1m','3m','6m','1y'].forEach(function(r){
+    var btn = document.getElementById('btn-kr-'+r);
+    if(!btn) return;
+    var active = r === range;
+    btn.style.background  = active ? 'var(--pu)' : 'var(--s2)';
+    btn.style.border      = active ? 'none' : '1px solid var(--bd)';
+    btn.style.color       = active ? '#fff' : 'var(--mu2)';
+    btn.style.fontWeight  = active ? '600' : '400';
+  });
+  // Reload chart with new range
+  if(selSym){
+    var w2 = WL.find(function(x){ return x.sym===selSym; });
+    var d2 = SD[selSym];
+    if(w2 && d2) fetchAndDrawChart(w2, d2);
+  }
+}
+
+async function fetchAndDrawChart(w, d){
+  // Fetch history for selected range
+  var rangeMap = { '1m':'1mo', '3m':'3mo', '6m':'6mo', '1y':'1y' };
+  var yRange   = rangeMap[kRange] || '3mo';
+  try {
+    if(w.type === 'tw'){
+      // For TW stocks, fetch multiple months if needed
+      var monthsNeeded = kRange==='1m'?1 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
+      var allHistory = [];
+      for(var m = monthsNeeded-1; m >= 0; m--){
+        var dt = new Date();
+        dt.setMonth(dt.getMonth() - m);
+        var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+dt.getFullYear()+('0'+(dt.getMonth()+1)).slice(-2));
+        if(j.history) allHistory = allHistory.concat(j.history);
+      }
+      if(allHistory.length > 2){
+        d.history = allHistory.map(function(r){
+          return {t:parseTwDate(r.date),c:+r.close,o:+(r.open||r.close),h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
+        }).filter(function(r){ return r.c>0; });
+        d.histReal = true;
+      }
+    } else {
+      var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range='+yRange);
+      if(j.history && j.history.length > 2){
+        d.history = j.history.map(function(r){
+          return {t:new Date(r.date),c:+r.close,o:+(r.open||r.close),h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
+        }).filter(function(r){ return r.c>0; });
+        d.histReal = true;
+      }
+    }
+  } catch(e){ console.warn('fetchAndDrawChart error:', e.message); }
+  drawModalChart(w, d);
 }
 
 function setChartType(type){
