@@ -848,20 +848,22 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <div id="m-time" style="font-size:10px;color:var(--mu);margin-top:3px"></div>
       </div>
     </div>
+    <!-- Chart controls: type + time range above chart -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:6px">
+      <div style="display:flex;gap:4px">
+        <button onclick="setChartType('line')" id="btn-chart-line"
+          style="padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">折線</button>
+        <button onclick="setChartType('candlestick')" id="btn-chart-candle"
+          style="padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">K線</button>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button onclick="setKRange('1m')" id="btn-kr-1m" style="padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1M</button>
+        <button onclick="setKRange('3m')" id="btn-kr-3m" style="padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">3M</button>
+        <button onclick="setKRange('6m')" id="btn-kr-6m" style="padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">6M</button>
+        <button onclick="setKRange('1y')" id="btn-kr-1y" style="padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1Y</button>
+      </div>
+    </div>
     <div class="chartbox" style="position:relative">
-        <div style="position:absolute;top:4px;right:4px;z-index:5;display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end">
-          <!-- Chart type -->
-          <button onclick="setChartType('line')" id="btn-chart-line"
-            style="padding:2px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">折線</button>
-          <button onclick="setChartType('candlestick')" id="btn-chart-candle"
-            style="padding:2px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">K線</button>
-          <!-- Time range -->
-          <span style="width:1px;background:var(--bd);margin:0 2px"></span>
-          <button onclick="setKRange('1m')" id="btn-kr-1m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1M</button>
-          <button onclick="setKRange('3m')" id="btn-kr-3m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--pu);border:none;color:#fff;font-weight:600">3M</button>
-          <button onclick="setKRange('6m')" id="btn-kr-6m" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">6M</button>
-          <button onclick="setKRange('1y')" id="btn-kr-1y" style="padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;background:var(--s2);border:1px solid var(--bd);color:var(--mu2)">1Y</button>
-        </div>
         <canvas id="mchart"></canvas>
       </div>
     <div class="m3col">
@@ -2110,17 +2112,41 @@ async function fetchFundamentals(w){
   } catch(e){ return null; }
 }
 
-function renderFundHTML(fund, mtype){
+function renderFundHTML(fund, mtype, w){
   if(!fund) return '<div style="color:var(--mu);font-size:11px">載入中...</div>';
+
+  // US stocks: show Yahoo Finance link
+  if(fund.usLink || (!fund.ok && mtype==='us')){
+    var tick = w ? w.sym : '';
+    var yhUrl = 'https://finance.yahoo.com/quote/' + tick + '/key-statistics/';
+    return '<div style="padding:8px 0">'
+      +'<div style="font-size:11px;color:var(--mu2);margin-bottom:8px">美股基本面請至 Yahoo Finance 查閱：</div>'
+      +'<a href="'+yhUrl+'" target="_blank" rel="noopener" '
+      +'style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--s2);'
+      +'border:1px solid var(--bd);border-radius:8px;font-size:12px;color:var(--us);text-decoration:none">'
+      +'📊 ' + (w ? w.tick : tick) + ' - Yahoo Finance</a></div>';
+  }
+
   var rows = [];
-  if(fund.pe)        rows.push(['本益比 P/E',    fund.pe.toFixed(1) + 'x']);
-  if(fund.forwardPe) rows.push(['預估 P/E',      fund.forwardPe.toFixed(1) + 'x']);
-  if(fund.yield)     rows.push(['股息殖利率',     fund.yield + '%']);
-  if(fund.eps)       rows.push(['EPS',           fmt(fund.eps)]);
-  if(fund.pbRatio)   rows.push(['股價淨值比',     fund.pbRatio.toFixed(2) + 'x']);
-  if(fund.roe)       rows.push(['ROE',           fund.roe + '%']);
+  if(fund.pe)        rows.push(['本益比 P/E',    (+fund.pe).toFixed(1)    + 'x']);
+  if(fund.forwardPe) rows.push(['預估 P/E',      (+fund.forwardPe).toFixed(1) + 'x']);
+  if(fund.yield)     rows.push(['股息殖利率',    (+fund.yield).toFixed(2)  + '%']);
+  if(fund.eps)       rows.push(['EPS',           fmt(+fund.eps)]);
+  if(fund.pbRatio)   rows.push(['股價淨值比',    (+fund.pbRatio).toFixed(2)+ 'x']);
+  if(fund.roe)       rows.push(['ROE',           (+fund.roe).toFixed(1)   + '%']);
   if(fund.marketCap) rows.push(['市值',          fmtV(fund.marketCap)]);
-  if(!rows.length)   return '<div style="color:var(--mu);font-size:11px;padding:8px 0">暫無基本面資料<br><span style="font-size:10px;color:var(--mu)">Yahoo Finance 對部分台股資料不完整</span></div>';
+
+  if(!rows.length){
+    var tick2 = w ? w.tick : '';
+    var mopsUrl = 'https://mops.twse.com.tw/mops/web/t05st09_1?co_id=' + tick2;
+    return '<div style="padding:6px 0">'
+      +'<div style="font-size:11px;color:var(--mu);margin-bottom:8px">暫無基本面資料，請至公開資訊觀測站查詢：</div>'
+      +'<a href="'+mopsUrl+'" target="_blank" rel="noopener" '
+      +'style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--s2);'
+      +'border:1px solid var(--bd);border-radius:8px;font-size:12px;color:var(--tw);text-decoration:none">'
+      +'📋 ' + tick2 + ' - 公開資訊觀測站</a></div>';
+  }
+
   return rows.map(function(r){
     return '<div class="ind-row"><span class="ind-name">' + r[0] + '</span><span class="ival">' + r[1] + '</span></div>';
   }).join('');
@@ -2251,6 +2277,7 @@ async function fetchChipHTML(w){
         return '<svg width="64" height="20" style="vertical-align:middle;margin-left:4px" xmlns="http://www.w3.org/2000/svg"><polyline points="'+ptsStr+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
       })();
       html+='<!-- MARGIN -->';
+      html+=`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--bd)">📅 收盤後更新，通常 18:00 後有數據</div>`;
       html+=`<div class="chip-row"><span class="chip-name">融資餘額</span><span class="chip-val">${fmtW(mb)}${trendSvg}</span></div>
         <div class="chip-row"><span class="chip-name">融券餘額</span><span class="chip-val">${fmtW(sb)}</span></div>
         <div class="chip-row"><span class="chip-name">券資比</span><span class="chip-val">${sr!=null?sr+'%':'—'}</span></div>`;
@@ -2356,7 +2383,10 @@ async function openModal(sym){
   document.getElementById('m-vol-panel').innerHTML='<div class="spin"></div>';
   document.getElementById('m-op').innerHTML='<div class="spin"></div> 分析中...';
   const fundEl = document.getElementById('m-fund');
-  const fundElR = document.getElementById('m-fund'); if(fundElR) fundElR.innerHTML='<div class="skel-line" style="height:12px;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:60%"></div>';
+  const fundElR = document.getElementById('m-fund');
+  if(fundElR) fundElR.innerHTML = w.type==='us'
+    ? renderFundHTML({usLink:true}, 'us', w)
+    : '<div class="skel-line" style="height:12px;margin-bottom:6px"></div><div class="skel-line" style="height:12px;width:60%"></div>';
   document.getElementById('m-news').innerHTML='<div class="spin"></div> 搜尋中...';
   document.getElementById('m-ai').textContent='載入資料後自動生成...';
 
@@ -2398,7 +2428,7 @@ async function openModal(sym){
     margBtn.innerHTML = hasMargin ? '融資融券 <span style="color:#34d399;font-size:9px">●</span>' : '融資融券';
   }
   const fundEl2 = document.getElementById('m-fund');
-  if(fundEl2) fundEl2.innerHTML = renderFundHTML(fund, w.type);
+  if(fundEl2) fundEl2.innerHTML = renderFundHTML(fund, w.type, w);
 
   // Operation suggestion (uses Groq - show manual button)
   document.getElementById('m-op').innerHTML = `<div style="text-align:center;padding:10px 0">
@@ -3651,8 +3681,8 @@ async function fetchHistoryBackground(){
   var usList = WL.filter(function(w){ return w.type==='us' && !(SD[w.sym] && SD[w.sym].histReal); });
 
   // TW: fetch 3 months of history, 3 stocks at a time
-  for(var i=0; i<twList.length; i+=3){
-    var batch = twList.slice(i, i+3);
+  for(var ti=0; ti<twList.length; ti+=3){
+    var batch = twList.slice(ti, ti+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
         var allHist = [];
@@ -3691,8 +3721,8 @@ async function fetchHistoryBackground(){
   }
 
   // US: 3mo range
-  for(var i=0; i<usList.length; i+=3){
-    var batch = usList.slice(i, i+3);
+  for(var ui=0; ui<usList.length; ui+=3){
+    var batch = usList.slice(ui, ui+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
         var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
