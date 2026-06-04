@@ -2598,7 +2598,7 @@ async function fetchAndDrawChart(w, d){
         var jTW = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range='+twRange2);
         if(jTW.history && jTW.history.length > 2){
           d.history = jTW.history.map(function(r){
-            return {t:new Date(r.date),c:+r.close,o:+(r.open||r.close),
+            return {t:parseLocalDate(r.date),c:+r.close,o:+(r.open||r.close),
                     h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
           }).filter(function(r){ return r.c>0; });
           d.histReal = true;
@@ -2918,6 +2918,13 @@ function drawModalChart(w,d){
   });
 }
 
+
+function parseLocalDate(s){
+  if(!s) return new Date();
+  var p=s.split('-');
+  if(p.length===3) return new Date(+p[0],+p[1]-1,+p[2]);
+  return new Date(s);
+}
 
 function parseTwDate(str){
   if(!str)return new Date();
@@ -3741,7 +3748,7 @@ async function fetchHistoryBackground(){
         var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
         if(j.history && j.history.length > 15){
           var hist = j.history.map(function(r){
-            return {t:new Date(r.date), c:+r.close, o:+(r.open||r.close),
+            return {t:parseLocalDate(r.date), c:+r.close, o:+(r.open||r.close),
                     h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
           }).filter(function(r){ return r.c>0 && !isNaN(r.c); });
           if(hist.length > 15){ d.history=hist; d.histReal=true; return; }
