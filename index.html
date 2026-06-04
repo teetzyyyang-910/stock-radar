@@ -583,13 +583,11 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 <div id="page-guide" style="display:none;padding:16px 0 40px">
   <div style="max-width:860px;margin:0 auto">
 
-    <!-- Header -->
     <div style="margin-bottom:24px">
       <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;background:linear-gradient(135deg,var(--tw) 30%,var(--us));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">STOCK RADAR 使用說明</div>
       <div style="font-size:13px;color:var(--mu2)">台股 × 美股個股監控儀表板 · 資料僅供參考，不構成投資建議</div>
     </div>
 
-    <!-- 功能介紹 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
@@ -619,7 +617,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
           <li>• Header 右上角 🔍 按鈕，或按 <strong style="color:var(--tx)">/</strong> 快捷鍵開啟</li>
           <li>• 模糊搜尋：輸入代號、名稱或族群關鍵字</li>
-          <li>• <strong style="color:var(--tx)">↑ ↓</strong> 鍵選擇結果，<strong style="color:var(--tx)">Enter</strong> 開啟個股，<strong style="color:var(--tx)">Esc</strong> 關閉</li>
+          <li>• <strong style="color:var(--tx)">↑ ↓</strong> 選擇結果，<strong style="color:var(--tx)">Enter</strong> 開啟個股，<strong style="color:var(--tx)">Esc</strong> 關閉</li>
           <li>• 搜尋結果即時顯示現價和漲跌幅</li>
         </ul>
       </div>
@@ -635,7 +633,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 個股詳細頁 — 走勢圖</div>
+        <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📉 個股詳細頁 — 走勢圖</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
           <li>• 右上角切換 <strong style="color:var(--tx)">折線 / K線</strong> 圖表類型</li>
           <li>• K 線：<strong style="color:var(--tx)">hover 顯示 OHLC</strong>（開高低收 + 成交量）tooltip</li>
@@ -652,14 +650,14 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
           <li>• <strong style="color:var(--tx)">籌碼面</strong>：三大法人買賣超 + 融資融券（含近 5 日趨勢圖）</li>
           <li>• <strong style="color:var(--tx)">基本面</strong>：P/E、預估 P/E、殖利率、EPS、股價淨值比、市值</li>
           <li>• <strong style="color:var(--tx)">vs 大盤</strong>：相對大盤強弱顯示於漲跌幅旁</li>
-          <li>• 操作建議 / 新聞 / AI 分析（手動觸發，節省免費額度）</li>
+          <li>• 操作建議 / 新聞 / AI 分析（手動觸發）</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">✦ AI 選股助理</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• <strong style="color:var(--tx)">情境</strong>（上排）控制 AI 分析框架和排序邏輯</li>
+          <li>• <strong style="color:var(--tx)">情境</strong>（上排）控制 AI 分析框架和排序，不影響篩選</li>
           <li>• <strong style="color:var(--tx)">篩選條件</strong>（下排）獨立控制股票過濾，互不影響</li>
           <li>• 篩選條件：技術面 / 價量 / 法人動向 / 族群</li>
           <li>• 分析結果：強烈推薦 / 值得關注 / 注意風險 三欄</li>
@@ -673,16 +671,16 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
           <li>• AI 推薦後自動記錄進場價和推薦日期</li>
           <li>• 即時計算每筆推薦的損益百分比</li>
           <li>• <strong style="color:var(--tx)">勝率統計</strong>：顯示「勝率 X% (Y/Z)」</li>
-          <li>• 最多保留 30 筆記錄，儲存於 localStorage</li>
+          <li>• 最多保留 30 筆，儲存於 localStorage</li>
         </ul>
       </div>
     </div>
 
     <!-- 評分說明 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
         <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase">⭐ 綜合評分系統（0–100 分）</div>
-        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 需真實歷史資料才計算｜合成資料期間顯示「—」</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 需真實歷史資料｜合成期間顯示「—」</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
         <div style="text-align:center;padding:10px;background:var(--s2);border-radius:8px">
@@ -707,7 +705,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         </div>
       </div>
       <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.8">
-        評分顏色：<span style="color:#a78bfa">■</span> ≥ 70 紫色強勢　<span style="color:var(--gd)">■</span> 45–69 金色中性　<span style="color:var(--fl)">■</span> &lt; 45 偏弱
+        評分顏色：<span style="color:#a78bfa">■</span> 紫色 ≥ 70（強勢）　<span style="color:var(--gd)">■</span> 金色 45–69（中性）　<span style="color:var(--fl)">■</span> 灰色 &lt; 45（偏弱）
       </div>
     </div>
 
@@ -715,13 +713,12 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
         <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase">🎯 訊號邏輯</div>
-        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 日線指標 · 收盤後更新</span>
-        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">🔒 需連續 2 次確認才觸發</span>
-        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📊 需真實歷史資料才啟動</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 日線指標</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">🔒 連續 2 次確認</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📊 需真實歷史資料</span>
       </div>
       <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--mu2);line-height:1.8">
-        <strong style="color:var(--pu)">穩定性門檻：</strong>每 3 分鐘計算一次，同一訊號需<strong style="color:var(--tx)">連續 2 次</strong>計算結果相同才顯示，避免短暫波動造成訊號頻繁橫跳。<br>
-        合成歷史資料期間（個股未點開前）<strong style="color:var(--tx)">不計算、不顯示訊號</strong>。卡片訊號徽章可 hover 查看詳細觸發條件。
+        <strong style="color:var(--pu)">穩定性門檻：</strong>每 3 分鐘計算一次，同一訊號需<strong style="color:var(--tx)">連續 2 次</strong>相同才顯示，避免短暫波動造成訊號橫跳。合成資料期間<strong style="color:var(--tx)">不計算、不顯示訊號</strong>。
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
         <div style="padding:12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.3);border-radius:8px">
@@ -731,8 +728,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             · RSI 在 28–58 且比前日上升<br>
             · MACD 柱狀剛從負翻正<br>
             <span style="color:var(--tx)">輔助訊號（各+1）：</span><br>
-            · 均線多頭排列（MA5 > MA20）<br>
-            · MACD 柱狀偏多（> 0）<br>
+            · 均線多頭（MA5 &gt; MA20）<br>
+            · MACD 偏多（&gt; 0）<br>
             · 近5日上漲<br>
             <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
@@ -744,25 +741,48 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             · RSI ≥ 68 且比前日下降<br>
             · MACD 柱狀剛從正轉負<br>
             <span style="color:var(--tx)">輔助訊號（各+1）：</span><br>
-            · 均線空頭排列（MA5 &lt; MA20）<br>
+            · 均線空頭（MA5 &lt; MA20）<br>
             · MA5 開始下彎<br>
-            · 近5日下跌超過 1%<br>
+            · 近5日下跌 &gt; 1%<br>
             <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
         </div>
         <div style="padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🟡 持續觀望</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
-            · 進場或減碼分數達 1–2 分<br>
+            · 進場或減碼分數 1–2 分<br>
             · 或 MACD 即將黃金交叉<br>
-            · 訊號尚未達到確認標準<br>
-            <span style="color:var(--gd)">→ 同樣需連續 2 次確認<br>→ 持續追蹤，不急於行動</span>
+            · 訊號未達確認標準<br>
+            <span style="color:var(--gd)">→ 同樣需連續 2 次確認<br>→ 持續追蹤，不急行動</span>
           </div>
         </div>
       </div>
       <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.7">
-        💡 Tab 上顯示「日線」標示，提醒此為日線技術指標，非盤中即時訊號<br>
-        💡 卡片訊號徽章可 hover 查看詳細觸發條件（如「RSI低位回升＋MACD翻正」）
+        💡 訊號徽章可 hover 查看詳細觸發條件（如「RSI低位回升＋MACD翻正」）<br>
+        💡 Tab 上「日線」標示提醒此為日線技術指標，非盤中即時訊號
+      </div>
+    </div>
+
+    <!-- 快捷鍵 -->
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">⌨️ 快捷鍵</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">/</kbd>
+          <span style="font-size:12px;color:var(--mu2)">開啟全域搜尋</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Esc</kbd>
+          <span style="font-size:12px;color:var(--mu2)">關閉搜尋 / 關閉個股頁</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">↑ ↓</kbd>
+          <span style="font-size:12px;color:var(--mu2)">搜尋結果選擇</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Enter</kbd>
+          <span style="font-size:12px;color:var(--mu2)">開啟選中的個股詳細頁</span>
+        </div>
       </div>
     </div>
 
@@ -776,33 +796,10 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <li>• 基本面資料（P/E、殖利率等）來自 Yahoo Finance，可能有延遲或缺漏。</li>
         <li>• AI 分析由 Groq (llama-3.3-70b) 生成，新聞搜尋由 Gemini 2.5 Flash 提供。</li>
         <li>• Groq / Gemini 為免費額度，AI 功能採手動觸發，避免額度耗盡。</li>
-        <li>• 評分、訊號均需個股歷史資料載入後才啟動，載入前顯示「—」屬正常。</li>
-        <li>• 選股追蹤記錄與自選清單儲存於瀏覽器 localStorage，清除快取後會消失。</li>
-        <li>• K 線 6M / 1Y 時間框架台股需多次 API 請求，載入較慢屬正常。</li>
+        <li>• 評分與訊號需個股歷史資料載入後才啟動，載入前顯示「—」屬正常。</li>
+        <li>• 選股追蹤記錄與自選清單儲存於瀏覽器 localStorage，清除快取後消失。</li>
+        <li>• K 線 6M / 1Y 台股需多次 API 請求，載入較慢屬正常。</li>
       </ul>
-    </div>
-
-    <!-- 快捷鍵 -->
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">⌨️ 快捷鍵</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
-          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">/</kbd>
-          <span style="font-size:12px;color:var(--mu2)">開啟全域搜尋</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
-          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Esc</kbd>
-          <span style="font-size:12px;color:var(--mu2)">關閉搜尋 / 關閉個股詳細頁</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
-          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">↑ ↓</kbd>
-          <span style="font-size:12px;color:var(--mu2)">搜尋結果選擇</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
-          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Enter</kbd>
-          <span style="font-size:12px;color:var(--mu2)">開啟選中的個股詳細頁</span>
-        </div>
-      </div>
     </div>
 
     <!-- 資料來源 -->
@@ -811,7 +808,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TWSE 台灣證交所 MIS API（即時行情）</span>
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TPEX 證券櫃買中心（上櫃歷史）</span>
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Yahoo Finance API（美股 + 歷史 + 基本面）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Yahoo Finance（美股 + 歷史 + 基本面）</span>
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Gemini 2.5 Flash（新聞搜尋）</span>
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Groq llama-3.3-70b（AI 分析）</span>
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Cloudflare Worker（後端代理）</span>
@@ -2247,7 +2244,7 @@ function triggerNews(){
     });
 }
 
-async async function triggerOp(){
+async function triggerOp(){
   const ctx = window._aiCtx;
   if(!ctx) return;
   document.getElementById('m-op').innerHTML = '<div class="spin"></div> 分析中...';
@@ -2896,12 +2893,13 @@ function renderFilterResults(stocks){
   var hd = '<div style="font-size:12px;color:var(--mu);margin-bottom:8px">篩選結果（' + stocks.length + '支）：</div>';
   var rows = stocks.map(function(w){
     var d = SD[w.sym]||{};
-    var score = calcScore(w,d);
+    var score    = d.histReal ? calcScore(w,d) : null;
+    var scoreCls = score !== null ? getScoreClass(score, w.type) : 'score-mid';
     var col = ccCol(d.chgPct, w.type);
     var tickCol = w.type==='tw' ? 'var(--tw)' : 'var(--us)';
     var scoreCls = getScoreClass(score, w.type);
     return '<div onclick="openModal(\'' + w.sym + '\')" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);cursor:pointer">' +
-      '<span class="score-badge ' + scoreCls + '" style="width:28px;height:28px;font-size:11px">' + score + '</span>' +
+      '<span class="score-badge ' + scoreCls + '" style="width:28px;height:28px;font-size:11px">' + (score !== null ? score : '—') + '</span>' +
       '<div style="flex:1">' +
         '<span style="font-family:monospace;font-size:13px;font-weight:700;color:' + tickCol + '">' + w.tick + '</span>' +
         '<span style="font-size:11px;color:var(--mu2);margin-left:6px">' + w.name + '</span>' +
