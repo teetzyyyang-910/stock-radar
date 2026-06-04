@@ -2234,7 +2234,7 @@ async function fetchOperation(w, d, chipSummary){
 成交量：${fmtV(d.vol)}
 52週高/低：${fmt(d.high52)}/${fmt(d.low52)}
 技術面：MA5=${fmt(ma5)} MA20=${fmt(ma20)} MA60=${fmt(ma60)} RSI=${rsi} MACD=${macd?(macd.macd>0?'多':'空'):'—'} 布林=${bb?(bb.pos*100).toFixed(0)+'%':'—'}
-籌碼面摘要：${chipSummary.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'無資料'}
+籌碼面摘要：${(typeof chipSummary==='object'?(chipSummary.inst||'')+(chipSummary.margin||''):chipSummary||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'無資料'}
 
 請以 JSON 格式回傳（只回傳 JSON，不要其他文字）：
 {"score":8,"action":"分批布局","entry_low":1020,"entry_high":1050,"stop_loss":980,"target":1180,"risk":"融資偏高，注意回檔","note":"技術面簡短說明"}
@@ -2423,7 +2423,7 @@ async function runModalAI(w, d, chipHTML, op, news){
 股票：${w.tick} ${w.name}（${w.type==='tw'?'台股':'美股'}，${w.sec}）
 現價：${fmt(d.price)}，今日：${sgn(d.chgPct)}${fmt(d.chgPct)}%
 技術面：MA排列${ma5&&ma20?(ma5>ma20?'多頭':'空頭'):'—'}，RSI ${rsi||'—'}，MACD ${macd?(macd.macd>0?'多頭':'空頭'):'—'}
-籌碼：${chipHTML.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'無'}
+籌碼：${((chipHTML&&typeof chipHTML==='object'?(chipHTML.inst||'')+(chipHTML.margin||''):chipHTML||'')).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'無'}
 操作建議：評分${op.score}/10，建議${op.action}，目標${fmt(op.target)}
 新聞：${newsText}
 請分析技術趨勢、籌碼狀況、新聞影響，並做出綜合判斷。純文字，不要標題或markdown。`;
