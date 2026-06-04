@@ -1539,29 +1539,7 @@ function renderOverviewFull(){
   renderOverview();
   // Render leaderboard into the #lb-table-wrap that overview just created
   requestAnimationFrame(()=>{
-    drawThermoCanvas(
-      (function(){
-        var all = WL.map(function(w){ return SD[w.sym]; }).filter(Boolean);
-        if(!all.length) return 50;
-        var rsiAvg = all.reduce(function(a,w){
-          var c=(w.history||[]).map(function(h){return h.c;});
-          return a + (calcRSI(c)||50);
-        },0)/all.length;
-        var ups = all.filter(function(d){return d.chgPct>0;});
-        var temp = Math.round((ups.length/all.length)*60 + (rsiAvg-30)/40*40);
-        return Math.max(0,Math.min(100,temp));
-      })(),
-      (function(){
-        var all = WL.map(function(w){ return SD[w.sym]; }).filter(Boolean);
-        if(!all.length) return 'var(--mu)';
-        var ups = all.filter(function(d){return d.chgPct>0;});
-        var pct = ups.length/all.length;
-        var rsiAvg = all.reduce(function(a,w){ var c=(w.history||[]).map(function(h){return h.c;}); return a+(calcRSI(c)||50); },0)/all.length;
-        var temp = Math.round(pct*60+(rsiAvg-30)/40*40);
-        temp = Math.max(0,Math.min(100,temp));
-        return temp>70?'var(--dn)':temp<30?'var(--up)':'var(--gd)';
-      })()
-    );
+    if(typeof _lastThermoVal !== 'undefined') drawThermoCanvas(_lastThermoVal, _lastThermoCol);
     const wrap = document.getElementById('lb-table-wrap');
     if(wrap) renderLbTable(wrap);
     // Draw index sparklines
@@ -1688,6 +1666,7 @@ function renderOverview(){
   const upRatio=ups.length/all.length;
   const temp=Math.round(upRatio*60 + (rsiAvg-30)/40*40);
   const tempClamped=Math.max(0,Math.min(100,temp));
+  window._lastThermoVal=tempClamped;
   const tempColor=tempClamped>70?'var(--dn)':tempClamped>50?'var(--gd)':tempClamped>30?'var(--up)':'var(--up)';
   const tempLabel=tempClamped>75?'過熱⚠':tempClamped>60?'偏多📈':tempClamped>40?'中性📊':tempClamped>25?'偏空📉':'極度悲觀😨';
 
@@ -2201,20 +2180,15 @@ async function fetchChipHTML(w){
         const vals=trend.map(function(t){return t.bal;}).filter(function(v){return v>0;});
         if(vals.length<2) return '';
         const mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
-        var pts=vals.map(function(v,i){return parseFloat(((i/(vals.length-1))*60).toFixed(1))+','+parseFloat((18-((v-mn)/rng)*16).toFixed(1));}).join(' ');
         const col=vals[vals.length-1]>vals[0]?'#f87171':'#34d399';
-        // Build data URI canvas sparkline
-        var spark = document.createElement('canvas');
-        spark.width=64; spark.height=20;
-        var sctx = spark.getContext('2d');
-        sctx.beginPath();
-        vals.forEach(function(v,i){
-          var sx=parseFloat(((i/(vals.length-1))*62).toFixed(1));
-          var sy=parseFloat((18-((v-mn)/rng)*16).toFixed(1));
-          i===0?sctx.moveTo(sx,sy):sctx.lineTo(sx,sy);
+        // Build SVG polyline with computed number coordinates (no variable names in attrs)
+        const ptArr=vals.map(function(v,i){
+          var x=Math.round((i/(vals.length-1))*60);
+          var y=Math.round(18-((v-mn)/rng)*16);
+          return x+','+y;
         });
-        sctx.strokeStyle=col; sctx.lineWidth=1.5; sctx.stroke();
-        return '<img src="'+spark.toDataURL()+'" width="64" height="20" style="vertical-align:middle;margin-left:4px"/>';
+        const ptsStr=ptArr.join(' ');
+        return '<svg width="64" height="20" style="vertical-align:middle;margin-left:4px" xmlns="http://www.w3.org/2000/svg"><polyline points="'+ptsStr+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
       })();
       html+='<!-- MARGIN -->';
       html+=`<div class="chip-row"><span class="chip-name">融資餘額</span><span class="chip-val">${fmtW(mb)}${trendSvg}</span></div>
