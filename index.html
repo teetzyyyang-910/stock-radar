@@ -3739,45 +3739,42 @@ async function fetchHistoryBackground(){
   var twList = WL.filter(function(w){ return w.type==='tw' && !(SD[w.sym] && SD[w.sym].histReal); });
   var usList = WL.filter(function(w){ return w.type==='us' && !(SD[w.sym] && SD[w.sym].histReal); });
 
-  // TW: fetch 3 months of history, 3 stocks at a time
+  // TW: use Yahoo Finance .TW first (more reliable), fallback to TWSE
   for(var ti=0; ti<twList.length; ti+=3){
     var batch = twList.slice(ti, ti+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
-        var allHist = [];
-        // Fetch 3 months (current + 2 previous)
-        // Always fetch at least 2 months (current + previous) for 1M view
-        var monthsNeeded = kRange==='1m'?2 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
-        for(var km=monthsNeeded-1; km>=0; km--){
-          var dt  = new Date();
-          dt.setDate(1); // avoid day overflow when subtracting months
-          dt.setMonth(dt.getMonth() - km);
-          var mStr = dt.getFullYear() + ('0'+(dt.getMonth()+1)).slice(-2);
-          try {
-            var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
-            if(j.history && j.history.length > 0) allHist = allHist.concat(j.history);
-          } catch(e){ console.warn('hist month skip:', mStr); }
-        }
-        // For 1M, only keep last 30 bars
-        if(kRange==='1m' && allHist.length > 30) allHist = allHist.slice(-30);
-        if(allHist.length > 10){
-          var d = SD[w.sym];
-          if(!d) return;
-          var hist = allHist.map(function(r){
-            return {t:parseTwDate(r.date), c:+r.close, o:+(r.open||r.close),
+        var d = SD[w.sym];
+        if(!d) return;
+        // Try Yahoo Finance .TW first (more reliable)
+        var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
+        if(j.history && j.history.length > 15){
+          var hist = j.history.map(function(r){
+            return {t:new Date(r.date), c:+r.close, o:+(r.open||r.close),
                     h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
           }).filter(function(r){ return r.c>0 && !isNaN(r.c); });
-          // Deduplicate by date
-          var seen = {};
-          hist = hist.filter(function(r){
-            var key = r.t ? r.t.toDateString() : '';
-            if(seen[key]) return false;
-            seen[key] = true; return true;
+          if(hist.length > 15){ d.history=hist; d.histReal=true; return; }
+        }
+        // Fallback: TWSE monthly
+        var allHist = [];
+        for(var m=2; m>=0; m--){
+          var dt=new Date(); dt.setDate(1); dt.setMonth(dt.getMonth()-m);
+          var mStr=dt.getFullYear()+('0'+(dt.getMonth()+1)).slice(-2);
+          try {
+            var j2=await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
+            if(j2.history && j2.history.length>0) allHist=allHist.concat(j2.history);
+          } catch(e2){}
+        }
+        if(allHist.length > 15){
+          var hist2=allHist.map(function(r){
+            return {t:parseTwDate(r.date),c:+r.close,o:+(r.open||r.close),
+                    h:+(r.high||r.close),l:+(r.low||r.close),vol:r.vol||0};
+          }).filter(function(r){ return r.c>0&&!isNaN(r.c); });
+          var seen={};
+          hist2=hist2.filter(function(r){
+            var k=r.t?r.t.toDateString():''; if(seen[k])return false; seen[k]=true; return true;
           });
-          if(hist.length > 15){
-            d.history  = hist;
-            d.histReal = true;
-          }
+          if(hist2.length>15){ d.history=hist2; d.histReal=true; }
         }
       } catch(e){ console.warn('BG hist TW error:', w.tick, e.message); }
     }));
