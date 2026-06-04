@@ -2115,7 +2115,12 @@ function buildTechHTML(hist,mtype){
 
 // ── FUNDAMENTALS ─────────────────────────────────────────────
 async function fetchFundamentals(w){
-  if(FUND[w.sym] !== undefined) return FUND[w.sym]; // cache (including failed results)
+  // Invalidate bad cache: if TW stock has usLink cached, clear it
+  if(FUND[w.sym] !== undefined){
+    var cached = FUND[w.sym];
+    if(w.type === 'tw' && cached && cached.usLink) delete FUND[w.sym];
+    else return cached;
+  }
   try {
     var sym = w.type === 'tw' ? w.tick + '.TW' : w.sym;
     var j   = await safeFetch(PROXY + '/fundamentals?symbol=' + sym);
@@ -3710,12 +3715,16 @@ async function fetchHistoryBackground(){
       try {
         var allHist = [];
         // Fetch 3 months (current + 2 previous)
-        for(var m=2; m>=0; m--){
+        var monthsNeeded = kRange==='1m'?1 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
+        for(var km=monthsNeeded-1; km>=0; km--){
           var dt  = new Date();
-          dt.setMonth(dt.getMonth() - m);
+          dt.setDate(1); // avoid day overflow when subtracting months
+          dt.setMonth(dt.getMonth() - km);
           var mStr = dt.getFullYear() + ('0'+(dt.getMonth()+1)).slice(-2);
-          var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
-          if(j.history) allHist = allHist.concat(j.history);
+          try {
+            var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
+            if(j.history && j.history.length > 0) allHist = allHist.concat(j.history);
+          } catch(e){ console.warn('hist month skip:', mStr); }
         }
         if(allHist.length > 10){
           var d = SD[w.sym];
