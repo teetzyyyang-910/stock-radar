@@ -1784,7 +1784,20 @@ function renderOverview(){
             <div class="ebar-row"><span class="ebar-name" style="color:var(--up)">強跌</span><div class="ebar-track"><div class="ebar-fill" style="width:${strong_dn/total*100}%;background:var(--up)"></div></div><span class="ebar-cnt">${strong_dn}</span></div>
           </div>
         </div>
-      </div>    </div>
+      </div>
+      <!-- Thermo bottom: emotion label + quick stats -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:${tempColor}">${tempClamped}° ${tempLabel}</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:2px">${tempClamped>70?'RSI偏高，留意超買風險':tempClamped<30?'RSI偏低，留意底部反彈':tempClamped>50?'市場偏多，謹慎追高':'觀望為主，等待方向'}</div>
+        </div>
+        <div style="display:flex;gap:10px;font-family:monospace;font-size:12px">
+          <span style="color:var(--dn)">↑ ${ups.length}</span>
+          <span style="color:var(--fl)">↔ ${flat_cnt}</span>
+          <span style="color:var(--up)">↓ ${dns.length}</span>
+        </div>
+      </div>
+    </div>
     <div class="grp-perf">
       <div class="ov-label" style="margin-bottom:10px">族群表現</div>
       ${groups.map(g=>{
@@ -2380,7 +2393,7 @@ async function openModal(sym){
   window._aiCtx = {w, d, chipHTML, op:null, news:[]};
 }
 
-function triggerNews(){
+async function triggerNews(){
   const ctx = window._aiCtx;
   if(!ctx) return;
   const btn = event.currentTarget || document.querySelector('[onclick="triggerNews()"]');
@@ -2402,7 +2415,8 @@ async function triggerOp(){
   try {
     const op = await fetchOperation(ctx.w, ctx.d, ctx.chipHTML);
     ctx.op = op;
-    document.getElementById('m-op').innerHTML = renderOpHTML(op, ctx.w.type);
+    document.getElementById('m-op').innerHTML = renderOpHTML(op, ctx.w.type) +
+      '<div style="font-size:9px;color:var(--mu);text-align:right;margin-top:6px">更新時間：' + new Date().toLocaleTimeString('zh-TW') + '</div>';
   } catch(e) {
     document.getElementById('m-op').innerHTML = '<div style="color:var(--mu);font-size:12px">分析失敗</div>';
   }
@@ -3595,6 +3609,68 @@ function navigateToGroup(grpKey){
     var pg = document.getElementById('page-stocks');
     if(pg) pg.scrollIntoView({behavior:'smooth', block:'start'});
   }, 100);
+}
+
+// ── 背景批次抓歷史資料 ──────────────────────────────────────
+async function fetchHistoryBackground(){
+  var twList = WL.filter(function(w){ return w.type==='tw' && !SD[w.sym]?.histReal; });
+  var usList = WL.filter(function(w){ return w.type==='us' && !SD[w.sym]?.histReal; });
+
+  // TW: fetch 3 at a time
+  for(var i=0; i<twList.length; i+=3){
+    var batch = twList.slice(i, i+3);
+    await Promise.allSettled(batch.map(async function(w){
+      try {
+        var tick = w.tick;
+        // Use current month
+        var now = new Date();
+        var monthStr = now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2);
+        var j = await safeFetch(PROXY+'/twse/history?symbol='+tick+'&month='+monthStr);
+        if(j.history && j.history.length > 5){
+          var d = SD[w.sym];
+          if(!d) return;
+          var hist = j.history.map(function(r){
+            return {t:parseTwDate(r.date), c:+r.close, o:+(r.open||r.close),
+                    h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
+          }).filter(function(r){ return r.c>0; });
+          if(hist.length > 5){
+            d.history  = hist;
+            d.histReal = true;
+          }
+        }
+      } catch(e){}
+    }));
+    // Small delay between batches
+    await new Promise(function(r){ setTimeout(r, 300); });
+  }
+
+  // US: fetch 3 at a time
+  for(var i=0; i<usList.length; i+=3){
+    var batch = usList.slice(i, i+3);
+    await Promise.allSettled(batch.map(async function(w){
+      try {
+        var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
+        if(j.history && j.history.length > 5){
+          var d = SD[w.sym];
+          if(!d) return;
+          var hist = j.history.map(function(r){
+            return {t:new Date(r.date), c:+r.close, o:+(r.open||r.close),
+                    h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
+          }).filter(function(r){ return r.c>0; });
+          if(hist.length > 5){
+            d.history  = hist;
+            d.histReal = true;
+          }
+        }
+      } catch(e){}
+    }));
+    await new Promise(function(r){ setTimeout(r, 300); });
+  }
+
+  // Re-render cards with real scores
+  renderAll();
+  updateSignalCounts();
+  console.log('Background history fetch complete');
 }
 
 // ── INIT ─────────────────────────────────────────────────────
