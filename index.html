@@ -2115,10 +2115,11 @@ function buildTechHTML(hist,mtype){
 
 // ── FUNDAMENTALS ─────────────────────────────────────────────
 async function fetchFundamentals(w){
-  // Invalidate bad cache: if TW stock has usLink cached, clear it
+  // Invalidate bad cache: clear if TW stock has bad result (ok:false or usLink)
   if(FUND[w.sym] !== undefined){
     var cached = FUND[w.sym];
-    if(w.type === 'tw' && cached && cached.usLink) delete FUND[w.sym];
+    var isBadTWCache = w.type === 'tw' && cached && (!cached.ok || cached.usLink);
+    if(isBadTWCache) delete FUND[w.sym];
     else return cached;
   }
   try {
