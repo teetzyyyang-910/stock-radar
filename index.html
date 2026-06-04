@@ -1539,6 +1539,29 @@ function renderOverviewFull(){
   renderOverview();
   // Render leaderboard into the #lb-table-wrap that overview just created
   requestAnimationFrame(()=>{
+    drawThermoCanvas(
+      (function(){
+        var all = WL.map(function(w){ return SD[w.sym]; }).filter(Boolean);
+        if(!all.length) return 50;
+        var rsiAvg = all.reduce(function(a,w){
+          var c=(w.history||[]).map(function(h){return h.c;});
+          return a + (calcRSI(c)||50);
+        },0)/all.length;
+        var ups = all.filter(function(d){return d.chgPct>0;});
+        var temp = Math.round((ups.length/all.length)*60 + (rsiAvg-30)/40*40);
+        return Math.max(0,Math.min(100,temp));
+      })(),
+      (function(){
+        var all = WL.map(function(w){ return SD[w.sym]; }).filter(Boolean);
+        if(!all.length) return 'var(--mu)';
+        var ups = all.filter(function(d){return d.chgPct>0;});
+        var pct = ups.length/all.length;
+        var rsiAvg = all.reduce(function(a,w){ var c=(w.history||[]).map(function(h){return h.c;}); return a+(calcRSI(c)||50); },0)/all.length;
+        var temp = Math.round(pct*60+(rsiAvg-30)/40*40);
+        temp = Math.max(0,Math.min(100,temp));
+        return temp>70?'var(--dn)':temp<30?'var(--up)':'var(--gd)';
+      })()
+    );
     const wrap = document.getElementById('lb-table-wrap');
     if(wrap) renderLbTable(wrap);
     // Draw index sparklines
@@ -1582,31 +1605,75 @@ function renderMbar(){
 }
 
 // ── OVERVIEW ─────────────────────────────────────────────────
-function buildThermoSVG(tc,tempColor){
-  tc = Math.max(0,Math.min(100,tc));
-  var fy = Math.round(10+(1-tc/100)*96);
+function drawThermoCanvas(tc, tempColor){
+  var cv = document.getElementById('thermo-canvas');
+  if(!cv) return;
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  tc = Math.max(0, Math.min(100, tc));
+
+  // Tube background
+  ctx.beginPath();
+  ctx.roundRect(16, 8, 14, 100, 7);
+  ctx.strokeStyle = '#262d40';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Fill gradient
+  var fy = Math.round(10 + (1-tc/100)*96);
   var fh = Math.round((tc/100)*96);
-  var ay = Math.round(10+(1-tc/100)*96);
-  var ticks='';
-  [0,25,50,75,100].forEach(function(v){
-    var ty=Math.round(106-v/100*96);
-    ticks+='<line x1="30" y1="'+ty+'" x2="35" y2="'+ty+'" stroke="#4a5268" stroke-width="1.5"/>';
-    ticks+='<text x="37" y="'+(ty+4)+'" fill="#6b7590" font-size="8" font-family="monospace">'+v+'</text>';
+  if(fh > 0){
+    var grad = ctx.createLinearGradient(0, fy, 0, fy+fh);
+    grad.addColorStop(0, '#f87171');
+    grad.addColorStop(0.5, '#fbbf24');
+    grad.addColorStop(1, '#34d399');
+    ctx.beginPath();
+    ctx.roundRect(18, fy, 10, fh, 4);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  // Bulb
+  ctx.beginPath();
+  ctx.arc(23, 126, 14, 0, Math.PI*2);
+  ctx.strokeStyle = '#262d40';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(23, 126, 11, 0, Math.PI*2);
+  var bgrad = ctx.createLinearGradient(23, 115, 23, 137);
+  bgrad.addColorStop(0, '#f87171');
+  bgrad.addColorStop(0.5, '#fbbf24');
+  bgrad.addColorStop(1, '#34d399');
+  ctx.fillStyle = bgrad;
+  ctx.fill();
+
+  // Tick marks and labels
+  [0, 25, 50, 75, 100].forEach(function(v){
+    var ty = Math.round(106 - v/100*96);
+    ctx.beginPath();
+    ctx.moveTo(30, ty); ctx.lineTo(35, ty);
+    ctx.strokeStyle = '#4a5268';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#6b7590';
+    ctx.font = '8px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(String(v), 37, ty+3);
   });
-  return '<svg width="48" height="155" viewBox="0 0 48 155" xmlns="http://www.w3.org/2000/svg">'
-    +'<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">'
-    +'<stop offset="0%" stop-color="#f87171"/>'
-    +'<stop offset="50%" stop-color="#fbbf24"/>'
-    +'<stop offset="100%" stop-color="#34d399"/>'
-    +'</linearGradient></defs>'
-    +'<rect x="16" y="8" width="14" height="100" rx="7" fill="none" stroke="#262d40" stroke-width="2"/>'
-    +'<rect x="18" y="'+fy+'" width="10" height="'+fh+'" fill="url(#tg)" rx="4"/>'
-    +'<circle cx="23" cy="126" r="14" fill="none" stroke="#262d40" stroke-width="2"/>'
-    +'<circle cx="23" cy="126" r="11" fill="url(#tg)"/>'
-    +ticks
-    +'<polygon points="16,'+ay+' 12,'+(ay-4)+' 12,'+(ay+4)+'" fill="'+tempColor+'"/>'
-    +'</svg>';
+
+  // Arrow indicator
+  var ay = Math.round(10 + (1-tc/100)*96);
+  ctx.beginPath();
+  ctx.moveTo(16, ay);
+  ctx.lineTo(11, ay-4);
+  ctx.lineTo(11, ay+4);
+  ctx.closePath();
+  ctx.fillStyle = tempColor;
+  ctx.fill();
 }
+
 
 function renderOverview(){
   const pg=document.getElementById('page-overview');
@@ -1705,7 +1772,7 @@ function renderOverview(){
     <div class="thermo-card">
       <div class="ov-label" style="margin-bottom:10px;font-size:12px">🌡️ 市場溫度計</div>
       <div style="display:flex;align-items:flex-end;gap:16px">
-        ${buildThermoSVG(tempClamped,tempColor)}
+        <canvas id="thermo-canvas" width="48" height="155" style="flex-shrink:0"></canvas>
         <div style="flex:1">
           <div class="thermo-val" style="color:${tempColor};line-height:1">${tempClamped}°</div>
           <div class="thermo-label" style="margin-bottom:14px">${tempLabel}</div>
@@ -2136,7 +2203,18 @@ async function fetchChipHTML(w){
         const mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
         var pts=vals.map(function(v,i){return parseFloat(((i/(vals.length-1))*60).toFixed(1))+','+parseFloat((18-((v-mn)/rng)*16).toFixed(1));}).join(' ');
         const col=vals[vals.length-1]>vals[0]?'#f87171':'#34d399';
-        return '<svg width="64" height="20" style="vertical-align:middle;margin-left:4px"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
+        // Build data URI canvas sparkline
+        var spark = document.createElement('canvas');
+        spark.width=64; spark.height=20;
+        var sctx = spark.getContext('2d');
+        sctx.beginPath();
+        vals.forEach(function(v,i){
+          var sx=parseFloat(((i/(vals.length-1))*62).toFixed(1));
+          var sy=parseFloat((18-((v-mn)/rng)*16).toFixed(1));
+          i===0?sctx.moveTo(sx,sy):sctx.lineTo(sx,sy);
+        });
+        sctx.strokeStyle=col; sctx.lineWidth=1.5; sctx.stroke();
+        return '<img src="'+spark.toDataURL()+'" width="64" height="20" style="vertical-align:middle;margin-left:4px"/>';
       })();
       html+='<!-- MARGIN -->';
       html+=`<div class="chip-row"><span class="chip-name">融資餘額</span><span class="chip-val">${fmtW(mb)}${trendSvg}</span></div>
