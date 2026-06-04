@@ -595,55 +595,98 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📊 總覽頁</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 加權指數 + 那斯達克即時指數</li>
-          <li>• 市場溫度計（0–100°，由RSI+漲跌比計算）</li>
-          <li>• 族群表現橫條圖（面板/記憶體/載板等）</li>
-          <li>• 情緒分布：強漲/小漲/持平/小跌/強跌</li>
-          <li>• 排行榜：漲跌幅 / 成交量 / 綜合評分</li>
+          <li>• 加權指數 + 那斯達克即時指數（含 30 日 sparkline）</li>
+          <li>• 市場溫度計（0–100°，由 RSI + 漲跌比計算）</li>
+          <li>• 族群表現橫條圖 — <strong style="color:var(--tx)">點擊直接切換到該族群</strong></li>
+          <li>• 情緒分布：強漲 / 小漲 / 持平 / 小跌 / 強跌</li>
+          <li>• 排行榜：漲跌幅 / 成交量 / 綜合評分（可切換全部/台股/美股）</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📈 個股卡片</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• <strong style="color:var(--tx)">右上角圓形數字 = 綜合評分（0–100）</strong>，分數越高代表技術面越強</li>
-          <li>• 評分 ≥ 70 顯示高亮色，45–69 金色，&lt; 45 偏空色</li>
+          <li>• 右上角圓形數字 = <strong style="color:var(--tx)">綜合評分（0–100）</strong>，歷史資料載入前顯示「—」</li>
           <li>• 台股：漲紅跌綠｜美股：漲綠跌紅</li>
-          <li>• 訊號徽章：🟢進場 / 🔴減碼 / 🟡觀察</li>
-          <li>• 點擊卡片開啟個股詳細分析頁</li>
-          <li>• 走勢圖疊加 MA5（黃）/ MA20（紫）</li>
+          <li>• <strong style="color:var(--tx)">vs 大盤</strong>：個股漲跌幅 - 大盤指數漲跌幅</li>
+          <li>• 訊號徽章：🟢進場 / 🔴減碼 / 🟡觀察（hover 查看觸發條件）</li>
+          <li>• ☆ 按鈕加入自選清單，點擊卡片開啟個股詳細頁</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 全域搜尋</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• Header 右上角 🔍 按鈕，或按 <strong style="color:var(--tx)">/</strong> 快捷鍵開啟</li>
+          <li>• 模糊搜尋：輸入代號、名稱或族群關鍵字</li>
+          <li>• <strong style="color:var(--tx)">↑ ↓</strong> 鍵選擇結果，<strong style="color:var(--tx)">Enter</strong> 開啟個股，<strong style="color:var(--tx)">Esc</strong> 關閉</li>
+          <li>• 搜尋結果即時顯示現價和漲跌幅</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⭐ 自選清單</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• 股票卡片右下角 ☆ 按鈕加入 / 移除自選</li>
+          <li>• Tab 列「⭐ 自選」可集中查看所有自選股</li>
+          <li>• 自選頁頂部搜尋框可快速搜尋並加入</li>
+          <li>• 資料儲存於瀏覽器 localStorage，重開後保留</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 個股詳細頁 — 走勢圖</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• 右上角切換 <strong style="color:var(--tx)">折線 / K線</strong> 圖表類型</li>
+          <li>• K 線：<strong style="color:var(--tx)">hover 顯示 OHLC</strong>（開高低收 + 成交量）tooltip</li>
+          <li>• 時間框架：<strong style="color:var(--tx)">1M / 3M / 6M / 1Y</strong>（台股 6M/1Y 較慢）</li>
+          <li>• 疊加 MA5（黃）/ MA20（紫）均線</li>
+          <li>• 台股：漲紅跌綠｜美股：漲綠跌紅</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 個股詳細頁 — 分析面板</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• <strong style="color:var(--tx)">技術指標</strong>：RSI、MACD、均線排列、布林通道</li>
+          <li>• <strong style="color:var(--tx)">籌碼面</strong>：三大法人買賣超 + 融資融券（含近 5 日趨勢圖）</li>
+          <li>• <strong style="color:var(--tx)">基本面</strong>：P/E、預估 P/E、殖利率、EPS、股價淨值比、市值</li>
+          <li>• <strong style="color:var(--tx)">vs 大盤</strong>：相對大盤強弱顯示於漲跌幅旁</li>
+          <li>• 操作建議 / 新聞 / AI 分析（手動觸發，節省免費額度）</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">✦ AI 選股助理</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 6 個分析情境（短線反彈/中期布局等）</li>
-          <li>• 本地篩選引擎即時計算，不消耗額度</li>
-          <li>• Groq AI 生成三欄報告（推薦/觀察/風險）</li>
-          <li>• 推薦結果自動記錄到「追蹤記錄」</li>
-          <li>• 追蹤記錄即時顯示損益百分比</li>
+          <li>• <strong style="color:var(--tx)">情境</strong>（上排）控制 AI 分析框架和排序邏輯</li>
+          <li>• <strong style="color:var(--tx)">篩選條件</strong>（下排）獨立控制股票過濾，互不影響</li>
+          <li>• 篩選條件：技術面 / 價量 / 法人動向 / 族群</li>
+          <li>• 分析結果：強烈推薦 / 值得關注 / 注意風險 三欄</li>
+          <li>• 推薦結果自動記錄到追蹤記錄，顯示即時損益和勝率</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 個股詳細頁</div>
+        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 選股追蹤記錄</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 技術指標：均線/RSI/MACD/布林通道</li>
-          <li>• 籌碼面：三大法人買賣超 + 融資融券</li>
-          <li>• 成交量分析：量比 + 近10日量能圖</li>
-          <li>• 按鈕觸發：操作建議 / 新聞 / AI分析</li>
-          <li>• 手機版底部抽屜，向下滑動關閉</li>
+          <li>• AI 推薦後自動記錄進場價和推薦日期</li>
+          <li>• 即時計算每筆推薦的損益百分比</li>
+          <li>• <strong style="color:var(--tx)">勝率統計</strong>：顯示「勝率 X% (Y/Z)」</li>
+          <li>• 最多保留 30 筆記錄，儲存於 localStorage</li>
         </ul>
       </div>
     </div>
 
     <!-- 評分說明 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">⭐ 綜合評分系統（0–100分）</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase">⭐ 綜合評分系統（0–100 分）</div>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 需真實歷史資料才計算｜合成資料期間顯示「—」</span>
+      </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
         <div style="text-align:center;padding:10px;background:var(--s2);border-radius:8px">
-          <div style="font-size:20px;font-weight:700;color:var(--dn);font-family:monospace">40</div>
+          <div style="font-size:20px;font-weight:700;color:var(--pu);font-family:monospace">40</div>
           <div style="font-size:11px;color:var(--mu2);margin-top:4px">技術面</div>
           <div style="font-size:10px;color:var(--mu);margin-top:2px">RSI + 均線 + MACD</div>
         </div>
@@ -663,24 +706,24 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
           <div style="font-size:10px;color:var(--mu);margin-top:2px">近下軌得分高</div>
         </div>
       </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.8">
+        評分顏色：<span style="color:#a78bfa">■</span> ≥ 70 紫色強勢　<span style="color:var(--gd)">■</span> 45–69 金色中性　<span style="color:var(--fl)">■</span> &lt; 45 偏弱
+      </div>
     </div>
 
     <!-- 訊號說明 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
         <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase">🎯 訊號邏輯</div>
         <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📅 日線指標 · 收盤後更新</span>
         <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">🔒 需連續 2 次確認才觸發</span>
+        <span style="font-size:10px;color:var(--mu2);background:var(--s2);border:1px solid var(--bd);padding:2px 8px;border-radius:10px">📊 需真實歷史資料才啟動</span>
       </div>
-
-      <!-- 穩定性機制說明 -->
       <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--mu2);line-height:1.8">
-        <strong style="color:var(--pu)">穩定性門檻：</strong>每 3 分鐘計算一次，同一訊號需<strong style="color:var(--tx)">連續 2 次</strong>計算結果相同才顯示。避免價格短暫波動造成訊號頻繁橫跳。<br>
-        訊號基於<strong style="color:var(--tx)">日線技術指標</strong>，需個股歷史資料載入後才啟動（合成資料期間不顯示）。
+        <strong style="color:var(--pu)">穩定性門檻：</strong>每 3 分鐘計算一次，同一訊號需<strong style="color:var(--tx)">連續 2 次</strong>計算結果相同才顯示，避免短暫波動造成訊號頻繁橫跳。<br>
+        合成歷史資料期間（個股未點開前）<strong style="color:var(--tx)">不計算、不顯示訊號</strong>。卡片訊號徽章可 hover 查看詳細觸發條件。
       </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-
         <div style="padding:12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#f87171;margin-bottom:8px">🟢 進場訊號</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
@@ -694,7 +737,6 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
         </div>
-
         <div style="padding:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:#34d399;margin-bottom:8px">🔴 減碼警示</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
@@ -708,23 +750,19 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
             <span style="color:var(--gd)">→ 總分 ≥ 3 且含強訊號<br>→ 連續 2 次確認後顯示</span>
           </div>
         </div>
-
         <div style="padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px">
           <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🟡 持續觀望</div>
           <div style="font-size:11px;color:var(--mu2);line-height:2">
             · 進場或減碼分數達 1–2 分<br>
             · 或 MACD 即將黃金交叉<br>
             · 訊號尚未達到確認標準<br>
-            <span style="color:var(--gd)">→ 同樣需連續 2 次確認<br>→ 持續追蹤，不急行動</span>
+            <span style="color:var(--gd)">→ 同樣需連續 2 次確認<br>→ 持續追蹤，不急於行動</span>
           </div>
         </div>
-
       </div>
-
-      <!-- 訊號 tooltip 說明 -->
       <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.7">
-        💡 卡片上的訊號徽章可 hover 查看詳細觸發條件（如「RSI低位回升＋MACD翻正」）<br>
-        💡 Tab 上顯示「日線」標示，提醒此為日線技術指標，非盤中即時訊號
+        💡 Tab 上顯示「日線」標示，提醒此為日線技術指標，非盤中即時訊號<br>
+        💡 卡片訊號徽章可 hover 查看詳細觸發條件（如「RSI低位回升＋MACD翻正」）
       </div>
     </div>
 
@@ -734,23 +772,48 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <ul style="font-size:13px;color:var(--mu2);line-height:2.2;list-style:none;padding:0">
         <li>• <strong style="color:var(--tx)">本平台資料僅供參考，不構成任何投資建議，買賣請自行判斷。</strong></li>
         <li>• 即時行情來自 TWSE MIS API + Yahoo Finance，盤中可能有 15 分鐘延遲。</li>
-        <li>• 三大法人/融資融券資料為收盤後更新，盤中顯示前一日數據。</li>
+        <li>• 三大法人 / 融資融券資料為收盤後更新，盤中顯示前一日數據。</li>
+        <li>• 基本面資料（P/E、殖利率等）來自 Yahoo Finance，可能有延遲或缺漏。</li>
         <li>• AI 分析由 Groq (llama-3.3-70b) 生成，新聞搜尋由 Gemini 2.5 Flash 提供。</li>
-        <li>• Groq/Gemini 為免費額度，AI 功能採手動觸發，避免額度耗盡。</li>
-        <li>• 部分台股（上櫃 OTC）即時報價可能有所延遲或缺失。</li>
-        <li>• 選股追蹤記錄儲存於瀏覽器 localStorage，清除快取後會消失。</li>
+        <li>• Groq / Gemini 為免費額度，AI 功能採手動觸發，避免額度耗盡。</li>
+        <li>• 評分、訊號均需個股歷史資料載入後才啟動，載入前顯示「—」屬正常。</li>
+        <li>• 選股追蹤記錄與自選清單儲存於瀏覽器 localStorage，清除快取後會消失。</li>
+        <li>• K 線 6M / 1Y 時間框架台股需多次 API 請求，載入較慢屬正常。</li>
       </ul>
+    </div>
+
+    <!-- 快捷鍵 -->
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">⌨️ 快捷鍵</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">/</kbd>
+          <span style="font-size:12px;color:var(--mu2)">開啟全域搜尋</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Esc</kbd>
+          <span style="font-size:12px;color:var(--mu2)">關閉搜尋 / 關閉個股詳細頁</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">↑ ↓</kbd>
+          <span style="font-size:12px;color:var(--mu2)">搜尋結果選擇</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border-radius:8px">
+          <kbd style="background:var(--s3);border:1px solid var(--bd2);border-radius:5px;padding:3px 10px;font-family:monospace;font-size:12px;color:var(--tx)">Enter</kbd>
+          <span style="font-size:12px;color:var(--mu2)">開啟選中的個股詳細頁</span>
+        </div>
+      </div>
     </div>
 
     <!-- 資料來源 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
       <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔗 資料來源</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TWSE 台灣證交所 MIS API</span>
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TPEX 證券櫃買中心</span>
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Yahoo Finance API</span>
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Gemini 2.5 Flash（新聞）</span>
-        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Groq llama-3.3-70b（AI分析）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TWSE 台灣證交所 MIS API（即時行情）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">TPEX 證券櫃買中心（上櫃歷史）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Yahoo Finance API（美股 + 歷史 + 基本面）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Gemini 2.5 Flash（新聞搜尋）</span>
+        <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Groq llama-3.3-70b（AI 分析）</span>
         <span style="padding:4px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--mu2)">Cloudflare Worker（後端代理）</span>
       </div>
     </div>
@@ -1809,7 +1872,7 @@ function renderGrid(){
           <div class="sname">${w.name} · ${w.sec}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-          <span class="score-badge ${scoreCls}" title="綜合評分 ${score}">${score}</span>
+          <span class="score-badge ${scoreCls}" title="${score!==null?'綜合評分 '+score:'資料載入中'}" style="${score===null?'opacity:.4':''}">${scoreDisplay}</span>
           <div class="sprice" style="color:${col}">${fmt(d.price)}</div>
           <div class="schg"><span style="color:${col}">${sgn(d.chg)}${fmt(d.chg)}</span><span style="color:${col}">(${sgn(d.chgPct)}${fmt(d.chgPct)}%)</span></div>
         </div>
@@ -2184,7 +2247,7 @@ function triggerNews(){
     });
 }
 
-async function triggerOp(){
+async async function triggerOp(){
   const ctx = window._aiCtx;
   if(!ctx) return;
   document.getElementById('m-op').innerHTML = '<div class="spin"></div> 分析中...';
