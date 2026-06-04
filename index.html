@@ -2276,9 +2276,10 @@ async function fetchChipHTML(w){
       const d=instR.value;
       const fn=d.latest?.foreign_net||0, tn=d.latest?.trust_net||0, t5=d.sum5?.total||0;
       const fc=fn>=0?'var(--dn)':'var(--up)', tc=tn>=0?'var(--dn)':'var(--up)', t5c=t5>=0?'var(--dn)':'var(--up)';
-      html+=`<div class="chip-row"><span class="chip-name">外資今日</span><span class="chip-val" style="color:${fc}">${fn>=0?'+':''}${fmtW(fn)}</span></div>
-        <div class="chip-row"><span class="chip-name">投信今日</span><span class="chip-val" style="color:${tc}">${tn>=0?'+':''}${fmtW(tn)}</span></div>
-        <div class="chip-row"><span class="chip-name">三大法人5日</span><span class="chip-val" style="color:${t5c}">${t5>=0?'+':''}${fmtW(t5)}</span></div>`;
+      const fmtNet = function(v){ return v===0 ? '持平' : (v>0?'+':'')+fmtW(v); };
+      html+=`<div class="chip-row"><span class="chip-name">外資今日</span><span class="chip-val" style="color:${fc}">${fmtNet(fn)}</span></div>
+        <div class="chip-row"><span class="chip-name">投信今日</span><span class="chip-val" style="color:${tc}">${fmtNet(tn)}</span></div>
+        <div class="chip-row"><span class="chip-name">三大法人5日</span><span class="chip-val" style="color:${t5c}">${fmtNet(t5)}</span></div>`;
     }
     if(margR.status==='fulfilled'&&margR.value.ok){
       const md=margR.value;
@@ -2436,8 +2437,7 @@ async function openModal(sym){
     fetchChipHTML(w),
     fetchFundamentals(w),
   ]);
-  console.log('[DEBUG] chipHTML:', typeof chipHTML, chipHTML && chipHTML.inst ? 'has inst('+chipHTML.inst.length+')' : 'no inst');
-  console.log('[DEBUG] fund:', JSON.stringify(fund));
+
   const chipInstEl   = document.getElementById('m-chip-inst');
   const chipMarginEl = document.getElementById('m-chip-margin');
   const instContent   = (chipHTML && chipHTML.inst)   ? chipHTML.inst   : (typeof chipHTML==='string' ? chipHTML : '');
@@ -3716,7 +3716,8 @@ async function fetchHistoryBackground(){
       try {
         var allHist = [];
         // Fetch 3 months (current + 2 previous)
-        var monthsNeeded = kRange==='1m'?1 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
+        // Always fetch at least 2 months (current + previous) for 1M view
+        var monthsNeeded = kRange==='1m'?2 : kRange==='3m'?3 : kRange==='6m'?6 : 12;
         for(var km=monthsNeeded-1; km>=0; km--){
           var dt  = new Date();
           dt.setDate(1); // avoid day overflow when subtracting months
@@ -3727,6 +3728,8 @@ async function fetchHistoryBackground(){
             if(j.history && j.history.length > 0) allHist = allHist.concat(j.history);
           } catch(e){ console.warn('hist month skip:', mStr); }
         }
+        // For 1M, only keep last 30 bars
+        if(kRange==='1m' && allHist.length > 30) allHist = allHist.slice(-30);
         if(allHist.length > 10){
           var d = SD[w.sym];
           if(!d) return;
