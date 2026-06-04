@@ -1603,6 +1603,42 @@ function renderMbar(){
 }
 
 // ── OVERVIEW ─────────────────────────────────────────────────
+// ── 溫度計歷史趨勢 ───────────────────────────────────────────
+function saveThermoHistory(tc){
+  try {
+    var today = new Date().toLocaleDateString('zh-TW');
+    var hist  = JSON.parse(localStorage.getItem('sr_thermo_hist')||'[]');
+    // Update or insert today's entry
+    var idx = hist.findIndex(function(h){ return h.date===today; });
+    if(idx >= 0) hist[idx].val = tc;
+    else hist.unshift({date:today, val:tc});
+    // Keep last 5 days
+    hist = hist.slice(0,5);
+    localStorage.setItem('sr_thermo_hist', JSON.stringify(hist));
+  } catch(e){}
+}
+
+function renderThermoHistory(){
+  try {
+    var hist = JSON.parse(localStorage.getItem('sr_thermo_hist')||'[]');
+    if(!hist.length) return '';
+    var rows = hist.map(function(h,i){
+      var label = i===0?'今日':i===1?'昨日':(i+'日前');
+      var col   = h.val>70?'var(--dn)':h.val>50?'var(--gd)':h.val>30?'var(--up)':'#60a5fa';
+      var barW  = Math.round(h.val);
+      return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+        +'<span style="font-size:9px;color:var(--mu);width:28px;flex-shrink:0">'+label+'</span>'
+        +'<div style="flex:1;background:var(--s2);border-radius:3px;height:5px;overflow:hidden">'
+        +'<div style="width:'+barW+'%;height:100%;background:'+col+';border-radius:3px"></div></div>'
+        +'<span style="font-size:9px;font-family:monospace;color:'+col+';width:24px;text-align:right">'+h.val+'°</span>'
+        +'</div>';
+    }).join('');
+    return '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)">'
+      +'<div style="font-size:9px;color:var(--mu);margin-bottom:5px;letter-spacing:.5px">📅 近5日趨勢</div>'
+      +rows+'</div>';
+  } catch(e){ return ''; }
+}
+
 function drawThermoCanvas(tc, tempColor){
   var cv = document.getElementById('thermo-canvas');
   if(!cv) return;
@@ -1687,6 +1723,7 @@ function renderOverview(){
   const temp=Math.round(upRatio*60 + (rsiAvg-30)/40*40);
   const tempClamped=Math.max(0,Math.min(100,temp));
   window._lastThermoVal=tempClamped;
+  saveThermoHistory(tempClamped);
   const tempColor=tempClamped>70?'var(--dn)':tempClamped>50?'var(--gd)':tempClamped>30?'var(--up)':'var(--up)';
   window._lastThermoCol=tempColor;
   const tempLabel=tempClamped>75?'過熱⚠':tempClamped>60?'偏多📈':tempClamped>40?'中性📊':tempClamped>25?'偏空📉':'極度悲觀😨';
@@ -1785,18 +1822,7 @@ function renderOverview(){
           </div>
         </div>
       </div>
-      <!-- Thermo bottom: emotion label + quick stats -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)">
-        <div>
-          <div style="font-size:11px;font-weight:600;color:${tempColor}">${tempClamped}° ${tempLabel}</div>
-          <div style="font-size:10px;color:var(--mu);margin-top:2px">${tempClamped>70?'RSI偏高，留意超買風險':tempClamped<30?'RSI偏低，留意底部反彈':tempClamped>50?'市場偏多，謹慎追高':'觀望為主，等待方向'}</div>
-        </div>
-        <div style="display:flex;gap:10px;font-family:monospace;font-size:12px">
-          <span style="color:var(--dn)">↑ ${ups.length}</span>
-          <span style="color:var(--fl)">↔ ${flat_cnt}</span>
-          <span style="color:var(--up)">↓ ${dns.length}</span>
-        </div>
-      </div>
+      ${renderThermoHistory()}
     </div>
     <div class="grp-perf">
       <div class="ov-label" style="margin-bottom:10px">族群表現</div>
@@ -2361,8 +2387,16 @@ async function openModal(sym){
   ]);
   const chipInstEl   = document.getElementById('m-chip-inst');
   const chipMarginEl = document.getElementById('m-chip-margin');
-  if(chipInstEl)   chipInstEl.innerHTML   = (chipHTML && chipHTML.inst)   ? chipHTML.inst   : (chipHTML || '');
-  if(chipMarginEl) chipMarginEl.innerHTML = (chipHTML && chipHTML.margin) ? chipHTML.margin : '';
+  const instContent   = (chipHTML && chipHTML.inst)   ? chipHTML.inst   : (typeof chipHTML==='string' ? chipHTML : '');
+  const marginContent = (chipHTML && chipHTML.margin) ? chipHTML.margin : '';
+  if(chipInstEl)   chipInstEl.innerHTML   = instContent;
+  if(chipMarginEl) chipMarginEl.innerHTML = marginContent;
+  // Show dot indicator on margin tab if data exists
+  var margBtn = document.getElementById('chip-tab-margin');
+  if(margBtn){
+    var hasMargin = marginContent && marginContent.indexOf('融資餘額') >= 0;
+    margBtn.innerHTML = hasMargin ? '融資融券 <span style="color:#34d399;font-size:9px">●</span>' : '融資融券';
+  }
   const fundEl2 = document.getElementById('m-fund');
   if(fundEl2) fundEl2.innerHTML = renderFundHTML(fund, w.type);
 
@@ -3613,64 +3647,76 @@ function navigateToGroup(grpKey){
 
 // ── 背景批次抓歷史資料 ──────────────────────────────────────
 async function fetchHistoryBackground(){
-  var twList = WL.filter(function(w){ return w.type==='tw' && !SD[w.sym]?.histReal; });
-  var usList = WL.filter(function(w){ return w.type==='us' && !SD[w.sym]?.histReal; });
+  var twList = WL.filter(function(w){ return w.type==='tw' && !(SD[w.sym] && SD[w.sym].histReal); });
+  var usList = WL.filter(function(w){ return w.type==='us' && !(SD[w.sym] && SD[w.sym].histReal); });
 
-  // TW: fetch 3 at a time
+  // TW: fetch 3 months of history, 3 stocks at a time
   for(var i=0; i<twList.length; i+=3){
     var batch = twList.slice(i, i+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
-        var tick = w.tick;
-        // Use current month
-        var now = new Date();
-        var monthStr = now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2);
-        var j = await safeFetch(PROXY+'/twse/history?symbol='+tick+'&month='+monthStr);
-        if(j.history && j.history.length > 5){
+        var allHist = [];
+        // Fetch 3 months (current + 2 previous)
+        for(var m=2; m>=0; m--){
+          var dt  = new Date();
+          dt.setMonth(dt.getMonth() - m);
+          var mStr = dt.getFullYear() + ('0'+(dt.getMonth()+1)).slice(-2);
+          var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&month='+mStr);
+          if(j.history) allHist = allHist.concat(j.history);
+        }
+        if(allHist.length > 10){
           var d = SD[w.sym];
           if(!d) return;
-          var hist = j.history.map(function(r){
+          var hist = allHist.map(function(r){
             return {t:parseTwDate(r.date), c:+r.close, o:+(r.open||r.close),
                     h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
-          }).filter(function(r){ return r.c>0; });
-          if(hist.length > 5){
+          }).filter(function(r){ return r.c>0 && !isNaN(r.c); });
+          // Deduplicate by date
+          var seen = {};
+          hist = hist.filter(function(r){
+            var key = r.t ? r.t.toDateString() : '';
+            if(seen[key]) return false;
+            seen[key] = true; return true;
+          });
+          if(hist.length > 15){
             d.history  = hist;
             d.histReal = true;
           }
         }
-      } catch(e){}
+      } catch(e){ console.warn('BG hist TW error:', w.tick, e.message); }
     }));
-    // Small delay between batches
-    await new Promise(function(r){ setTimeout(r, 300); });
+    await new Promise(function(r){ setTimeout(r, 500); });
+    // Re-render after each batch so scores update progressively
+    renderGrid();
   }
 
-  // US: fetch 3 at a time
+  // US: 3mo range
   for(var i=0; i<usList.length; i+=3){
     var batch = usList.slice(i, i+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
         var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
-        if(j.history && j.history.length > 5){
+        if(j.history && j.history.length > 15){
           var d = SD[w.sym];
           if(!d) return;
           var hist = j.history.map(function(r){
             return {t:new Date(r.date), c:+r.close, o:+(r.open||r.close),
                     h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
-          }).filter(function(r){ return r.c>0; });
-          if(hist.length > 5){
+          }).filter(function(r){ return r.c>0 && !isNaN(r.c); });
+          if(hist.length > 15){
             d.history  = hist;
             d.histReal = true;
           }
         }
-      } catch(e){}
+      } catch(e){ console.warn('BG hist US error:', w.sym, e.message); }
     }));
-    await new Promise(function(r){ setTimeout(r, 300); });
+    await new Promise(function(r){ setTimeout(r, 400); });
+    renderGrid();
   }
 
-  // Re-render cards with real scores
-  renderAll();
   updateSignalCounts();
-  console.log('Background history fetch complete');
+  renderOverviewFull();
+  console.log('Background history fetch complete, histReal stocks:', WL.filter(function(w){ return SD[w.sym]&&SD[w.sym].histReal; }).length);
 }
 
 // ── INIT ─────────────────────────────────────────────────────
