@@ -3013,6 +3013,7 @@ function closeModal(){
 let activeFilters = new Set();
 let activeGrps    = new Set();
 let activeScen    = 'rebound';
+let historyBackgroundPromise = null;
 
 // ── SCENARIO DEFINITIONS ──────────────────────────────────────
 const SCENARIOS = {
@@ -3176,6 +3177,13 @@ async function runPicker(){
 
   // Filter
   var def = SCENARIOS[activeScen] || SCENARIOS.rebound;
+
+  // Ensure scores/signals are based on real history, not only stocks opened in the modal.
+  if(typeof ensureHistoryBackground === 'function'){
+    out.innerHTML = '<div style="color:var(--gd);padding:12px"><span class="spin"></span> 載入歷史資料與評分中...</div>';
+    await ensureHistoryBackground();
+  }
+
   var filtered = applyFilters(WL, activeFilters, activeGrps);
   var pool = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
   var allStocks = pool.length > 0 ? pool : WL.filter(function(w){ return SD[w.sym]; });
@@ -3277,7 +3285,6 @@ function renderFilterResults(stocks){
     var scoreCls = score !== null ? getScoreClass(score, w.type) : 'score-mid';
     var col = ccCol(d.chgPct, w.type);
     var tickCol = w.type==='tw' ? 'var(--tw)' : 'var(--us)';
-    var scoreCls = getScoreClass(score, w.type);
     return '<div onclick="openModal(\'' + w.sym + '\')" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);cursor:pointer">' +
       '<span class="score-badge ' + scoreCls + '" style="width:28px;height:28px;font-size:11px">' + (score !== null ? score : '—') + '</span>' +
       '<div style="flex:1">' +
@@ -3478,6 +3485,7 @@ function doRefresh(){
   btn.innerHTML = '<span class="spin"></span>';
   btn.disabled = true;
   fetchPrices().catch(console.warn).finally(function(){
+    if(typeof ensureHistoryBackground === 'function') ensureHistoryBackground();
     btn.textContent = '↻ 重新整理';
     btn.disabled = false;
   });
@@ -3863,6 +3871,14 @@ async function fetchHistoryBackground(){
   console.log('Background history fetch complete, histReal stocks:', WL.filter(function(w){ return SD[w.sym]&&SD[w.sym].histReal; }).length);
 }
 
+function ensureHistoryBackground(){
+  if(historyBackgroundPromise) return historyBackgroundPromise;
+  historyBackgroundPromise = fetchHistoryBackground()
+    .catch(function(e){ console.warn('Background history fetch failed:', e.message); })
+    .finally(function(){ historyBackgroundPromise = null; });
+  return historyBackgroundPromise;
+}
+
 // ── INIT ─────────────────────────────────────────────────────
 initStatic();
 renderOverviewFull();
@@ -3871,7 +3887,9 @@ loadCustomWl();
 var _initScen = document.querySelector('.scen[data-scen="rebound"]');
 if(_initScen) selectScen(_initScen);
 updateFilterSummary();
-fetchPrices().catch(console.warn);
+fetchPrices()
+  .then(function(){ return ensureHistoryBackground(); })
+  .catch(console.warn);
 setInterval(function(){ fetchPrices().catch(console.warn); }, 180000);
 </script>
 </body>
