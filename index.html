@@ -2263,26 +2263,66 @@ function switchChipTab(tab){
   }
 }
 
+// Fetch institutional data directly from TWSE openapi (bypasses Cloudflare IP block)
+async function fetchInstDirect(tick){
+  for(var daysBack=0; daysBack<=5; daysBack++){
+    var dt = new Date();
+    dt.setDate(dt.getDate() - daysBack);
+    if(dt.getDay()===0 || dt.getDay()===6) continue;
+    var dateStr = dt.getFullYear()
+      + ('0'+(dt.getMonth()+1)).slice(-2)
+      + ('0'+dt.getDate()).slice(-2);
+    try {
+      var res = await fetch(
+        'https://openapi.twse.com.tw/v1/fund/T86?date='+dateStr,
+        { headers: { 'Accept': 'application/json' } }
+      );
+      var arr = await res.json();
+      if(!Array.isArray(arr) || arr.length < 100) continue;
+      var found = arr.find(function(r){ return r['證券代號']===tick; });
+      if(found){
+        return {
+          ok: true,
+          date: found['日期']||dateStr,
+          latest: {
+            date: (function(){
+              var d=found['日期']||'';
+              if(d.length===7) return (parseInt(d.slice(0,3))+1911)+'/'+d.slice(3,5)+'/'+d.slice(5,7);
+              return dateStr;
+            })(),
+            foreign_net: parseInt((found['外陸資買賣超股數(不含外資自營商)']||'0').replace(/,/g,'').replace(/[+]/g,'')),
+            trust_net:   parseInt((found['投信買賣超股數']||'0').replace(/,/g,'').replace(/[+]/g,'')),
+            dealer_net:  parseInt((found['自營商買賣超股數']||'0').replace(/,/g,'').replace(/[+]/g,'')),
+            total_net:   parseInt((found['三大法人買賣超股數']||'0').replace(/,/g,'').replace(/[+]/g,'')),
+          }
+        };
+      }
+    } catch(e){}
+  }
+  return null;
+}
+
 async function fetchChipHTML(w){
   if(w.type!=='tw')return'<div style="color:var(--mu);font-size:10px">美股籌碼資料暫不支援</div>';
   // ETF (0xxx) — no institutional/margin data available
   const isETF = w.tick.startsWith('0');
   try{
     const[instR,margR]=await Promise.allSettled([
-      isETF ? Promise.resolve({ok:false,_skip:true}) : safeFetch(`${PROXY}/twse/institutional?symbol=${w.tick}`),
+      isETF ? Promise.resolve({ok:false,_skip:true}) : fetchInstDirect(w.tick),
       isETF ? Promise.resolve({ok:false,_skip:true}) : safeFetch(`${PROXY}/twse/margin?symbol=${w.tick}`)
     ]);
     let html='';
-    if(instR.status==='fulfilled'&&instR.value.ok){
+    if(instR.status==='fulfilled'&&instR.value&&instR.value.ok){
       const d=instR.value;
-      const fn=d.latest?.foreign_net||0, tn=d.latest?.trust_net||0, t5=d.sum5?.total||0;
-      const fc=fn>=0?'var(--dn)':'var(--up)', tc=tn>=0?'var(--dn)':'var(--up)', t5c=t5>=0?'var(--dn)':'var(--up)';
+      const lat=d.latest||{};
+      const fn=lat.foreign_net||0, tn=lat.trust_net||0, tot=lat.total_net||0;
+      const fc=fn>=0?'var(--dn)':'var(--up)', tc=tn>=0?'var(--dn)':'var(--up)', tc2=tot>=0?'var(--dn)':'var(--up)';
       const fmtNet = function(v){ return v===0 ? '持平' : (v>0?'+':'')+fmtW(v); };
-      const instDate = d.latest?.date ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px">📅 資料日期：${d.latest.date}</div>` : '';
+      const instDate = lat.date ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px">📅 資料日期：${lat.date}</div>` : '';
       html+=instDate;
       html+=`<div class="chip-row"><span class="chip-name">外資買賣超</span><span class="chip-val" style="color:${fc}">${fmtNet(fn)}</span></div>
         <div class="chip-row"><span class="chip-name">投信買賣超</span><span class="chip-val" style="color:${tc}">${fmtNet(tn)}</span></div>
-        <div class="chip-row"><span class="chip-name">三大法人5日</span><span class="chip-val" style="color:${t5c}">${fmtNet(t5)}</span></div>`;
+        <div class="chip-row"><span class="chip-name">三大法人</span><span class="chip-val" style="color:${tc2}">${fmtNet(tot)}</span></div>`;
     }
     if(margR.status==='fulfilled'&&margR.value.ok){
       const md=margR.value;
