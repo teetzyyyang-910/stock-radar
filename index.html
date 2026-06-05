@@ -2285,6 +2285,20 @@ async function loadChipData(){
   }
 }
 
+function isLikelyMarketWideMargin(chipData, tick){
+  const row = chipData?.margin?.[tick];
+  const margin = chipData?.margin;
+  if(!row || !margin) return false;
+  const entries = Object.keys(margin).map(function(k){ return margin[k]; }).filter(Boolean);
+  if(entries.length < 3) return false;
+  const sig = function(r){
+    return [r.bal, r.short_bal, r.ratio, r.date].map(function(v){ return v == null ? '' : String(v); }).join('|');
+  };
+  const curSig = sig(row);
+  const same = entries.filter(function(r){ return sig(r) === curSig; }).length;
+  return same >= 3 && same / entries.length >= 0.6;
+}
+
 
 async function fetchChipHTML(w){
   if(w.type!=='tw')return'<div style="color:var(--mu);font-size:10px">美股籌碼資料暫不支援</div>';
@@ -2293,7 +2307,12 @@ async function fetchChipHTML(w){
   // 優先從 GitHub chip_data.json 讀取（本機排程每日更新）
   const chipData = await loadChipData();
   const instFromFile = chipData?.institutional?.[w.tick];
-  const margFromFile = chipData?.margin?.[w.tick];
+  const rawMargFromFile = chipData?.margin?.[w.tick];
+  const marginLooksMarketWide = isLikelyMarketWideMargin(chipData, w.tick);
+  const margFromFile = marginLooksMarketWide ? null : rawMargFromFile;
+  const marginFileWarning = marginLooksMarketWide
+    ? '<div style="color:var(--gd);font-size:10px;line-height:1.5;margin-bottom:6px">本機 chip_data.json 的融資融券疑似全市場統計，已略過以避免誤判個股。</div>'
+    : '';
 
   // 建構 instR/margR 格式，兼容現有顯示邏輯
   const instR = instFromFile
@@ -2356,12 +2375,16 @@ async function fetchChipHTML(w){
         return '<svg width="64" height="20" style="vertical-align:middle;margin-left:4px" xmlns="http://www.w3.org/2000/svg"><polyline points="'+ptsStr+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
       })();
       html+='<!-- MARGIN -->';
+      html+=marginFileWarning;
       html+=`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--bd)">📅 收盤後更新，通常 18:00 後有數據</div>`;
       const marginDate = md.margin?.trend?.[0]?.date ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px">📅 資料日期：${md.margin.trend[0].date}</div>` : '';
       html+=marginDate;
       html+=`<div class="chip-row"><span class="chip-name">融資餘額(張)</span><span class="chip-val">${fmtW(mb)}</span></div>
         <div class="chip-row"><span class="chip-name">融券餘額(張)</span><span class="chip-val">${fmtW(sb)}</span></div>
         <div class="chip-row"><span class="chip-name">券資比</span><span class="chip-val">${sr!=null?sr+'%':'—'}</span></div>`;
+    }
+    if(!(margR.status==='fulfilled'&&margR.value.ok) && marginFileWarning){
+      html+='<!-- MARGIN -->' + marginFileWarning + '<div style="color:var(--mu);font-size:10px">無個股融資融券資料</div>';
     }
     // Split inst and margin
     const instParts   = html.split('<!-- MARGIN -->');
