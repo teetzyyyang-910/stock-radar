@@ -2308,7 +2308,7 @@ async function fetchChipHTML(w){
   const isETF = w.tick.startsWith('0');
   try{
     const[instR,margR]=await Promise.allSettled([
-      isETF ? Promise.resolve({ok:false,_skip:true}) : fetchInstDirect(w.tick),
+      isETF ? Promise.resolve({ok:false,_skip:true}) : safeFetch(`${PROXY}/twse/institutional?symbol=${w.tick}`),
       isETF ? Promise.resolve({ok:false,_skip:true}) : safeFetch(`${PROXY}/twse/margin?symbol=${w.tick}`)
     ]);
     let html='';
