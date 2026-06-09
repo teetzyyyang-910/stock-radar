@@ -980,7 +980,8 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     </div>
   </div>
 </div>
-<script>
+<script>var REMOVED_STOCKS = new Set(); // declared early, initialized below
+
 
 const FB_CONFIG = {
   apiKey:            "AIzaSyCl5PgW4H5uRvd3aX8yfANZ24hEL28yfIo",
@@ -1122,13 +1123,22 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
 }
 
 // Call Firebase save when watchlist or tracker changes
+// ── 已移除股票清單（localStorage 持久化）─────────────────────
+var REMOVED_STOCKS = new Set();
+try {
+  var _removed = JSON.parse(safeStorage('get','sr_removed_stocks')||'[]');
+  _removed.forEach(function(t){ REMOVED_STOCKS.add(t); });
+} catch(e){}
+
+
+
 function saveToFirebase(){
   if(!window._fbSave || !fbUser) return;
   var tracker = JSON.parse(safeStorage('get','sr_tracker')||'[]');
   window._fbSave({
     customWl:      WATCHLIST_CUSTOM,
     tracker:       tracker,
-    removedStocks: [...REMOVED_STOCKS],
+    removedStocks: typeof REMOVED_STOCKS !== 'undefined' ? [...REMOVED_STOCKS] : [],
     updatedAt:     new Date().toISOString()
   });
 }
@@ -1298,17 +1308,12 @@ function calcScore(w, d) {
   const bb     = calcBB(closes);
   const price  = d.price || closes[closes.length-1];
 
-// ── 已移除股票清單（localStorage 持久化）─────────────────────
-var REMOVED_STOCKS = new Set();
-try {
-  var _removed = JSON.parse(safeStorage('get','sr_removed_stocks')||'[]');
-  _removed.forEach(function(t){ REMOVED_STOCKS.add(t); });
-} catch(e){}
 
 // Filter WL to exclude removed stocks
 for(var _i = WL.length-1; _i >= 0; _i--){
   if(REMOVED_STOCKS.has(WL[_i].tick)) WL.splice(_i, 1);
 }
+
 
 
 window.removeFromWL = function removeFromWL(tick){
