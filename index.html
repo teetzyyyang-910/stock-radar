@@ -1307,7 +1307,8 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
             var sym = code + '.TW';
             var mlE = MARKET_LIST.find(function(s){ return s.code===code; });
             var mlName = (mlE && mlE.name) ? mlE.name : code;
-            var mlSec  = (mlE && mlE.sector) ? mlE.sector : (mlE && mlE.type==='tse' ? '上市' : '上櫃');
+            var mlSec  = (mlE && mlE.sector) ? mlE.sector :
+              (inferSectorFromCode(code) || (mlE && mlE.type==='tse' ? '上市' : '上櫃'));
             var mlGrp  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(mlSec, code) : null;
             WL.push({ sym:sym, tick:code, name:mlName, type:'tw', sec:mlSec, grp:mlGrp });
             if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
@@ -1394,7 +1395,8 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
             var sym = code+'.TW';
             var _ml = MARKET_LIST.find(function(s){ return s.code===code; });
             var _n  = (_ml && _ml.name)   ? _ml.name   : code;
-            var _s  = (_ml && _ml.sector) ? _ml.sector : (_ml && _ml.type==='tse' ? '上市' : '上櫃');
+            var _s  = (_ml && _ml.sector) ? _ml.sector :
+              (inferSectorFromCode(code) || (_ml && _ml.type==='tse' ? '上市' : '上櫃'));
             var _g  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(_s, code) : null;
             WL.push({ sym:sym, tick:code, name:_n, type:'tw', sec:_s, grp:_g });
             if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
@@ -4817,13 +4819,50 @@ async function onMarketSearchInput(val){
 }
 
 // ── 產業自動分類 ────────────────────────────────────────────
+// Infer sector name from stock code range (TSE+OTC)
+function inferSectorFromCode(code){
+  var c = parseInt(code)||0;
+  // TSE listed stocks
+  if(c>=2300&&c<=2399) return '半導體';
+  if(c>=2400&&c<=2499) return '半導體';
+  if(c>=3000&&c<=3099) return '半導體';
+  if(c>=3100&&c<=3199) return '電腦及週邊';
+  if(c>=3200&&c<=3399) return '光電業';
+  if(c>=3400&&c<=3499) return '電子零組件';
+  if(c>=3500&&c<=3599) return '電子通路';
+  if(c>=3600&&c<=3799) return '其他電子';
+  if(c>=4900&&c<=4999) return '電子零組件';
+  if(c>=5000&&c<=5099) return '半導體';
+  if(c>=5100&&c<=5299) return '光電業';
+  if(c>=5300&&c<=5499) return '電腦及週邊';
+  if(c>=6000&&c<=6099) return '通信網路';
+  if(c>=6100&&c<=6299) return '光電業';
+  if(c>=6400&&c<=6499) return '其他電子';
+  if(c>=6500&&c<=6599) return '生技醫療';
+  if(c>=6600&&c<=6799) return '其他電子';
+  if(c>=8000&&c<=8099) return '電腦及週邊';
+  if(c>=8100&&c<=8199) return '半導體';
+  if(c>=2000&&c<=2099) return '食品';
+  if(c>=1300&&c<=1399) return '化學工業';
+  if(c>=1400&&c<=1499) return '紡織纖維';
+  if(c>=1500&&c<=1599) return '電機機械';
+  if(c>=1600&&c<=1699) return '電線電纜';
+  if(c>=2100&&c<=2199) return '鋼鐵工業';
+  if(c>=2600&&c<=2699) return '航運業';
+  if(c>=2800&&c<=2899) return '金融保險';
+  return '';
+}
+
 function autoGrpFromSector(sector, code){
   var s = (sector||'').toLowerCase();
   var c = parseInt(code)||0;
-  // For OTC stocks without sector, try to get from MARKET_LIST
-  if((!s || s==='上櫃' || s==='otc') && MARKET_LIST.length > 0){
+  // For stocks without sector, try MARKET_LIST then infer from code
+  if(!s || s==='上市' || s==='上櫃' || s==='tse' || s==='otc'){
     var ml = MARKET_LIST.find(function(x){ return x.code===code; });
     if(ml && ml.sector) s = ml.sector.toLowerCase();
+    if(!s || s==='上市' || s==='上櫃'){
+      s = inferSectorFromCode(code).toLowerCase();
+    }
   }
   // Sector string mapping (TWSE official categories)
   if(s.includes('半導體')) return 'g_carrier';
@@ -4869,7 +4908,8 @@ async function addToWatchlistFromSearch(code, name, exType){
   if(!WL.find(function(w){ return w.tick===code; })){
     var mEntry   = MARKET_LIST.find(function(s){ return s.code===code; });
     var realName = (mEntry && mEntry.name)   ? mEntry.name   : name;
-    var realSec  = (mEntry && mEntry.sector) ? mEntry.sector : (exType==='tse'?'上市':'上櫃');
+    var realSec  = (mEntry && mEntry.sector) ? mEntry.sector :
+      (inferSectorFromCode(code) || (exType==='tse'?'上市':'上櫃'));
     var autoGrp  = autoGrpFromSector(realSec, code);
     WL.push({ sym: sym, tick: code, name: realName, type: 'tw',
       sec: realSec, grp: autoGrp });
