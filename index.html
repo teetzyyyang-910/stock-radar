@@ -1301,24 +1301,6 @@ for(var _i = WL.length-1; _i >= 0; _i--){
   if(REMOVED_STOCKS.has(WL[_i].tick)) WL.splice(_i, 1);
 }
 
-// ── 產業自動分類 ────────────────────────────────────────────
-function autoGrpFromSector(sector, code){
-  if(!sector) return null;
-  var s = sector.toLowerCase();
-  if(s.includes('半導體') || s.includes('semiconductor')) return 'g_carrier';
-  if(s.includes('電腦') || s.includes('資訊') || s.includes('electronic')) return 'g_ai';
-  if(s.includes('光電') || s.includes('面板') || s.includes('optoelectronic')) return 'g_panel';
-  if(s.includes('通信') || s.includes('網路') || s.includes('telecom')) return 'g_leo';
-  if(s.includes('電機') || s.includes('electrical')) return 'g_industrial';
-  if(s.includes('電子零組件') || s.includes('component')) return 'g_passive';
-  if(s.includes('電力') || s.includes('能源') || s.includes('power')) return 'g_power';
-  // Code-based fallback
-  var c = parseInt(code);
-  if(c >= 2300 && c <= 2399) return 'g_carrier';
-  if(c >= 3000 && c <= 3999) return 'g_ai';
-  if(c >= 6000 && c <= 6999) return 'g_leo';
-  return null;
-}
 
 function removeFromWL(tick){
   if(!confirm('確定移除「'+tick+'」？移除後重新整理頁面不會再出現，可透過搜尋重新加入。')) return;
@@ -4460,6 +4442,25 @@ async function onMarketSearchInput(val){
     row.addEventListener('mouseenter', function(){ this.style.background='var(--s2)'; });
     row.addEventListener('mouseleave', function(){ this.style.background=''; });
   });
+}
+
+// ── 產業自動分類 ────────────────────────────────────────────
+function autoGrpFromSector(sector, code){
+  if(!sector) return null;
+  var s = sector.toLowerCase();
+  if(s.includes('半導體') || s.includes('semiconductor')) return 'g_carrier';
+  if(s.includes('電腦') || s.includes('資訊') || s.includes('electronic')) return 'g_ai';
+  if(s.includes('光電') || s.includes('面板') || s.includes('optoelectronic')) return 'g_panel';
+  if(s.includes('通信') || s.includes('網路') || s.includes('telecom')) return 'g_leo';
+  if(s.includes('電機') || s.includes('electrical')) return 'g_industrial';
+  if(s.includes('電子零組件') || s.includes('component')) return 'g_passive';
+  if(s.includes('電力') || s.includes('能源') || s.includes('power')) return 'g_power';
+  // Code-based fallback
+  var c = parseInt(code);
+  if(c >= 2300 && c <= 2399) return 'g_carrier';
+  if(c >= 3000 && c <= 3999) return 'g_ai';
+  if(c >= 6000 && c <= 6999) return 'g_leo';
+  return null;
 }
 
 async function addToWatchlistFromSearch(code, name, exType){
