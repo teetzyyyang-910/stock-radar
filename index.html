@@ -166,7 +166,8 @@ header{
 }
 .hrow1{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 0 8px;
+  padding:8px 0 8px;
+  min-height:48px;
 }
 .hrow2{
   display:flex;align-items:center;justify-content:space-between;
@@ -186,7 +187,7 @@ header{
 .btn-gold{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.35);color:var(--gd);}
 
 /* TABS L1 */
-.tabs-l1{display:flex;padding:10px 0 0;border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.tabs-l1{display:flex;padding:10px 0 0;border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:var(--header-h,96px);z-index:90;background:var(--bg);}
 .tabs-l1::-webkit-scrollbar{display:none;}
 /* TABS L2 (sub-tabs) */
 .tabs-l2{display:none;padding:6px 0 0;border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none;background:var(--bg);-webkit-overflow-scrolling:touch;}
@@ -4994,6 +4995,14 @@ function toggleLightMode(){
   if(btn) btn.textContent = isLight?'🌙':'☀️';
 }
 // ── INIT ─────────────────────────────────────────────────────
+// Set header height CSS variable for sticky tabs
+function updateHeaderHeight(){
+  var h = document.querySelector('header');
+  if(h) document.documentElement.style.setProperty('--header-h', h.offsetHeight+'px');
+}
+window.addEventListener('resize', updateHeaderHeight);
+setTimeout(updateHeaderHeight, 100);
+
 initStatic();
 renderOverviewFull();
 renderMbar();
