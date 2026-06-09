@@ -1304,7 +1304,11 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
         WATCHLIST_CUSTOM.forEach(function(code){
           if(!WL.find(function(w){ return w.tick===code; })){
             var sym = code + '.TW';
-            WL.push({ sym:sym, tick:code, name:code, type:'tw', sec:'自選', grp:null });
+            var mlE = MARKET_LIST.find(function(s){ return s.code===code; });
+            var mlName = (mlE && mlE.name) ? mlE.name : code;
+            var mlSec  = (mlE && mlE.sector) ? mlE.sector : (mlE && mlE.type==='tse' ? '上市' : '上櫃');
+            var mlGrp  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(mlSec, code) : null;
+            WL.push({ sym:sym, tick:code, name:mlName, type:'tw', sec:mlSec, grp:mlGrp });
             if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
           }
         });
@@ -1342,7 +1346,11 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
         WATCHLIST_CUSTOM.forEach(function(code){
           if(!WL.find(function(w){ return w.tick===code; })){
             var sym = code+'.TW';
-            WL.push({ sym:sym, tick:code, name:code, type:'tw', sec:'自選', grp:null });
+            var _ml = MARKET_LIST.find(function(s){ return s.code===code; });
+            var _n  = (_ml && _ml.name)   ? _ml.name   : code;
+            var _s  = (_ml && _ml.sector) ? _ml.sector : (_ml && _ml.type==='tse' ? '上市' : '上櫃');
+            var _g  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(_s, code) : null;
+            WL.push({ sym:sym, tick:code, name:_n, type:'tw', sec:_s, grp:_g });
             if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
           }
         });
@@ -4748,6 +4756,11 @@ async function onMarketSearchInput(val){
 function autoGrpFromSector(sector, code){
   var s = (sector||'').toLowerCase();
   var c = parseInt(code)||0;
+  // For OTC stocks without sector, try to get from MARKET_LIST
+  if((!s || s==='上櫃' || s==='otc') && MARKET_LIST.length > 0){
+    var ml = MARKET_LIST.find(function(x){ return x.code===code; });
+    if(ml && ml.sector) s = ml.sector.toLowerCase();
+  }
   // Sector string mapping (TWSE official categories)
   if(s.includes('半導體')) return 'g_carrier';
   if(s.includes('電腦') || s.includes('資訊服務')) return 'g_ai';
