@@ -1066,7 +1066,8 @@ function updateAuthUI(user){
   }
 }
 
-async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }){
+async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
+  retryCount = retryCount || 0;
   try {
     const ref  = doc(fbDb, 'users', uid);
     const snap = await getDoc(ref);
@@ -1101,7 +1102,14 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }){
         updateCustomWlBadge && updateCustomWlBadge();
       }
     });
-  } catch(e){ console.warn('Firestore sync error:', e); }
+  } catch(e){
+    console.warn('Firestore sync error:', e);
+    if(retryCount < 3 && e.message && e.message.includes('offline')){
+      setTimeout(function(){
+        syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount+1);
+      }, 2000 * (retryCount+1));
+    }
+  }
 }
 
 // Call Firebase save when watchlist or tracker changes
