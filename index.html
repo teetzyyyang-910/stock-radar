@@ -1015,16 +1015,19 @@ async function initFirebase(){
 
     window._fbAuth = fbAuth;
     window._fbDb   = fbDb;
+    var _signingIn = false;
     window._fbSignIn = async function(){
+      if(_signingIn) return;
+      _signingIn = true;
       const provider = new GoogleAuthProvider();
       try {
         await signInWithPopup(fbAuth, provider);
         showToast('✓ 登入成功');
       } catch(e){
-        if(e.code !== 'auth/popup-closed-by-user'){
+        if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request'){
           showToast('登入失敗：'+(e.code||e.message));
         }
-      }
+      } finally { _signingIn = false; }
     };;
     window._fbSignOut = async function(){
       await signOut(fbAuth);
@@ -1087,6 +1090,9 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
       if(Array.isArray(data.tracker)){
         try { safeStorage('set','sr_tracker', JSON.stringify(data.tracker)); } catch(e){}
         loadTracker && loadTracker();
+        // Also refresh tracker modal if open
+        var tm = document.getElementById('tracker-modal');
+        if(tm && tm.style.display !== 'none') renderTrackerModal();
       }
       if(Array.isArray(data.removedStocks)){
         data.removedStocks.forEach(function(t){ REMOVED_STOCKS.add(t); });
@@ -3938,6 +3944,11 @@ function renderTrackerModal(){
   if(!el) return;
   try {
     var records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
+    // Also try to load from Firestore if logged in and local is empty
+    if(!records.length && fbUser){
+      el.innerHTML = '<div style="text-align:center;color:var(--mu);padding:20px;font-size:12px">載入中...</div>';
+      // Will re-render after sync
+    }
     if(!records.length){
       el.innerHTML = '<div style="text-align:center;color:var(--mu);padding:40px 0">尚無追蹤記錄<br><span style="font-size:11px">透過 AI 分析的操作建議可自動記錄</span></div>';
       return;
@@ -3946,7 +3957,7 @@ function renderTrackerModal(){
     // Stats
     var withPnl = records.filter(function(r){
       var w=WL.find(function(x){return x.tick===r.tick;}), d=w?SD[w.sym]:null;
-      return d&&d.price&&r.entry;
+      return d&&d.price&&(r.manualEntry||r.entry);
     });
     var wins = withPnl.filter(function(r){
       var w=WL.find(function(x){return x.tick===r.tick;}), d=w?SD[w.sym]:null;
