@@ -1040,9 +1040,12 @@ async function initFirebase(){
       setTimeout(function(){ location.reload(); }, 1500);
     };
     window._fbSave = async function(data){
-      if(!fbUser || !fbDb) return;
-      const { doc: d2, setDoc: s2 } = await import('https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js');
-      await s2(d2(fbDb, 'users', fbUser.uid), data, { merge: true });
+      if(!fbUser || !fbDb){ console.warn('fbSave: no user/db'); return; }
+      try {
+        const { doc: d2, setDoc: s2 } = await import('https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js');
+        await s2(d2(fbDb, 'users', fbUser.uid), data, { merge: true });
+        console.log('✓ Firestore saved:', Object.keys(data));
+      } catch(e){ console.warn('Firestore save error:', e.code, e.message); }
     };
   } catch(e){
     console.warn('Firebase init error:', e.message);
@@ -2287,15 +2290,20 @@ function renderGrid(){
         <span>${d.real?'即時行情':'參考數據'}</span>
         <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
           <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;color:var(--gd)" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${WATCHLIST_CUSTOM.includes(w.tick)?'⭐':'☆'}</button>
-          <button onclick="event.stopPropagation();removeFromWL('${w.tick}')" title="移除此股票"
-            style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:11px;padding:2px 4px;opacity:.5;line-height:1" 
-            onmouseover="this.style.opacity='1';this.style.color='var(--dn)'"
-            onmouseout="this.style.opacity='.5';this.style.color='var(--mu)'">✕</button>
+          <button class="card-rm-btn" data-tick="${w.tick}" title="移除此股票"
+            style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:11px;padding:2px 4px;opacity:.5;line-height:1">✕</button>
         </span>
       </div>
     </div>`;
   }).join('');
   requestAnimationFrame(()=>{
+    // Event delegation for card remove buttons
+    document.querySelectorAll('.card-rm-btn').forEach(function(btn){
+      btn.onclick = function(e){
+        e.stopPropagation();
+        removeFromWL(this.dataset.tick);
+      };
+    });
     vis.forEach(w=>{
       const d=SD[w.sym]; if(!d?.history?.length)return;
       const id='mc_'+w.sym.replace(/[^a-z0-9]/gi,'_');
@@ -3967,7 +3975,7 @@ function renderTrackerModal(){
       var pnl = (cur && entryPrice) ? (cur-entryPrice)/entryPrice*100 : null;
       var tw  = w && w.type==='tw';
       var pnlCol = pnl===null ? 'var(--mu)' : (pnl>0 ? 'var(--up)' : 'var(--dn)');
-      var days = r.date ? Math.floor((Date.now()-new Date(r.date.replace(/\//g,'-')))/86400000) : '—';
+      var days = '—'; try { if(r.date){ days = Math.floor((Date.now()-new Date(r.date.replace(/\//g,'-')))/86400000); } } catch(ed){}
       return '<tr style="border-bottom:1px solid var(--bd)">'
         + '<td style="padding:10px 8px">'
           + '<div style="display:flex;align-items:center;gap:6px">'
