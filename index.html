@@ -1312,6 +1312,17 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
             var mlGrp  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(mlSec, code) : null;
             WL.push({ sym:sym, tick:code, name:mlName, type:'tw', sec:mlSec, grp:mlGrp });
             if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
+          } else {
+            // Update existing entry if name/sec are still defaults
+            var existing = WL.find(function(w){ return w.tick===code; });
+            if(existing){
+              var mlE2 = MARKET_LIST.find(function(s){ return s.code===code; });
+              if(existing.name === code && mlE2 && mlE2.name) existing.name = mlE2.name;
+              if(!existing.sec || existing.sec==='上市' || existing.sec==='上櫃'){
+                var betterSec = (mlE2 && mlE2.sector) ? mlE2.sector : inferSectorFromCode(code);
+                if(betterSec) existing.sec = betterSec;
+              }
+            }
           }
         });
         updateCustomWlBadge && updateCustomWlBadge();
