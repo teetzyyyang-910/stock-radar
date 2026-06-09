@@ -1084,32 +1084,34 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
       if(Array.isArray(data.customWl)){
         WATCHLIST_CUSTOM = data.customWl;
         try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
-  saveToFirebase();
         updateCustomWlBadge && updateCustomWlBadge();
       }
       // Restore tracker records
       if(Array.isArray(data.tracker)){
         try { safeStorage('set','sr_tracker', JSON.stringify(data.tracker)); } catch(e){}
         loadTracker && loadTracker();
-        // Also refresh tracker modal if open
         var tm = document.getElementById('tracker-modal');
         if(tm && tm.style.display !== 'none') renderTrackerModal();
       }
+      // Restore removed stocks
       if(Array.isArray(data.removedStocks)){
         data.removedStocks.forEach(function(t){ REMOVED_STOCKS.add(t); });
         try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
       }
       showToast('✓ 已從雲端同步資料');
     }
-    // Listen for real-time changes
+    // Listen for real-time changes (read-only, no write back)
     onSnapshot(ref, function(s){
       if(!s.exists()) return;
       var d2 = s.data();
       if(Array.isArray(d2.customWl)){
         WATCHLIST_CUSTOM = d2.customWl;
         try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
-  saveToFirebase();
         updateCustomWlBadge && updateCustomWlBadge();
+      }
+      if(Array.isArray(d2.tracker)){
+        try { safeStorage('set','sr_tracker', JSON.stringify(d2.tracker)); } catch(e){}
+        loadTracker && loadTracker();
       }
     });
   } catch(e){
@@ -4492,6 +4494,11 @@ function autoGrpFromSector(sector, code){
 
 async function addToWatchlistFromSearch(code, name, exType){
   // Add to WATCHLIST_CUSTOM if not already there
+  // Remove from REMOVED_STOCKS if re-adding a previously removed stock
+  if(REMOVED_STOCKS && REMOVED_STOCKS.has(code)){
+    REMOVED_STOCKS.delete(code);
+    try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
+  }
   if(isInWatchlist(code)){
     showToast(code+' 已在追蹤清單');
     return;
