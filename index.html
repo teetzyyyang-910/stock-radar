@@ -1315,51 +1315,45 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
           }
         });
         updateCustomWlBadge && updateCustomWlBadge();
-        // Fetch history + prices for newly added custom stocks
-        setTimeout(function(){
+        // Fetch history + prices for custom stocks
+        // Use a helper that can be called multiple times
+        function fetchCustomStocksData(){
           var customInWL = WL.filter(function(w){
             return WATCHLIST_CUSTOM.indexOf(w.tick) >= 0;
           });
-          var needHist = customInWL.filter(function(w){
-            return !(SD[w.sym] && SD[w.sym].histReal);
-          });
-          if(needHist.length > 0){
-            // Fetch history for each custom stock individually
-            needHist.forEach(function(w){
-              var sym = w.sym;
-              var tick = w.tick;
-              var isOtc = !['0','1','2'].includes(tick[0]);
-              var range = '6mo';
-              safeFetch(PROXY+'/twse/history?symbol='+tick+'&range='+range).then(function(j){
-                if(j && j.history && j.history.length > 5){
-                  var hist = j.history.map(function(r){
-                    return {t:new Date(r.date), c:+(r.close||0), o:+(r.open||0),
-                            h:+(r.high||0), l:+(r.low||0), vol:r.vol||0};
-                  }).filter(function(r){ return r.c > 0; });
-                  if(hist.length > 5 && SD[sym]){
-                    SD[sym].history = hist;
-                    SD[sym].histReal = true;
-                    renderAll && renderAll();
-                    updateSignalCounts && updateSignalCounts();
-                  }
+          if(!customInWL.length) return;
+          // Fetch prices first
+          var codes = customInWL.filter(function(w){ return w.type==='tw'; }).map(function(w){ return w.tick; });
+          if(codes.length > 0){
+            safeFetch(PROXY+'/twse/quote?symbols='+codes.join(',')).then(function(j){
+              if(j && j.data) j.data.forEach(function(q){
+                var sym = q.sym+'.TW';
+                if(SD[sym]){ SD[sym].price=q.price; SD[sym].prev=q.prev; SD[sym].chg=q.chg; SD[sym].chgPct=q.chgPct; SD[sym].vol=q.vol; SD[sym].real=true; }
+              });
+              renderAll && renderAll();
+            }).catch(function(){});
+          }
+          // Fetch history for stocks that don't have it
+          var needHist = customInWL.filter(function(w){ return !(SD[w.sym] && SD[w.sym].histReal); });
+          needHist.forEach(function(w){
+            safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&range=6mo').then(function(j){
+              if(j && j.history && j.history.length > 5){
+                var hist = j.history.map(function(r){
+                  return {t:new Date(r.date), c:+(r.close||0), o:+(r.open||0),
+                          h:+(r.high||0), l:+(r.low||0), vol:r.vol||0};
+                }).filter(function(r){ return r.c > 0; });
+                if(hist.length > 5 && SD[w.sym]){
+                  SD[w.sym].history = hist; SD[w.sym].histReal = true;
+                  renderAll && renderAll(); updateSignalCounts && updateSignalCounts();
                 }
-              }).catch(function(){});
-            });
-          }
-          // Also fetch prices for custom stocks
-          if(customInWL.length > 0){
-            var codes = customInWL.filter(function(w){ return w.type==='tw'; }).map(function(w){ return w.tick; });
-            if(codes.length > 0){
-              safeFetch(PROXY+'/twse/quote?symbols='+codes.join(',')).then(function(j){
-                if(j && j.data) j.data.forEach(function(q){
-                  var sym = q.sym+'.TW';
-                  if(SD[sym]){ SD[sym].price=q.price; SD[sym].prev=q.prev; SD[sym].chg=q.chg; SD[sym].chgPct=q.chgPct; SD[sym].vol=q.vol; SD[sym].real=true; }
-                });
-                renderAll && renderAll();
-              }).catch(function(){});
-            }
-          }
-        }, 500);
+              }
+            }).catch(function(){});
+          });
+        }
+        // Run immediately after short delay (for WL to be populated)
+        setTimeout(fetchCustomStocksData, 800);
+        // Also run after market list loads (in case MARKET_LIST wasn't ready)
+        setTimeout(fetchCustomStocksData, 3000);
       }
       // Restore tracker records
       if(Array.isArray(data.tracker)){
