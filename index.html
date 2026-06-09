@@ -15,6 +15,145 @@
   --up:#34d399;--dn:#f87171;--fl:#94a3b8;--gd:#fbbf24;--pu:#a78bfa;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+/* Light mode */
+
+/* ── Light Mode ─────────────────────────────────────────────── */
+body.light-mode {
+  --bg:#f0f2f7;--s1:#ffffff;--s2:#f7f8fc;--s3:#eef0f6;
+  --bd:#dce0ec;--bd2:#c8cdd8;
+  --tx:#1a1d2e;--mu:#8892a4;--mu2:#555f7a;
+  --tw:#d45d00;--us:#0369a1;
+  --up:#15803d;--dn:#b91c1c;--fl:#475569;--gd:#b45309;--pu:#6d28d9;
+}
+body.light-mode header {
+  background: rgba(255,255,255,.92);
+  border-bottom: 1px solid var(--bd);
+  backdrop-filter: blur(12px);
+}
+body.light-mode .scard {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  border-color: var(--bd);
+}
+body.light-mode .scard:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+body.light-mode .tab {
+  color: var(--mu2);
+}
+body.light-mode .tab.active {
+  background: rgba(109,40,217,.1);
+  color: var(--pu);
+}
+body.light-mode .overlay {
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+}
+body.light-mode .mhd {
+  background: #f7f8fc;
+  border-bottom: 1px solid var(--bd);
+}
+body.light-mode .modal {
+  background: #ffffff;
+  box-shadow: 0 25px 80px rgba(0,0,0,.2);
+}
+body.light-mode .search-overlay {
+  background: rgba(240,242,247,.95);
+  backdrop-filter: blur(16px);
+}
+body.light-mode .search-box {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  border: 1px solid var(--bd);
+}
+body.light-mode .search-input {
+  color: var(--tx);
+}
+body.light-mode .search-item:hover, body.light-mode .search-item.active {
+  background: #f0f2f7;
+}
+body.light-mode .picker {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+}
+body.light-mode .pchip {
+  background: #f0f2f7;
+  border: 1px solid var(--bd);
+  color: var(--mu2);
+}
+body.light-mode .pchip:hover, body.light-mode .pchip.on {
+  background: rgba(109,40,217,.12);
+  border-color: var(--pu);
+  color: var(--pu);
+}
+body.light-mode .scen {
+  background: #f7f8fc;
+  border: 1px solid var(--bd);
+}
+body.light-mode .scen.active {
+  background: rgba(109,40,217,.08);
+  border-color: var(--pu);
+}
+body.light-mode .pinput {
+  background: #f0f2f7;
+  border: 1px solid var(--bd);
+  color: var(--tx);
+}
+body.light-mode .ov-card {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+}
+body.light-mode .thermo-card {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+}
+body.light-mode .lb-table th {
+  background: #f7f8fc;
+}
+body.light-mode .lb-table tr:hover td {
+  background: #f0f2f7;
+}
+body.light-mode .mpanel {
+  background: #f7f8fc;
+  border: 1px solid var(--bd);
+}
+body.light-mode .chartbox {
+  background: #ffffff;
+}
+body.light-mode .op-box {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+}
+body.light-mode .news-item {
+  border-bottom-color: var(--bd);
+}
+body.light-mode .chip-row {
+  border-bottom-color: var(--bd);
+}
+body.light-mode footer {
+  background: #f0f2f7;
+  border-top: 1px solid var(--bd);
+  color: var(--mu);
+}
+body.light-mode .toast {
+  background: #1a1d2e;
+  color: #ffffff;
+}
+body.light-mode #toast-container {
+  filter: none;
+}
+body.light-mode .mbar {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+}
+body.light-mode .grp-bar {
+  opacity: .85;
+}
+body.light-mode .tabs-l1, body.light-mode .tabs-l2 {
+  background: #ffffff;
+  border-bottom: 1px solid var(--bd);
+}
+
 body{background:var(--bg);color:var(--tx);font-family:'Noto Sans TC',sans-serif;min-height:100vh;font-size:14px;line-height:1.5;}
 .wrap{max-width:1500px;margin:0 auto;padding:0 20px;}
 
@@ -414,6 +553,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   </div>
   <div class="hact" style="flex-direction:column;align-items:flex-end;gap:4px">
     <div style="display:flex;align-items:center;gap:8px">
+      <button id="theme-toggle-btn" onclick="toggleLightMode()" title="切換日夜間模式" style="background:none;border:1px solid var(--bd);color:var(--mu2);cursor:pointer;border-radius:6px;padding:5px 8px;font-size:14px">☀️</button>
       <button onclick="openTrackerModal()" title="追蹤記錄"
         style="display:inline-flex;align-items:center;gap:5px;background:var(--pu);border:none;color:#fff;cursor:pointer;border-radius:6px;padding:5px 12px;font-size:12px;font-family:inherit;font-weight:600">
         📋 追蹤記錄
@@ -618,6 +758,7 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
       <div style="font-size:13px;color:var(--mu2)">台股 × 美股個股監控儀表板 · 資料僅供參考，不構成投資建議</div>
     </div>
 
+    <!-- 8 feature cards grid -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
@@ -635,90 +776,225 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
         <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📈 個股卡片</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
           <li>• 即時報價 + 漲跌幅（台股 TWSE MIS，備援 Yahoo Finance）</li>
-          <li>• 右上角綜合評分 0–100（見下方評分說明）</li>
-          <li>• 點擊卡片開啟個股詳情：K線 / 技術指標 / 籌碼面 / 基本面 / AI分析</li>
-          <li>• ⭐ 加入自選清單 · ✕ 從監控移除（可透過搜尋重新加入）</li>
-          <li>• <strong style="color:var(--tw)">台股漲紅跌綠</strong> · <strong style="color:var(--us)">美股漲綠跌紅</strong></li>
+          <li>• 右上角<strong style="color:var(--tx)">綜合評分 0–100</strong>，歷史資料載入前顯示「—」</li>
+          <li>• 台股：漲綠跌紅 / vs 大盤：個股漲跌幅超越大盤幅度</li>
+          <li>• 訊號徽章：<span style="color:var(--up)">●</span> 進場 <span style="color:var(--dn)">●</span> 減碼 / <span style="color:var(--gd)">●</span> 觀察（hover 查看觸發條件）</li>
+          <li>• ☆ 按鈕加入自選清單，點擊卡片開啟個股詳細頁</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⭐ 綜合評分說明</div>
+        <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 全域搜尋 <span style="font-size:10px;background:var(--pu);color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px">更新</span></div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• <strong style="color:var(--tx)">0–100 分</strong>，由技術指標綜合計算</li>
-          <li>• RSI(14)：超賣（&lt;30）加分，超買（&gt;70）減分</li>
-          <li>• MA5/MA20：多頭排列（MA5&gt;MA20）加分</li>
-          <li>• MACD：金叉加分，死叉減分</li>
-          <li>• 布林位置：近下軌加分（低估），近上軌減分</li>
-          <li>• <span style="color:var(--up)">●</span> 綠色 60+　<span style="color:var(--gd)">●</span> 黃色 40–59　<span style="color:var(--dn)">●</span> 紅色 &lt;40</li>
+          <li>• <kbd style="background:var(--s2);padding:1px 6px;border-radius:3px;font-size:11px">/</kbd> 開啟全域搜尋 / <kbd style="background:var(--s2);padding:1px 6px;border-radius:3px;font-size:11px">Esc</kbd> 關閉</li>
+          <li>• 輸入代號、名稱或快捷鍵開啟</li>
+          <li>• ↑↓ 選擇結果 · <kbd style="background:var(--s2);padding:1px 6px;border-radius:3px;font-size:11px">Enter</kbd> 開啟個股詳細頁</li>
+          <li>• 搜尋結果即時顯示現價和漲跌幅</li>
+          <li>• <strong style="color:var(--pu)">全市場 1800+ 支</strong>：搜尋結果顯示「全市場」區塊可直接加入監控</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🚦 進場燈號邏輯</div>
+        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⭐ 自選清單 <span style="font-size:10px;background:var(--pu);color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px">更新</span></div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• <span style="color:var(--up)">● 多頭排列</span>：MA5 &gt; MA20 &gt; MA60，趨勢強勁</li>
-          <li>• <span style="color:var(--dn)">● 空頭排列</span>：MA5 &lt; MA20 &lt; MA60，趨勢偏弱</li>
-          <li>• <span style="color:var(--gd)">● 超賣</span>：RSI &lt; 30，可能反彈機會</li>
-          <li>• <span style="color:var(--dn)">● 超買</span>：RSI &gt; 70，注意回調風險</li>
-          <li>• <span style="color:var(--fl)">● 近下軌</span>：布林通道下緣，支撐區域</li>
-          <li>• <span style="color:var(--mu)">● 近上軌</span>：布林通道上緣，壓力區域</li>
+          <li>• 股票卡片右下方 ☆ 按鈕加入 / 移除自選</li>
+          <li>• 股票 Tab「自選」可查看所有自選股</li>
+          <li>• 自選頁頂部搜尋框可快速搜尋並加入</li>
+          <li>• ✕ 卡片移除個股，可透過搜尋重新加入</li>
+          <li>• 登入後資料儲存於 Firestore，多裝置同步</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 全市場搜尋</div>
+        <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📉 個股詳細頁 — 走勢面</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• Header 🔍 按鈕，同時搜尋監控清單 + 全市場 1800+ 支</li>
-          <li>• 上市（TSE）+ 上櫃（OTC）完整覆蓋</li>
-          <li>• 監控清單結果點擊 → 開啟個股詳情</li>
-          <li>• 全市場結果點「+ 加入」→ 自動加入監控並抓取資料</li>
+          <li>• 右上切換 折線 / K線 圖表類型</li>
+          <li>• K 線：<strong style="color:var(--tx)">hover 顯示 OHLC</strong>（開高低收 + 成交量）tooltip</li>
+          <li>• 時間框架：1M / 3M / 6M / 1Y（台股 6M/1Y 較慢）</li>
+          <li>• 疊加 MA5（黃）/ MA20（紫）均線</li>
+          <li>• 台股：漲紅跌綠 / 美股：漲綠跌紅</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🤖 AI 智慧選股</div>
+        <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📊 個股詳細頁 — 分析面板</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 6 種策略：反彈 / 中線佈局 / 減碼 / 族群輪動 / 籌碼驅動 / 自訂</li>
-          <li>• 篩選條件：RSI / MA / MACD / 成交量異常 / 只看台股或美股</li>
-          <li>• AI 分析後自動記錄到追蹤清單（含進場價 + 理由）</li>
-          <li>• 結果分：<strong style="color:var(--tx)">強烈推薦</strong> + <strong style="color:var(--mu2)">觀察名單</strong></li>
+          <li>• <strong style="color:var(--tx)">技術指標</strong>：RSI · MACD · 均線排列 · 布林通道</li>
+          <li>• <strong style="color:var(--tx)">籌碼面</strong>：三大法人 · 融資融券（含近 5 日趨勢圖）</li>
+          <li>• <strong style="color:var(--tx)">基本面</strong>：P/E · 股息 P/E · 殖利率 · EPS · 股價淨值比 · 市值</li>
+          <li>• vs 大盤：相對大盤強度顯示於各面板左上角</li>
+          <li>• 操作建議 / 新聞 / AI 分析（手動觸發）</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 選股追蹤記錄</div>
+        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">✦ AI 選股助理</div>
         <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• AI 選股後自動記錄進場價 + 選股理由</li>
+          <li>• <strong style="color:var(--tx)">情境（上排）</strong>控制 AI 分析框架和排序，不影響篩選</li>
+          <li>• <strong style="color:var(--tx)">篩選條件（下排）</strong>獨立控制顯示流量，互不影響</li>
+          <li>• 篩選條件：技術面 / 量能 / 法人動向 / 熱群</li>
+          <li>• 分析結果：強烈推薦 / 值得關注 / 注意風險 三欄</li>
+          <li>• 推薦結果自動記到追蹤記錄，顯示即時勝率和勝率</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 選股追蹤記錄 <span style="font-size:10px;background:var(--pu);color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px">更新</span></div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• AI 推薦後自動記錄進場價格和推薦日期</li>
+          <li>• 即時計算每筆推薦的報酬百分比</li>
           <li>• 主畫面顯示最近 5 筆 + 統計（勝率 / 平均報酬）</li>
-          <li>• 點「全部記錄 →」或 Header 📋 按鈕查看完整清單</li>
-          <li>• 進場價可手動修改（✏️ 欄位直接輸入）</li>
-          <li>• 登入後資料同步到雲端，多裝置共享</li>
-        </ul>
-      </div>
-
-      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">☁️ Google 登入 / 雲端同步</div>
-        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• Header 右上角 Google 登入按鈕</li>
-          <li>• 登入後自動同步：自選清單 / 追蹤記錄 / 移除清單</li>
-          <li>• 多裝置同步（手機 + 電腦同一帳號）</li>
-          <li>• 登出後本機記錄清除，下次登入從雲端完整恢復</li>
+          <li>• 點 Header <strong style="color:var(--pu)">📋 追蹤記錄</strong> 按鈕查看完整清單</li>
+          <li>• 進場價可手動修改（✏️ 欄位直接輸入），同步雲端</li>
+          <li>• 最多保留 30 筆，儲存於 localStorage + Firestore</li>
         </ul>
       </div>
 
     </div>
 
+    <!-- 綜合評分系統 -->
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📡 資料來源</div>
-      <div style="font-size:13px;color:var(--mu2);line-height:2">
-        台股即時：TWSE MIS API（備援：Yahoo Finance .TW）· 美股即時：Yahoo Finance ·
-        三大法人 + 融資融券：每日 18:30 排程更新 · 基本面（P/E / P/B / 殖利率）：TWSE BWIBBU_d ·
-        AI 分析：Groq llama-3.3-70b · 新聞摘要：Gemini 2.5 Flash · 全市場股票清單：TWSE OpenAPI + GitHub otc_list.json
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="color:var(--gd)">★</span>
+        <span style="font-size:12px;color:var(--mu2);font-weight:600">綜合評分系統（0–100 分）</span>
+        <span style="font-size:11px;color:var(--mu)">— 需要歷史資料才能計算，在成載歷史資料前顯示「—」</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0">
+        <div style="background:var(--s2);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px;font-weight:700;color:var(--tw);margin-bottom:4px">40</div>
+          <div style="font-size:11px;color:var(--mu);margin-bottom:2px">技術面</div>
+          <div style="font-size:10px;color:var(--mu)">RSI + 均線 + MACD</div>
+        </div>
+        <div style="background:var(--s2);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px;font-weight:700;color:var(--us);margin-bottom:4px">25</div>
+          <div style="font-size:11px;color:var(--mu);margin-bottom:2px">趨勢強度</div>
+          <div style="font-size:10px;color:var(--mu)">均線 · 突破分析</div>
+        </div>
+        <div style="background:var(--s2);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px;font-weight:700;color:var(--pu);margin-bottom:4px">25</div>
+          <div style="font-size:11px;color:var(--mu);margin-bottom:2px">評估強度</div>
+          <div style="font-size:10px;color:var(--mu)">量能 · 法人動向</div>
+        </div>
+        <div style="background:var(--s2);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px;font-weight:700;color:var(--gd);margin-bottom:4px">10</div>
+          <div style="font-size:11px;color:var(--mu);margin-bottom:2px">布林位置</div>
+          <div style="font-size:10px;color:var(--mu)">靠近下軌分數高</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--mu)">
+        評分顏色：<span style="color:var(--up)">● 市值 ≥ 70（強勢）</span> &nbsp;
+        <span style="color:var(--gd)">● 市值 45–69（中等）</span> &nbsp;
+        <span style="color:var(--dn)">● 市值 &lt; 45（偏弱）</span>
       </div>
     </div>
 
-    <div style="font-size:11px;color:var(--mu);text-align:center">資料僅供參考，不構成投資建議。投資有風險，請自行評估。</div>
+    <!-- 進場燈號邏輯 -->
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span>🚦</span>
+        <span style="font-size:12px;color:var(--mu2);font-weight:600">訊號燈號邏輯</span>
+        <span style="font-size:11px;color:var(--mu)">— 固定門檻：每 3 分鐘計算一次，同一訊號需重複 <strong style="color:var(--tx)">2 次</strong>以上才顯示，避免短暫波動造成誤判。合成資料料前<strong style="color:var(--tx)">不計算、不顯示訊號</strong></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--up);margin-bottom:8px">● 進場訊號</div>
+          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
+            <strong style="color:var(--tx)">強烈訊號（各+2）：</strong><br>
+            · RSI 在 28–38 且比較前日上升<br>
+            · MACD 且MACD死叉後止跌<br><br>
+            <strong style="color:var(--tx)">輔助訊號（各+1）：</strong><br>
+            · 均線多頭（MA5 &gt; MA20）<br>
+            · MACD 金叉（&gt; 0）<br>
+            · 前5日上漲<br>
+            → <strong style="color:var(--up)">總分 ≥ 3 顯示強烈訊號</strong><br>
+            → <strong style="color:var(--up)">連續 2 次連續顯示</strong>
+          </div>
+        </div>
+        <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--dn);margin-bottom:8px">● 減碼警示</div>
+          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
+            <strong style="color:var(--tx)">強烈訊號（各+2）：</strong><br>
+            · RSI ≥ 68 且比較前日下降<br>
+            · MACD 死叉後持續下降跌值<br><br>
+            <strong style="color:var(--tx)">輔助訊號（各+1）：</strong><br>
+            · 均線空頭（MA5 &lt; MA20）<br>
+            · MACD 死叉（&lt; 0）<br>
+            · 前5日下跌 &gt; 1%<br>
+            → <strong style="color:var(--dn)">總分 ≥ 3 顯示強烈訊號</strong><br>
+            → <strong style="color:var(--dn)">連續 2 次連續顯示</strong>
+          </div>
+        </div>
+        <div style="background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.2);border-radius:8px;padding:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--fl);margin-bottom:8px">● 持續觀望</div>
+          <div style="font-size:11px;color:var(--mu2);line-height:1.8">
+            · 確認減碼訊號 1–2 分<br>
+            · 確 MACD 即將金交叉<br>
+            · 即將確認 2 個條件<br><br>
+            <strong style="color:var(--fl)">→ 繼續或觀察 2 次確認</strong><br>
+            <strong style="color:var(--fl)">→ 持續觀察，先行動</strong>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--mu)">
+        💡 訊號後 hover 查看具體觸發條件（如「RSI達到閾值+MACD金叉止」）<br>
+        💡 Tab 上「訊號」欄位這些應以此這些閾值條件，並強中間相關的標準
+      </div>
+    </div>
+
+    <!-- 快捷鍵 -->
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">⌨️ 快捷鍵</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0">
+          <kbd style="background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;min-width:32px;text-align:center">/</kbd>
+          <span style="color:var(--mu2)">開啟全域搜尋</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0">
+          <kbd style="background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;min-width:32px;text-align:center">Esc</kbd>
+          <span style="color:var(--mu2)">關閉搜尋 / 關閉個股詳細頁</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0">
+          <kbd style="background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;min-width:32px;text-align:center">↑↓</kbd>
+          <span style="color:var(--mu2)">按搜尋結果選擇</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0">
+          <kbd style="background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;min-width:32px;text-align:center">Enter</kbd>
+          <span style="color:var(--mu2)">開啟選中的個股詳細頁</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 重要注意事項 -->
+    <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⚠️ 重要注意事項</div>
+      <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+        <li>• <strong style="color:var(--tx)">本平台資料僅供參考，不構成任何投資建議，買賣請自行判斷。</strong></li>
+        <li>• 即時行情來自 TWSE MIS API + Yahoo Finance，盤中可能有 15 分鐘延遲。</li>
+        <li>• 三大法人 / 融資融券資料為收盤後更新，盤中只顯示一日趨勢。</li>
+        <li>• 基本面資料（P/E、殖利率等）來自 Yahoo Finance，可能有延遲或缺漏。</li>
+        <li>• AI 分析由 Groq（llama-3.3-70b）生成，其間摘要由 Gemini 2.5 Flash 提供。</li>
+        <li>• Groq / Gemini 為免費額度，AI 功能採手動觸發，避免額度耗盡。</li>
+        <li>• 評分與訊號需要歷史資料載入後才能計算，載入前顯示「—」為正常。</li>
+        <li>• 籌碼追蹤記錄由自選清單儲存於 localStorage + Firestore，清除快取後消失。</li>
+        <li>• K 線 6M / 1Y 台股需多次 API 請求，載入後較慢屬正常。</li>
+      </ul>
+    </div>
+
+    <!-- 資料來源 -->
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">🔗 資料來源</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">TWSE 台灣證交所 MIS API（即時行情）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">TPEX 投券櫃買中心（上櫃歷史）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">Yahoo Finance（美股 + 歷史 + 基本面）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">Gemini 2.5 Flash（新聞摘要）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">Groq llama-3.3-70b（AI 分析）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">Cloudflare Worker（後端代理）</span>
+        <span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--mu2)">Firebase Firestore（雲端同步）</span>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--mu);text-align:center">TWSE · Yahoo Finance · Gemini · Groq · 資料僅供參考，不構成投資建議 · STOCK RADAR © 2026</div>
   </div>
 </div>
 
@@ -868,7 +1144,9 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
     </div>
   </div>
 </div>
-<script>var REMOVED_STOCKS = new Set(); // declared early, initialized below
+
+<script>
+var REMOVED_STOCKS = new Set(); // declared early, initialized below
 
 
 const FB_CONFIG = {
@@ -4449,9 +4727,12 @@ async function addToWatchlistFromSearch(code, name, exType){
   // Add to WL array dynamically
   var sym = code + '.TW';
   if(!WL.find(function(w){ return w.tick===code; })){
-    var autoGrp = autoGrpFromSector(window._lastSearchSector||'', code);
-  WL.push({ sym: sym, tick: code, name: name, type: 'tw',
-      sec: exType==='tse'?'上市':'上櫃', grp: autoGrp });
+    var mEntry   = MARKET_LIST.find(function(s){ return s.code===code; });
+    var realName = (mEntry && mEntry.name)   ? mEntry.name   : name;
+    var realSec  = (mEntry && mEntry.sector) ? mEntry.sector : (exType==='tse'?'上市':'上櫃');
+    var autoGrp  = autoGrpFromSector(realSec, code);
+    WL.push({ sym: sym, tick: code, name: realName, type: 'tw',
+      sec: realSec, grp: autoGrp });
     // Initialize SD entry
     if(!SD[sym]){
       SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false,
@@ -4477,7 +4758,7 @@ async function addToWatchlistFromSearch(code, name, exType){
         fetchHistoryBackground(newW).then(function(){ renderAll(); }).catch(function(){});
       }
     }, 800);
-  showToast('✓ 已加入 '+code+' '+name);
+  var _dn = WL.find(function(w){return w.tick===code;}); showToast('✓ 已加入 '+code+' '+(_dn?_dn.name:name));
   // Refresh search results
   var inp = document.getElementById('ms-input');
   if(inp) onMarketSearchInput(inp.value);
@@ -4486,6 +4767,16 @@ async function addToWatchlistFromSearch(code, name, exType){
   updateSignalCounts();
 }
 
+// ── 日夜間模式切換 ──────────────────────────────────────────
+(function(){
+  if(safeStorage('get','sr_light_mode')==='1') document.body.classList.add('light-mode');
+})();
+function toggleLightMode(){
+  var isLight = document.body.classList.toggle('light-mode');
+  safeStorage('set','sr_light_mode', isLight?'1':'0');
+  var btn = document.getElementById('theme-toggle-btn');
+  if(btn) btn.textContent = isLight?'🌙':'☀️';
+}
 // ── INIT ─────────────────────────────────────────────────────
 initStatic();
 renderOverviewFull();
@@ -4502,6 +4793,20 @@ initFirebase().catch(console.warn);
 // Background load market list
 setTimeout(function(){ loadMarketList().catch(console.warn); }, 5000);
 setInterval(function(){ fetchPrices().catch(console.warn); }, 180000);
+
+loadCustomWl();
+var _initScen = document.querySelector('.scen[data-scen="rebound"]');
+if(_initScen) selectScen(_initScen);
+updateFilterSummary();
+fetchPrices()
+  .then(function(){ return ensureHistoryBackground(); })
+  .catch(console.warn);
+// Init Firebase (non-blocking)
+initFirebase().catch(console.warn);
+// Background load market list
+setTimeout(function(){ loadMarketList().catch(console.warn); }, 5000);
+setInterval(function(){ fetchPrices().catch(console.warn); }, 180000);
+
 </script>
 </body>
 </html>
