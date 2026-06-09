@@ -3025,6 +3025,7 @@ async function openModal(sym){
       }
     }catch(e){}
   }
+  setKRange('3m');  // Always start at 3M view
   fetchAndDrawChart(w, d);
   document.getElementById('m-vol-panel').innerHTML = buildVolHTML(d);
   drawVolChart(d.history, w.type);
@@ -4665,6 +4666,18 @@ async function loadMarketList(){
     if(list.length > 100){
       MARKET_LIST = list;
       MARKET_LIST_TS = Date.now();
+      // Update WL entries that still use code as name (from Firestore sync before list loaded)
+      WL.forEach(function(w){
+        if(w.name === w.tick){
+          var ml = MARKET_LIST.find(function(s){ return s.code === w.tick; });
+          if(ml){
+            w.name = ml.name || w.tick;
+            w.sec  = ml.sector || (ml.type==='tse' ? '上市' : '上櫃');
+            w.grp  = typeof autoGrpFromSector==='function' ? autoGrpFromSector(w.sec, w.tick) : w.grp;
+          }
+        }
+      });
+      renderAll && renderAll();
     }
     return MARKET_LIST;
   } catch(e){
