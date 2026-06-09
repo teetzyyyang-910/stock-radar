@@ -1005,11 +1005,6 @@ async function initFirebase(){
     fbAuth = getAuth(fbApp);
     fbDb   = getFirestore(fbApp);
 
-    try {
-      const { getRedirectResult } = await import('https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js');
-      const result = await getRedirectResult(fbAuth);
-      if(result && result.user) showToast('✓ 登入成功：' + (result.user.displayName || result.user.email));
-    } catch(e){}
     onAuthStateChanged(fbAuth, async function(user){
       fbUser = user;
       updateAuthUI(user);
@@ -1023,10 +1018,14 @@ async function initFirebase(){
     window._fbSignIn = async function(){
       const provider = new GoogleAuthProvider();
       try {
-        const { signInWithRedirect } = await import('https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js');
-        await signInWithRedirect(fbAuth, provider);
-      } catch(e){ showToast('登入失敗：'+e.message); }
-    };
+        await signInWithPopup(fbAuth, provider);
+        showToast('✓ 登入成功');
+      } catch(e){
+        if(e.code !== 'auth/popup-closed-by-user'){
+          showToast('登入失敗：'+(e.code||e.message));
+        }
+      }
+    };;
     window._fbSignOut = async function(){
       await signOut(fbAuth);
       // Clear local data on logout - will reload from Firestore on next login
