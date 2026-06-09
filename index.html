@@ -541,6 +541,56 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   .overlay{overflow-y:auto;}
   .sheet-handle{display:none!important;}
 }
+
+/* ── Responsive / Mobile ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .wrap { padding: 0 8px; }
+  header { padding: 8px 12px; }
+  .brand .bsub { display: none; }
+  .hact { gap: 4px !important; }
+  .clock { display: none; }
+  .tabs-l1 { padding: 0 8px; gap: 4px; }
+  .tab { padding: 6px 10px; font-size: 11px; }
+  .tabs-l2 { gap: 4px; padding: 0 8px; }
+  .tabs-l2 .tab { padding: 5px 8px; font-size: 10px; }
+  .sgrid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .ov-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .m2col, .m3col { grid-template-columns: 1fr !important; }
+  .overlay { padding: 8px !important; }
+  .modal { border-radius: 12px 12px 0 0 !important; position: fixed !important;
+    bottom: 0 !important; top: auto !important; width: 100% !important;
+    max-height: 90vh !important; margin: 0 !important; }
+  .mhd { padding: 12px 16px !important; }
+  .mbody { padding: 12px !important; }
+  #tracker-modal > div { border-radius: 12px 12px 0 0; position: fixed;
+    bottom: 0; width: 100%; max-height: 90vh; }
+  #market-search-modal { align-items: flex-end !important; padding: 0 !important; }
+  #market-search-modal > div { border-radius: 14px 14px 0 0; max-height: 80vh; }
+  .picker { width: 100% !important; }
+  .presets { grid-template-columns: 1fr 1fr !important; }
+  .filter-grid { grid-template-columns: 1fr !important; }
+  .lb-table th:nth-child(n+4), .lb-table td:nth-child(n+4) { display: none; }
+  .grp-perf { grid-template-columns: 1fr !important; }
+  #page-guide .grid { grid-template-columns: 1fr !important; }
+  #page-guide div[style*="grid-template-columns:1fr 1fr"] { 
+    grid-template-columns: 1fr !important; 
+  }
+  #page-guide div[style*="grid-template-columns:repeat(4"] {
+    grid-template-columns: repeat(2,1fr) !important;
+  }
+  #page-guide div[style*="grid-template-columns:1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .scard { min-width: 0; }
+  .ctop { flex-wrap: wrap; }
+  .twrap { min-width: 0; flex: 1; }
+  .cstats { flex-wrap: wrap; gap: 6px !important; }
+}
+@media (max-width: 480px) {
+  .sgrid { grid-template-columns: 1fr !important; }
+  .tab { padding: 5px 8px; font-size: 10px; }
+  header button[onclick="openTrackerModal()"] span:last-child { display: none; }
+}
 </style>
 </head>
 <body>
@@ -4510,18 +4560,23 @@ async function fetchHistoryBackground(){
       try {
         var d = SD[w.sym];
         if(!d) return;
-        // Try Yahoo Finance .TW first (more reliable)
-        var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
-        if(j.history && j.history.length > 15){
+        // Try Yahoo Finance .TW (correct route, 6 months)
+        var yahooSym = w.sym; // already in format like 2317.TW
+        var j = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&range=6mo');
+        if(!j || !j.history || j.history.length <= 15){
+          // Try Yahoo via US route with .TW symbol
+          j = await safeFetch(PROXY+'/us/history?symbol='+encodeURIComponent(yahooSym)+'&range=6mo');
+        }
+        if(j && j.history && j.history.length > 15){
           var hist = j.history.map(function(r){
-            return {t:parseLocalDate(r.date), c:+r.close, o:+(r.open||r.close),
-                    h:+(r.high||r.close), l:+(r.low||r.close), vol:r.vol||0};
+            return {t:parseLocalDate(r.date||r.t), c:+r.close||+r.c, o:+(r.open||r.close||r.o||r.c),
+                    h:+(r.high||r.close||r.h||r.c), l:+(r.low||r.close||r.l||r.c), vol:r.vol||0};
           }).filter(function(r){ return r.c>0 && !isNaN(r.c); });
           if(hist.length > 15){ d.history=hist; d.histReal=true; return; }
         }
         // Fallback: TWSE monthly (graceful - skip months that return 500)
         var allHist = [];
-        for(var m=2; m>=0; m--){
+        for(var m=5; m>=0; m--){
           var dt=new Date(); dt.setDate(1); dt.setMonth(dt.getMonth()-m);
           var mStr=dt.getFullYear()+('0'+(dt.getMonth()+1)).slice(-2);
           try {
@@ -4553,7 +4608,7 @@ async function fetchHistoryBackground(){
     var batch = usList.slice(ui, ui+3);
     await Promise.allSettled(batch.map(async function(w){
       try {
-        var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=3mo');
+        var j = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range=6mo');
         if(j.history && j.history.length > 15){
           var d = SD[w.sym];
           if(!d) return;
@@ -4691,20 +4746,28 @@ async function onMarketSearchInput(val){
 
 // ── 產業自動分類 ────────────────────────────────────────────
 function autoGrpFromSector(sector, code){
-  if(!sector) return null;
-  var s = sector.toLowerCase();
-  if(s.includes('半導體') || s.includes('semiconductor')) return 'g_carrier';
-  if(s.includes('電腦') || s.includes('資訊') || s.includes('electronic')) return 'g_ai';
-  if(s.includes('光電') || s.includes('面板') || s.includes('optoelectronic')) return 'g_panel';
-  if(s.includes('通信') || s.includes('網路') || s.includes('telecom')) return 'g_leo';
-  if(s.includes('電機') || s.includes('electrical')) return 'g_industrial';
-  if(s.includes('電子零組件') || s.includes('component')) return 'g_passive';
-  if(s.includes('電力') || s.includes('能源') || s.includes('power')) return 'g_power';
+  var s = (sector||'').toLowerCase();
+  var c = parseInt(code)||0;
+  // Sector string mapping (TWSE official categories)
+  if(s.includes('半導體')) return 'g_carrier';
+  if(s.includes('電腦') || s.includes('資訊服務')) return 'g_ai';
+  if(s.includes('光電') || s.includes('面板') || s.includes('顯示')) return 'g_panel';
+  if(s.includes('通信') || s.includes('網路') || s.includes('通訊')) return 'g_leo';
+  if(s.includes('電機') || s.includes('機械') || s.includes('電機機械')) return 'g_industrial';
+  if(s.includes('電子零組件')) return 'g_passive';
+  if(s.includes('電力') || s.includes('能源') || s.includes('油電燃')) return 'g_power';
+  if(s.includes('其他電子') || s.includes('電子通路')) return 'g_ai';
+  if(s.includes('金融') || s.includes('保險') || s.includes('銀行')) return null;
+  if(s.includes('建材') || s.includes('水泥') || s.includes('化學')) return null;
+  // OTC specific
+  if(s.includes('tse') || s === '上市') return null;
+  if(s.includes('otc') || s === '上櫃') return null;
   // Code-based fallback
-  var c = parseInt(code);
   if(c >= 2300 && c <= 2399) return 'g_carrier';
-  if(c >= 3000 && c <= 3999) return 'g_ai';
-  if(c >= 6000 && c <= 6999) return 'g_leo';
+  if(c >= 3000 && c <= 3699) return 'g_ai';
+  if(c >= 5300 && c <= 5399) return 'g_ai';  // OTC electronics
+  if(c >= 6000 && c <= 6599) return 'g_leo';
+  if(c >= 8000 && c <= 8999) return 'g_ai';  // OTC
   return null;
 }
 
