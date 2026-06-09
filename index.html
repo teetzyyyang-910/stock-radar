@@ -414,7 +414,10 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
   </div>
   <div class="hact" style="flex-direction:column;align-items:flex-end;gap:4px">
     <div style="display:flex;align-items:center;gap:8px">
-      <button class="btn btn-ghost" onclick="openTrackerModal()" title="追蹤記錄" style="font-size:13px">📋</button>
+      <button onclick="openTrackerModal()" title="追蹤記錄"
+        style="display:inline-flex;align-items:center;gap:5px;background:var(--pu);border:none;color:#fff;cursor:pointer;border-radius:6px;padding:5px 12px;font-size:12px;font-family:inherit;font-weight:600">
+        📋 追蹤記錄
+      </button>
 
       <button class="btn btn-ghost" onclick="openSearch()" title="搜尋 (/)">🔍</button>
       <div class="clock" id="clock">--:--:--</div>
@@ -612,72 +615,95 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 
     <div style="margin-bottom:24px">
       <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;background:linear-gradient(135deg,var(--tw) 30%,var(--us));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">STOCK RADAR 使用說明</div>
-      <div style="font-size:13px;color:var(--mu2)">台股 × 美股個股監控儀表板 · v2.0 · 資料僅供參考，不構成投資建議</div>
+      <div style="font-size:13px;color:var(--mu2)">台股 × 美股個股監控儀表板 · 資料僅供參考，不構成投資建議</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📊 總覽頁</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 加權指數 + 那斯達克即時指數</li>
-          <li>• 市場溫度計（0–100°，RSI + 漲跌比計算）</li>
-          <li>• 族群表現橫條圖 — <strong style="color:var(--tx)">點擊切換族群</strong></li>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• 加權指數 + 那斯達克即時指數（含 30 日 sparkline）</li>
+          <li>• 市場溫度計（0–100°，由 RSI + 漲跌比計算）</li>
+          <li>• 族群表現橫條圖 — <strong style="color:var(--tx)">點擊直接切換到該族群</strong></li>
           <li>• 情緒分布：強漲 / 小漲 / 持平 / 小跌 / 強跌</li>
-          <li>• 排行榜：漲跌幅 / 成交量 / 綜合評分</li>
+          <li>• 排行榜：漲跌幅 / 成交量 / 綜合評分（可切換全部/台股/美股）</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--us);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📈 個股卡片</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 即時報價（台股 TWSE MIS + Yahoo 備援）</li>
-          <li>• 綜合評分 0–100（RSI / MACD / MA 計算）</li>
-          <li>• 點擊卡片開啟個股詳情：K線 / 技術指標 / 籌碼面 / 基本面</li>
-          <li>• ⭐ 加入自選清單 · ✕ 從監控移除</li>
-          <li>• <strong style="color:var(--tw)">台股漲=紅 跌=綠</strong> · <strong style="color:var(--us)">美股漲=綠 跌=紅</strong></li>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• 即時報價 + 漲跌幅（台股 TWSE MIS，備援 Yahoo Finance）</li>
+          <li>• 右上角綜合評分 0–100（見下方評分說明）</li>
+          <li>• 點擊卡片開啟個股詳情：K線 / 技術指標 / 籌碼面 / 基本面 / AI分析</li>
+          <li>• ⭐ 加入自選清單 · ✕ 從監控移除（可透過搜尋重新加入）</li>
+          <li>• <strong style="color:var(--tw)">台股漲紅跌綠</strong> · <strong style="color:var(--us)">美股漲綠跌紅</strong></li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⭐ 綜合評分說明</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• <strong style="color:var(--tx)">0–100 分</strong>，由技術指標綜合計算</li>
+          <li>• RSI(14)：超賣（&lt;30）加分，超買（&gt;70）減分</li>
+          <li>• MA5/MA20：多頭排列（MA5&gt;MA20）加分</li>
+          <li>• MACD：金叉加分，死叉減分</li>
+          <li>• 布林位置：近下軌加分（低估），近上軌減分</li>
+          <li>• <span style="color:var(--up)">●</span> 綠色 60+　<span style="color:var(--gd)">●</span> 黃色 40–59　<span style="color:var(--dn)">●</span> 紅色 &lt;40</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
+        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🚦 進場燈號邏輯</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• <span style="color:var(--up)">● 多頭排列</span>：MA5 &gt; MA20 &gt; MA60，趨勢強勁</li>
+          <li>• <span style="color:var(--dn)">● 空頭排列</span>：MA5 &lt; MA20 &lt; MA60，趨勢偏弱</li>
+          <li>• <span style="color:var(--gd)">● 超賣</span>：RSI &lt; 30，可能反彈機會</li>
+          <li>• <span style="color:var(--dn)">● 超買</span>：RSI &gt; 70，注意回調風險</li>
+          <li>• <span style="color:var(--fl)">● 近下軌</span>：布林通道下緣，支撐區域</li>
+          <li>• <span style="color:var(--mu)">● 近上軌</span>：布林通道上緣，壓力區域</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--pu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🔍 全市場搜尋</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 點擊 Header 的 🔍 按鈕開啟搜尋</li>
-          <li>• 同時搜尋監控清單 + 全市場 1800+ 支股票</li>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• Header 🔍 按鈕，同時搜尋監控清單 + 全市場 1800+ 支</li>
           <li>• 上市（TSE）+ 上櫃（OTC）完整覆蓋</li>
-          <li>• 點「+ 加入」直接加入監控清單</li>
-          <li>• 加入後自動抓取歷史資料和評分</li>
+          <li>• 監控清單結果點擊 → 開啟個股詳情</li>
+          <li>• 全市場結果點「+ 加入」→ 自動加入監控並抓取資料</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🤖 AI 智慧選股</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 6 種選股策略：反彈 / 中線 / 減碼 / 族群輪動 / 籌碼 / 自訂</li>
-          <li>• 篩選條件：RSI / MA / MACD / 成交量 / 只看台股/美股</li>
-          <li>• AI 分析後自動加入追蹤記錄</li>
-          <li>• 結果顯示強烈推薦 + 觀察名單</li>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• 6 種策略：反彈 / 中線佈局 / 減碼 / 族群輪動 / 籌碼驅動 / 自訂</li>
+          <li>• 篩選條件：RSI / MA / MACD / 成交量異常 / 只看台股或美股</li>
+          <li>• AI 分析後自動記錄到追蹤清單（含進場價 + 理由）</li>
+          <li>• 結果分：<strong style="color:var(--tx)">強烈推薦</strong> + <strong style="color:var(--mu2)">觀察名單</strong></li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
-        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 追蹤記錄</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• AI 選股後自動記錄進場價和理由</li>
-          <li>• 主畫面顯示最近 5 筆 + 統計卡片（勝率 / 平均報酬）</li>
-          <li>• 點「全部記錄 →」開啟完整 Modal</li>
-          <li>• 進場價可手動修改（點擊 ✏️ 欄位直接輸入）</li>
-          <li>• 資料同步到雲端（需 Google 登入）</li>
+        <div style="font-size:12px;color:var(--up);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📋 選股追蹤記錄</div>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• AI 選股後自動記錄進場價 + 選股理由</li>
+          <li>• 主畫面顯示最近 5 筆 + 統計（勝率 / 平均報酬）</li>
+          <li>• 點「全部記錄 →」或 Header 📋 按鈕查看完整清單</li>
+          <li>• 進場價可手動修改（✏️ 欄位直接輸入）</li>
+          <li>• 登入後資料同步到雲端，多裝置共享</li>
         </ul>
       </div>
 
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px">
         <div style="font-size:12px;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">☁️ Google 登入 / 雲端同步</div>
-        <ul style="font-size:12px;color:var(--mu2);line-height:2;list-style:none;padding:0">
-          <li>• 點擊右上角 Google 登入按鈕</li>
+        <ul style="font-size:13px;color:var(--mu2);line-height:2;list-style:none;padding:0">
+          <li>• Header 右上角 Google 登入按鈕</li>
           <li>• 登入後自動同步：自選清單 / 追蹤記錄 / 移除清單</li>
-          <li>• 多裝置同步（手機 + 電腦）</li>
-          <li>• 登出後本機記錄清除，下次登入從雲端恢復</li>
+          <li>• 多裝置同步（手機 + 電腦同一帳號）</li>
+          <li>• 登出後本機記錄清除，下次登入從雲端完整恢復</li>
         </ul>
       </div>
 
@@ -685,10 +711,10 @@ footer{padding:12px 0;border-top:1px solid var(--bd);font-size:9px;color:var(--m
 
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px">
       <div style="font-size:12px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📡 資料來源</div>
-      <div style="font-size:12px;color:var(--mu2);line-height:2">
-        台股即時：TWSE MIS API（備援：Yahoo Finance）· 台股歷史：Yahoo Finance (.TW) · 美股：Yahoo Finance ·
-        三大法人 + 融資融券：每日 18:30 本機排程更新（chip_data.json） ·
-        基本面（P/E / P/B / 殖利率）：TWSE BWIBBU_d · AI 分析：Groq llama-3.3-70b · 新聞摘要：Gemini 2.5 Flash
+      <div style="font-size:13px;color:var(--mu2);line-height:2">
+        台股即時：TWSE MIS API（備援：Yahoo Finance .TW）· 美股即時：Yahoo Finance ·
+        三大法人 + 融資融券：每日 18:30 排程更新 · 基本面（P/E / P/B / 殖利率）：TWSE BWIBBU_d ·
+        AI 分析：Groq llama-3.3-70b · 新聞摘要：Gemini 2.5 Flash · 全市場股票清單：TWSE OpenAPI + GitHub otc_list.json
       </div>
     </div>
 
