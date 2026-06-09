@@ -2895,7 +2895,11 @@ async function fetchChipHTML(w){
     }
     // Split inst and margin
     const instParts   = html.split('<!-- MARGIN -->');
-    const instHTML    = instParts[0] || '<div style="color:var(--mu);font-size:10px">無資料</div>';
+    const instHTML    = instParts[0] || (
+      (w.sec && (w.sec.includes('上櫃') || w.sec==='otc'))
+        ? '<div style="color:var(--mu);font-size:11px;line-height:1.8">上櫃股三大法人資料來源為 TPEX，目前暫不支援。<br><a href="https://www.tpex.org.tw" target="_blank" style="color:var(--pu)">→ 前往 TPEX 查詢</a></div>'
+        : '<div style="color:var(--mu);font-size:10px">無資料</div>'
+    );
     const marginHTML  = instParts[1] || '<div style="color:var(--mu);font-size:10px">無融資融券資料</div>';
     return { inst: instHTML, margin: marginHTML };
   }catch(e){ return { inst:'<div style="color:var(--mu);font-size:10px">載入失敗</div>', margin:'' }; }
