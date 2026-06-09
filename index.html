@@ -3178,7 +3178,8 @@ async function fetchAndDrawChart(w, d){
       var rangeMap2 = {'1m':'1mo','3m':'3mo','6m':'6mo','1y':'1y'};
       var twRange2  = rangeMap2[kRange] || '3mo';
       try {
-        var jTW = await safeFetch(PROXY+'/us/history?symbol='+w.sym+'&range='+twRange2);
+        // Use correct TW route (Yahoo .TW via /twse/history?range=)
+        var jTW = await safeFetch(PROXY+'/twse/history?symbol='+w.tick+'&range='+twRange2);
         if(jTW.history && jTW.history.length > 2){
           d.history = jTW.history.map(function(r){
             return {t:parseLocalDate(r.date),c:+r.close,o:+(r.open||r.close),
