@@ -1029,7 +1029,16 @@ async function initFirebase(){
     };
     window._fbSignOut = async function(){
       await signOut(fbAuth);
-      showToast('已登出');
+      // Clear local data on logout - will reload from Firestore on next login
+      try {
+        safeStorage('remove','sr_tracker');
+        safeStorage('remove','sr_custom_wl');
+        safeStorage('remove','sr_removed_stocks');
+        WATCHLIST_CUSTOM = [];
+        updateCustomWlBadge && updateCustomWlBadge();
+      } catch(e){}
+      showToast('已登出，本機記錄已清除');
+      setTimeout(function(){ location.reload(); }, 1500);
     };
     window._fbSave = async function(data){
       if(!fbUser || !fbDb) return;
@@ -1076,6 +1085,10 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }){
         try { safeStorage('set','sr_tracker', JSON.stringify(data.tracker)); } catch(e){}
         loadTracker && loadTracker();
       }
+      if(Array.isArray(data.removedStocks)){
+        data.removedStocks.forEach(function(t){ REMOVED_STOCKS.add(t); });
+        try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
+      }
       showToast('✓ 已從雲端同步資料');
     }
     // Listen for real-time changes
@@ -1097,9 +1110,10 @@ function saveToFirebase(){
   if(!window._fbSave || !fbUser) return;
   var tracker = JSON.parse(safeStorage('get','sr_tracker')||'[]');
   window._fbSave({
-    customWl: WATCHLIST_CUSTOM,
-    tracker:  tracker,
-    updatedAt: new Date().toISOString()
+    customWl:      WATCHLIST_CUSTOM,
+    tracker:       tracker,
+    removedStocks: [...REMOVED_STOCKS],
+    updatedAt:     new Date().toISOString()
   });
 }
 
@@ -1267,6 +1281,54 @@ function calcScore(w, d) {
   const macd   = calcMACD(closes);
   const bb     = calcBB(closes);
   const price  = d.price || closes[closes.length-1];
+
+// ── 已移除股票清單（localStorage 持久化）─────────────────────
+var REMOVED_STOCKS = new Set();
+try {
+  var _removed = JSON.parse(safeStorage('get','sr_removed_stocks')||'[]');
+  _removed.forEach(function(t){ REMOVED_STOCKS.add(t); });
+} catch(e){}
+
+// Filter WL to exclude removed stocks
+for(var _i = WL.length-1; _i >= 0; _i--){
+  if(REMOVED_STOCKS.has(WL[_i].tick)) WL.splice(_i, 1);
+}
+
+// ── 產業自動分類 ────────────────────────────────────────────
+function autoGrpFromSector(sector, code){
+  if(!sector) return null;
+  var s = sector.toLowerCase();
+  if(s.includes('半導體') || s.includes('semiconductor')) return 'g_carrier';
+  if(s.includes('電腦') || s.includes('資訊') || s.includes('electronic')) return 'g_ai';
+  if(s.includes('光電') || s.includes('面板') || s.includes('optoelectronic')) return 'g_panel';
+  if(s.includes('通信') || s.includes('網路') || s.includes('telecom')) return 'g_leo';
+  if(s.includes('電機') || s.includes('electrical')) return 'g_industrial';
+  if(s.includes('電子零組件') || s.includes('component')) return 'g_passive';
+  if(s.includes('電力') || s.includes('能源') || s.includes('power')) return 'g_power';
+  // Code-based fallback
+  var c = parseInt(code);
+  if(c >= 2300 && c <= 2399) return 'g_carrier';
+  if(c >= 3000 && c <= 3999) return 'g_ai';
+  if(c >= 6000 && c <= 6999) return 'g_leo';
+  return null;
+}
+
+function removeFromWL(tick){
+  if(!confirm('確定移除「'+tick+'」？移除後重新整理頁面不會再出現，可透過搜尋重新加入。')) return;
+  REMOVED_STOCKS.add(tick);
+  try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
+  // Also remove from WATCHLIST_CUSTOM if present
+  WATCHLIST_CUSTOM = WATCHLIST_CUSTOM.filter(function(t){ return t !== tick; });
+  try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
+  // Remove from WL
+  var idx2 = WL.findIndex(function(w){ return w.tick===tick; });
+  if(idx2 >= 0) WL.splice(idx2, 1);
+  delete SD[tick+'.TW']; delete SD[tick];
+  saveToFirebase();
+  renderAll();
+  updateSignalCounts();
+  showToast('已移除 '+tick+'，可透過搜尋重新加入');
+}
 
   // ── 技術面 40分 ──────────────────────────────────────
   let techScore = 20; // base
@@ -2236,6 +2298,10 @@ function renderGrid(){
         <span>${d.real?'即時行情':'參考數據'}</span>
         <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
           <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;color:var(--gd)" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${WATCHLIST_CUSTOM.includes(w.tick)?'⭐':'☆'}</button>
+          <button onclick="event.stopPropagation();removeFromWL('${w.tick}')" title="移除此股票"
+            style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:11px;padding:2px 4px;opacity:.5;line-height:1" 
+            onmouseover="this.style.opacity='1';this.style.color='var(--dn)'"
+            onmouseout="this.style.opacity='.5';this.style.color='var(--mu)'">✕</button>
         </span>
       </div>
     </div>`;
@@ -3908,7 +3974,8 @@ function renderTrackerModal(){
       var w   = WL.find(function(x){ return x.tick===r.tick; });
       var d   = w ? SD[w.sym] : null;
       var cur = d ? d.price : null;
-      var pnl = (cur && r.entry) ? (cur-r.entry)/r.entry*100 : null;
+      var entryPrice = r.manualEntry || r.entry;
+      var pnl = (cur && entryPrice) ? (cur-entryPrice)/entryPrice*100 : null;
       var tw  = w && w.type==='tw';
       var pnlCol = pnl===null ? 'var(--mu)' : (pnl>0 ? 'var(--up)' : 'var(--dn)');
       var days = r.date ? Math.floor((Date.now()-new Date(r.date.replace(/\//g,'-')))/86400000) : '—';
@@ -3920,7 +3987,12 @@ function renderTrackerModal(){
           + '</div>'
           + '<div style="font-size:10px;color:var(--mu);margin-top:2px">'+(r.reason||'')+'</div>'
         + '</td>'
-        + '<td style="padding:10px 8px;text-align:right;font-family:monospace;font-size:12px">'+fmt(r.entry)+'</td>'
+        + '<td style="padding:6px 8px;text-align:right">'
+          + '<input type="number" value="'+(r.manualEntry||r.entry||'')+'" '
+          + 'data-tick="'+r.tick+'" data-date="'+r.date+'" '
+          + 'class="tracker-entry-input" step="0.01" '
+          + 'style="background:var(--s2);border:1px solid var(--bd);color:var(--mu2);border-radius:4px;padding:2px 6px;width:70px;font-family:monospace;font-size:11px;text-align:right">'
+          + '</td>'
         + '<td style="padding:10px 8px;text-align:right;font-family:monospace;font-size:12px">'+(cur?fmt(cur):'—')+'</td>'
         + '<td style="padding:10px 8px;text-align:right;font-family:monospace;font-size:12px;font-weight:600;color:'+pnlCol+'">'
           + (pnl!==null ? (pnl>=0?'+':'')+pnl.toFixed(2)+'%' : '—')+'</td>'
@@ -3936,7 +4008,7 @@ function renderTrackerModal(){
     var tableHtml = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">'
       + '<thead><tr style="background:var(--s2)">'
       + '<th style="padding:8px;text-align:left;font-size:11px;color:var(--mu);font-weight:500">股票</th>'
-      + '<th style="padding:8px;text-align:right;font-size:11px;color:var(--mu);font-weight:500">進場價</th>'
+      + '<th style="padding:8px;text-align:right;font-size:11px;color:var(--mu);font-weight:500">進場價 ✏️</th>'
       + '<th style="padding:8px;text-align:right;font-size:11px;color:var(--mu);font-weight:500">現價</th>'
       + '<th style="padding:8px;text-align:right;font-size:11px;color:var(--mu);font-weight:500">報酬率</th>'
       + '<th style="padding:8px;text-align:center;font-size:11px;color:var(--mu);font-weight:500">持有天數</th>'
@@ -3950,6 +4022,19 @@ function renderTrackerModal(){
       btn.addEventListener('click', function(){
         removeTrack(this.dataset.tick, this.dataset.date);
         renderTrackerModal();
+      });
+    });
+    // Event delegation for manual entry price
+    el.querySelectorAll('.tracker-entry-input').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        var val = parseFloat(this.value);
+        if(isNaN(val) || val <= 0) return;
+        try {
+          var records2 = JSON.parse(safeStorage('get','sr_tracker')||'[]');
+          var rec = records2.find(function(r){ return r.tick===this.dataset.tick && r.date===this.dataset.date; }.bind(this));
+          if(rec){ rec.manualEntry = val; safeStorage('set','sr_tracker', JSON.stringify(records2)); saveToFirebase(); }
+          renderTrackerModal();
+        } catch(e){}
       });
     });
   } catch(e){ el.innerHTML = '<div style="color:var(--mu)">載入失敗</div>'; }
@@ -4345,7 +4430,7 @@ async function onMarketSearchInput(val){
       : '<span style="color:#a78bfa;font-size:9px;background:rgba(167,139,250,.15);padding:1px 5px;border-radius:3px">上櫃</span>';
     var addBtn = inWL
       ? '<span style="font-size:11px;color:var(--mu);padding:5px 12px">已追蹤</span>'
-      : '<button class="ms-add-btn" data-code="'+s.code+'" data-name="'+s.name+'" data-extype="'+s.type+'" '
+      : '<button class="ms-add-btn" data-code="'+s.code+'" data-name="'+s.name+'" data-extype="'+s.type+'" data-sector="'+(s.sector||'')+'" '
         + 'style="background:var(--pu);border:none;color:#fff;cursor:pointer;border-radius:6px;padding:5px 12px;font-size:11px;font-family:inherit">+ 加入</button>';
     return '<div class="ms-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd)">'
       + '<div>'
@@ -4384,8 +4469,9 @@ async function addToWatchlistFromSearch(code, name, exType){
   // Add to WL array dynamically
   var sym = code + '.TW';
   if(!WL.find(function(w){ return w.tick===code; })){
-    WL.push({ sym: sym, tick: code, name: name, type: 'tw',
-      sec: exType==='tse'?'上市':'上櫃', grp: null });
+    var autoGrp = autoGrpFromSector(window._lastSearchSector||'', code);
+  WL.push({ sym: sym, tick: code, name: name, type: 'tw',
+      sec: exType==='tse'?'上市':'上櫃', grp: autoGrp });
     // Initialize SD entry
     if(!SD[sym]){
       SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false,
