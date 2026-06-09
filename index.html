@@ -983,6 +983,15 @@ async function initFirebase(){
     fbAuth = getAuth(fbApp);
     fbDb   = getFirestore(fbApp);
 
+    // Handle redirect result (after Google login redirect)
+    try {
+      const { getRedirectResult } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const result = await getRedirectResult(fbAuth);
+      if(result && result.user) {
+        showToast('✓ 登入成功：' + (result.user.displayName || result.user.email));
+      }
+    } catch(e){ console.warn('redirect result:', e.message); }
+
     onAuthStateChanged(fbAuth, async function(user){
       fbUser = user;
       updateAuthUI(user);
@@ -995,8 +1004,11 @@ async function initFirebase(){
     window._fbDb   = fbDb;
     window._fbSignIn = async function(){
       const provider = new GoogleAuthProvider();
-      try { await signInWithPopup(fbAuth, provider); }
-      catch(e){ showToast('登入失敗：'+e.message); }
+      try {
+        // Use redirect (avoids COOP popup issues on GitHub Pages)
+        const { signInWithRedirect } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+        await signInWithRedirect(fbAuth, provider);
+      } catch(e){ showToast('登入失敗：'+e.message); }
     };
     window._fbSignOut = async function(){
       await signOut(fbAuth);
@@ -4237,28 +4249,12 @@ async function loadMarketList(){
   if(MARKET_LIST.length > 0 && Date.now()-MARKET_LIST_TS < 86400000) return MARKET_LIST;
   try {
     // TWSE 上市股票
-    const [r1, r2] = await Promise.allSettled([
-      fetch('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL'),
-      fetch('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes')
-    ]);
+    // Use Worker proxy to avoid CORS
     var list = [];
-    if(r1.status==='fulfilled' && r1.value.ok){
-      const d = await r1.value.json();
-      if(Array.isArray(d)) d.forEach(function(s){
-        if(s.Code && s.Name) list.push({
-          code: s.Code.trim(), name: s.Name.trim(),
-          type: 'tse', sector: s.IndustryType||''
-        });
-      });
-    }
-    if(r2.status==='fulfilled' && r2.value.ok){
-      const d = await r2.value.json();
-      if(Array.isArray(d)) d.forEach(function(s){
-        var code = (s.SecuritiesCompanyCode||s.Code||'').trim();
-        var name = (s.CompanyName||s.Name||'').trim();
-        if(code && name) list.push({ code, name, type:'otc', sector: s.Industry||'' });
-      });
-    }
+    try {
+      var jList = await safeFetch(PROXY + '/twse/stocklist');
+      if(jList && jList.list) list = jList.list;
+    } catch(e){ console.warn('stocklist error:', e.message); }
     if(list.length > 100){
       MARKET_LIST = list;
       MARKET_LIST_TS = Date.now();
