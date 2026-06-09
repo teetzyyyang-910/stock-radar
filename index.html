@@ -1084,6 +1084,14 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
       if(Array.isArray(data.customWl)){
         WATCHLIST_CUSTOM = data.customWl;
         try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
+        // Re-add custom stocks into WL if not already there
+        WATCHLIST_CUSTOM.forEach(function(code){
+          if(!WL.find(function(w){ return w.tick===code; })){
+            var sym = code + '.TW';
+            WL.push({ sym:sym, tick:code, name:code, type:'tw', sec:'自選', grp:null });
+            if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
+          }
+        });
         updateCustomWlBadge && updateCustomWlBadge();
       }
       // Restore tracker records
@@ -1097,6 +1105,13 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
       if(Array.isArray(data.removedStocks)){
         data.removedStocks.forEach(function(t){ REMOVED_STOCKS.add(t); });
         try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
+        // Remove from WL and WATCHLIST_CUSTOM
+        data.removedStocks.forEach(function(t){
+          var i = WL.findIndex(function(w){ return w.tick===t; });
+          if(i >= 0) WL.splice(i, 1);
+          var j = WATCHLIST_CUSTOM.indexOf(t);
+          if(j >= 0) WATCHLIST_CUSTOM.splice(j, 1);
+        });
       }
       showToast('✓ 已從雲端同步資料');
     }
@@ -1107,7 +1122,16 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
       if(Array.isArray(d2.customWl)){
         WATCHLIST_CUSTOM = d2.customWl;
         try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
+        // Re-add to WL if missing
+        WATCHLIST_CUSTOM.forEach(function(code){
+          if(!WL.find(function(w){ return w.tick===code; })){
+            var sym = code+'.TW';
+            WL.push({ sym:sym, tick:code, name:code, type:'tw', sec:'自選', grp:null });
+            if(!SD[sym]) SD[sym] = { price:0, prev:0, chg:0, chgPct:0, vol:0, real:false, histReal:false, history:[], high52:0, low52:0 };
+          }
+        });
         updateCustomWlBadge && updateCustomWlBadge();
+        renderAll && renderAll();
       }
       if(Array.isArray(d2.tracker)){
         try { safeStorage('set','sr_tracker', JSON.stringify(d2.tracker)); } catch(e){}
@@ -1322,7 +1346,7 @@ window.removeFromWL = function removeFromWL(tick){
   if(!confirm('確定移除「'+tick+'」？移除後重新整理頁面不會再出現，可透過搜尋重新加入。')) return;
   REMOVED_STOCKS.add(tick);
   try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
-  // Also remove from WATCHLIST_CUSTOM if present
+  // Remove from WATCHLIST_CUSTOM
   WATCHLIST_CUSTOM = WATCHLIST_CUSTOM.filter(function(t){ return t !== tick; });
   try { safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM)); } catch(e){}
   // Remove from WL
@@ -3924,6 +3948,7 @@ function removeTrack(tick, date){
   try {
     var records = JSON.parse(safeStorage('get','sr_tracker')||'[]');
     safeStorage('set','sr_tracker', JSON.stringify(records.filter(function(r){ return !(r.tick===tick&&r.date===date); })));
+    saveToFirebase();
     loadTracker();
   } catch(e){}
 }
