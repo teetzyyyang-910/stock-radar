@@ -3795,6 +3795,7 @@ function loadCustomWl(){
 function saveCustomWl(){
   safeStorage('set','sr_custom_wl', JSON.stringify(WATCHLIST_CUSTOM));
   updateCustomWlBadge();
+  saveToFirebase();
 }
 
 function toggleCustomWl(tick){
@@ -3860,6 +3861,7 @@ function saveToTracker(recommendations, scen){
       records.unshift({ date:today, tick:r.tick, name:r.name||w&&w.name, entry:d.price, scen:scen, reason:r.reason });
     });
     safeStorage('set','sr_tracker', JSON.stringify(records.slice(0,30)));
+    saveToFirebase();
   } catch(e){}
 }
 
@@ -4531,6 +4533,7 @@ async function addToWatchlistFromSearch(code, name, exType){
       }
     } catch(e){}
   }
+  saveToFirebase();
   showToast('✓ 已加入 '+code+' '+name);
   // Refresh search results
   var inp = document.getElementById('ms-input');
