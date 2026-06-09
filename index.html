@@ -3219,8 +3219,11 @@ async function runPicker(){
   }
 
   var filtered = applyFilters(WL, activeFilters, activeGrps);
-  var pool = filtered.length >= 3 ? filtered : applyFilters(WL, new Set(), activeGrps);
-  var allStocks = pool.length > 0 ? pool : WL.filter(function(w){ return SD[w.sym]; });
+  // Keep market filter (tw_only/us_only) even in fallback
+  var marketFilters = new Set([...activeFilters].filter(function(f){ return f==='tw_only'||f==='us_only'; }));
+  var pool = filtered.length >= 3 ? filtered : applyFilters(WL, marketFilters, activeGrps);
+  var allStocks = pool.length > 0 ? pool : applyFilters(WL, marketFilters, new Set());
+  if(allStocks.length === 0) allStocks = WL.filter(function(w){ return SD[w.sym]; });
 
   if(allStocks.length === 0){
     out.innerHTML = '<div style="color:var(--mu);padding:12px">⚠ 無股票資料，請等待行情載入後再試</div>';
@@ -3296,6 +3299,14 @@ async function runPicker(){
     var m = text.match(/\{[\s\S]*\}/);
     if(m){
       var data = JSON.parse(m[0]);
+      // Filter AI recommendations to only include stocks in our pool
+      var poolTicks = new Set(allStocks.map(function(w){ return w.tick; }));
+      if(data.recommend) {
+        data.recommend = data.recommend.filter(function(r){ return poolTicks.has(r.tick); });
+      }
+      if(data.watch) {
+        data.watch = data.watch.filter(function(r){ return poolTicks.has(r.tick); });
+      }
       var out2 = document.getElementById('presult');
       if(out2){ out2.style.display='block'; out2.innerHTML = renderPickerCards(data); }
       saveToTracker(data.recommend || [], activeScen);
