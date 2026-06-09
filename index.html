@@ -1030,17 +1030,17 @@ async function initFirebase(){
       } finally { _signingIn = false; }
     };;
     window._fbSignOut = async function(){
-      await signOut(fbAuth);
-      // Clear local data on logout - will reload from Firestore on next login
       try {
+        // Clear only our app data (NOT Firebase Auth localStorage keys)
         safeStorage('remove','sr_tracker');
         safeStorage('remove','sr_custom_wl');
         safeStorage('remove','sr_removed_stocks');
         WATCHLIST_CUSTOM = [];
         updateCustomWlBadge && updateCustomWlBadge();
+        loadTracker && loadTracker();
       } catch(e){}
-      showToast('已登出，本機記錄已清除');
-      setTimeout(function(){ location.reload(); }, 1500);
+      await signOut(fbAuth);
+      showToast('已登出');
     };
     window._fbSave = async function(data){
       if(!fbUser || !fbDb){ console.warn('fbSave: no user/db'); return; }
@@ -1311,7 +1311,7 @@ for(var _i = WL.length-1; _i >= 0; _i--){
 }
 
 
-function removeFromWL(tick){
+window.removeFromWL = function removeFromWL(tick){
   if(!confirm('確定移除「'+tick+'」？移除後重新整理頁面不會再出現，可透過搜尋重新加入。')) return;
   REMOVED_STOCKS.add(tick);
   try { safeStorage('set','sr_removed_stocks', JSON.stringify([...REMOVED_STOCKS])); } catch(e){}
@@ -2307,7 +2307,7 @@ function renderGrid(){
     document.querySelectorAll('.card-rm-btn').forEach(function(btn){
       btn.onclick = function(e){
         e.stopPropagation();
-        removeFromWL(this.dataset.tick);
+        window.removeFromWL(this.dataset.tick);
       };
     });
     vis.forEach(w=>{
@@ -3833,8 +3833,11 @@ function clearCustomWl(){
 }
 
 function safeStorage(action, key, val){
-  try { return action==='get' ? localStorage.getItem(key) : localStorage.setItem(key, val); }
-  catch(e){ return null; }
+  try {
+    if(action==='get') return localStorage.getItem(key);
+    if(action==='remove') return localStorage.removeItem(key);
+    return localStorage.setItem(key, val);
+  } catch(e){ return null; }
 }
 
 function saveToTracker(recommendations, scen){
