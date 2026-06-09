@@ -1321,11 +1321,26 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
           var needHist = customInWL.filter(function(w){
             return !(SD[w.sym] && SD[w.sym].histReal);
           });
-          if(needHist.length > 0 && typeof fetchHistoryBackground === 'function'){
+          if(needHist.length > 0){
+            // Fetch history for each custom stock individually
             needHist.forEach(function(w){
-              fetchHistoryBackground(w).then(function(){
-                renderAll && renderAll();
-                updateSignalCounts && updateSignalCounts();
+              var sym = w.sym;
+              var tick = w.tick;
+              var isOtc = !['0','1','2'].includes(tick[0]);
+              var range = '6mo';
+              safeFetch(PROXY+'/twse/history?symbol='+tick+'&range='+range).then(function(j){
+                if(j && j.history && j.history.length > 5){
+                  var hist = j.history.map(function(r){
+                    return {t:new Date(r.date), c:+(r.close||0), o:+(r.open||0),
+                            h:+(r.high||0), l:+(r.low||0), vol:r.vol||0};
+                  }).filter(function(r){ return r.c > 0; });
+                  if(hist.length > 5 && SD[sym]){
+                    SD[sym].history = hist;
+                    SD[sym].histReal = true;
+                    renderAll && renderAll();
+                    updateSignalCounts && updateSignalCounts();
+                  }
+                }
               }).catch(function(){});
             });
           }
