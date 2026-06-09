@@ -1,4541 +1,5448 @@
 {
-  "updated": "2026-06-09T13:32:11.055090",
+  "updated": "2026-06-10T00:42:47.121902",
   "count": 907,
   "list": [
     {
       "code": "00858",
       "name": "永豐美國500大",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00877",
       "name": "復華中國5G",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00886",
       "name": "永豐美國科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00887",
       "name": "永豐中國科技50大",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00888",
       "name": "永豐台灣ESG",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00928",
       "name": "中信上櫃ESG 30",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "00955",
       "name": "中信日本商社",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1240",
       "name": "茂生農經",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1259",
       "name": "安心",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1264",
       "name": "德麥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1268",
       "name": "漢來美食",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1294",
       "name": "漢田生技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1295",
       "name": "生合",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1336",
       "name": "台翰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1565",
       "name": "精華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1569",
       "name": "濱川",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1570",
       "name": "力肯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1580",
       "name": "新麥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1584",
       "name": "精剛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1586",
       "name": "和勤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1591",
       "name": "駿吉-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1593",
       "name": "祺驊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1595",
       "name": "川寶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1599",
       "name": "宏佳騰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1742",
       "name": "台蠟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1777",
       "name": "生泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1781",
       "name": "合世",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1784",
       "name": "訊聯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1785",
       "name": "光洋科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1788",
       "name": "杏昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1796",
       "name": "金穎生技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1799",
       "name": "易威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1813",
       "name": "寶利徠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "1815",
       "name": "富喬",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2035",
       "name": "唐榮",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2061",
       "name": "風青",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2063",
       "name": "世鎧",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2064",
       "name": "晉椿",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2065",
       "name": "世豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2066",
       "name": "世德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2067",
       "name": "嘉鋼",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2070",
       "name": "精湛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2073",
       "name": "雄順",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2221",
       "name": "大甲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2230",
       "name": "泰茂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2235",
       "name": "謚源",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2596",
       "name": "綠意",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2640",
       "name": "大車隊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2641",
       "name": "正德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2643",
       "name": "捷迅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2718",
       "name": "全心投控",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2719",
       "name": "燦星旅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2724",
       "name": "藝舍-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2726",
       "name": "雅茗-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2729",
       "name": "瓦城",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2732",
       "name": "六角",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2734",
       "name": "易飛網",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2736",
       "name": "富野",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2740",
       "name": "華軒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2743",
       "name": "山富",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2745",
       "name": "五福",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2751",
       "name": "王座",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2752",
       "name": "豆府",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2754",
       "name": "亞洲藏壽司",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2755",
       "name": "揚秦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2756",
       "name": "聯發國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2916",
       "name": "滿心",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2924",
       "name": "宏太-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2926",
       "name": "誠品生活",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2937",
       "name": "集雅社",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2941",
       "name": "米斯特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2947",
       "name": "振宇五金",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2948",
       "name": "寶陞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "2949",
       "name": "欣新網",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3064",
       "name": "泰偉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3066",
       "name": "李洲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3067",
       "name": "全域",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3071",
       "name": "協禧",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3073",
       "name": "天方能源",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3078",
       "name": "僑威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3081",
       "name": "聯亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3083",
       "name": "網龍",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3085",
       "name": "新零售",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3086",
       "name": "華義*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3088",
       "name": "艾訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3093",
       "name": "港建*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3095",
       "name": "及成",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3105",
       "name": "穩懋",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3114",
       "name": "好德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3115",
       "name": "富榮綱",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3118",
       "name": "進階",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3122",
       "name": "笙泉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3128",
       "name": "昇銳",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3131",
       "name": "弘塑",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3141",
       "name": "晶宏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3147",
       "name": "大綜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3152",
       "name": "璟德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3158",
       "name": "嘉實",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3162",
       "name": "精確",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3163",
       "name": "波若威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3169",
       "name": "亞信",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3171",
       "name": "炎洲流通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3176",
       "name": "基亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3178",
       "name": "公準",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3188",
       "name": "鑫龍騰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3191",
       "name": "雲嘉南",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3205",
       "name": "佰研",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3206",
       "name": "志豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3207",
       "name": "耀勝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3211",
       "name": "順達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3213",
       "name": "茂訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3217",
       "name": "優群",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3218",
       "name": "大學光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3219",
       "name": "倚強科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3221",
       "name": "台嘉碩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3224",
       "name": "三顧",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3226",
       "name": "龍鋒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3227",
       "name": "原相",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3228",
       "name": "金麗科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3230",
       "name": "錦明",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3232",
       "name": "昱捷",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3234",
       "name": "光環",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3236",
       "name": "千如",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3252",
       "name": "海灣",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3259",
       "name": "鑫創",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3260",
       "name": "威剛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3264",
       "name": "欣銓",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3265",
       "name": "台星科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3268",
       "name": "海德威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3272",
       "name": "東碩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3276",
       "name": "宇環",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3284",
       "name": "太普高",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3285",
       "name": "微端",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3287",
       "name": "廣寰科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3288",
       "name": "點晶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3289",
       "name": "宜特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3290",
       "name": "東浦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3293",
       "name": "鈊象",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3294",
       "name": "英濟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3297",
       "name": "杭特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3303",
       "name": "岱稜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3306",
       "name": "鼎天",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3310",
       "name": "佳穎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3313",
       "name": "斐成",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3317",
       "name": "尼克森",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3322",
       "name": "建舜電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3323",
       "name": "加百裕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3324",
       "name": "雙鴻",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3325",
       "name": "旭品",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3332",
       "name": "幸康",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3339",
       "name": "泰谷",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3349",
       "name": "寶德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3354",
       "name": "律勝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3357",
       "name": "臺慶科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3360",
       "name": "尚立",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3362",
       "name": "先進光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3363",
       "name": "上詮",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3372",
       "name": "典範",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3373",
       "name": "熱映",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3374",
       "name": "精材",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3379",
       "name": "彬台",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3388",
       "name": "崇越電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3390",
       "name": "旭軟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3402",
       "name": "漢科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3430",
       "name": "奇鈦科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3434",
       "name": "哲固",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3438",
       "name": "類比科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3441",
       "name": "聯一光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3444",
       "name": "利機",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3455",
       "name": "由田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3465",
       "name": "進泰電子",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3466",
       "name": "德晉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3467",
       "name": "台灣精材",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3479",
       "name": "安勤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3483",
       "name": "力致",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3484",
       "name": "崧騰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3485",
       "name": "敘豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3489",
       "name": "森寶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3490",
       "name": "單井",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3491",
       "name": "昇達科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3492",
       "name": "長盛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3498",
       "name": "陽程",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3499",
       "name": "環天科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3508",
       "name": "位速",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3511",
       "name": "矽瑪",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3512",
       "name": "皇龍",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3516",
       "name": "亞帝歐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3520",
       "name": "華盈",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3521",
       "name": "台鋼建設",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3522",
       "name": "御嵿",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3523",
       "name": "迎輝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3526",
       "name": "凡甲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3527",
       "name": "聚積",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3529",
       "name": "力旺",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3531",
       "name": "先益",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3537",
       "name": "堡達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3540",
       "name": "曜越",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3541",
       "name": "西柏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3546",
       "name": "宇峻",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3548",
       "name": "兆利",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3551",
       "name": "世禾",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3552",
       "name": "同致",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3555",
       "name": "博士旺",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3556",
       "name": "禾瑞亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3558",
       "name": "神準",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3564",
       "name": "其陽",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3567",
       "name": "逸昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3570",
       "name": "大塚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3577",
       "name": "泓格",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3580",
       "name": "友威科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3581",
       "name": "博磊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3587",
       "name": "閎康",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3594",
       "name": "磐儀",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3597",
       "name": "映興",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3609",
       "name": "三一東林",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3611",
       "name": "鼎翰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3615",
       "name": "安可",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3623",
       "name": "富晶通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3624",
       "name": "光頡",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3625",
       "name": "西勝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3628",
       "name": "盈正",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3629",
       "name": "地心引力",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3630",
       "name": "新鉅科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3631",
       "name": "晟楠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3632",
       "name": "研勤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3646",
       "name": "艾恩特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3663",
       "name": "鑫科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3664",
       "name": "安瑞-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3666",
       "name": "光耀",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3672",
       "name": "康聯訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3675",
       "name": "德微",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3680",
       "name": "家登",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3684",
       "name": "榮昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3685",
       "name": "元創精密",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3687",
       "name": "歐買尬",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3689",
       "name": "湧德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3691",
       "name": "碩禾",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3693",
       "name": "營邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3707",
       "name": "漢磊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3709",
       "name": "鑫聯大投控",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3710",
       "name": "連展投控",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "3713",
       "name": "新晶投控",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4102",
       "name": "永日",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4105",
       "name": "東洋",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4107",
       "name": "邦特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4109",
       "name": "加捷生醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4111",
       "name": "濟生",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4113",
       "name": "聯上",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4114",
       "name": "健喬",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4116",
       "name": "明基醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4120",
       "name": "友華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4121",
       "name": "優盛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4123",
       "name": "晟德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4126",
       "name": "太醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4127",
       "name": "天良",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4128",
       "name": "中天",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4129",
       "name": "聯合",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4130",
       "name": "健亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4131",
       "name": "浩泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4138",
       "name": "曜亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4139",
       "name": "馬光-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4147",
       "name": "中裕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4153",
       "name": "鈺緯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4154",
       "name": "樂威科-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4157",
       "name": "太景*-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4160",
       "name": "訊聯基因",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4161",
       "name": "聿新科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4162",
       "name": "智擎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4163",
       "name": "鐿鈦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4166",
       "name": "友霖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4167",
       "name": "松瑞藥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4168",
       "name": "醣聯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4171",
       "name": "瑞基",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4173",
       "name": "久裕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4174",
       "name": "浩鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4175",
       "name": "杏一",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4183",
       "name": "福永生技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4188",
       "name": "安克",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4192",
       "name": "杏國",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4198",
       "name": "欣大健康",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4205",
       "name": "中華食",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4207",
       "name": "環泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4303",
       "name": "信立",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4304",
       "name": "勝昱",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4305",
       "name": "世坤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4401",
       "name": "東隆興",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4402",
       "name": "郡都開發",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4406",
       "name": "新昕纖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4413",
       "name": "飛寶企業",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4416",
       "name": "三圓",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4417",
       "name": "金洲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4419",
       "name": "皇家美食",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4420",
       "name": "光明",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4430",
       "name": "耀億",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4432",
       "name": "銘旺實",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4433",
       "name": "興采",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4442",
       "name": "竣邦-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4502",
       "name": "健信",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4503",
       "name": "金雨",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4506",
       "name": "崇友",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4510",
       "name": "高鋒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4513",
       "name": "福裕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4523",
       "name": "永彰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4527",
       "name": "方土霖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4528",
       "name": "江興鍛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4529",
       "name": "淳紳",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4530",
       "name": "宏易",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4533",
       "name": "協易機",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4534",
       "name": "慶騰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4535",
       "name": "至興",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4538",
       "name": "大詠城",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4541",
       "name": "晟田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4542",
       "name": "科嶠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4543",
       "name": "萬在",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4549",
       "name": "桓達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4550",
       "name": "長佳",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4554",
       "name": "橙的",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4556",
       "name": "旭然",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4558",
       "name": "寶緯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4561",
       "name": "健椿",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4563",
       "name": "百德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4568",
       "name": "科際精密",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4577",
       "name": "達航科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4580",
       "name": "捷流閥業",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4584",
       "name": "君帆",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4609",
       "name": "唐鋒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4702",
       "name": "中美實",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4706",
       "name": "大恭",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4707",
       "name": "磐亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4711",
       "name": "永純",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4714",
       "name": "永捷",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4716",
       "name": "大立",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4721",
       "name": "美琪瑪",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4726",
       "name": "永昕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4728",
       "name": "雙美",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4729",
       "name": "熒茂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4735",
       "name": "豪展",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4741",
       "name": "泓瀚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4743",
       "name": "合一",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4744",
       "name": "皇將",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4745",
       "name": "合富-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4747",
       "name": "強生",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4749",
       "name": "新應材",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4754",
       "name": "國碳科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4760",
       "name": "勤凱",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4767",
       "name": "誠泰科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4768",
       "name": "晶呈科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4772",
       "name": "台特化",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4806",
       "name": "桂田文創",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4903",
       "name": "聯光通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4905",
       "name": "台聯電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4907",
       "name": "富宇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4908",
       "name": "前鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4909",
       "name": "新復興",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4911",
       "name": "德英",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4923",
       "name": "力士",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4924",
       "name": "欣厚-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4931",
       "name": "新盛力",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4933",
       "name": "友輝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4939",
       "name": "亞電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4946",
       "name": "辣椒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4950",
       "name": "金耘國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4951",
       "name": "精拓科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4953",
       "name": "緯軟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4966",
       "name": "譜瑞-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4971",
       "name": "IET-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4972",
       "name": "湯石照明",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4973",
       "name": "廣穎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4974",
       "name": "亞泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4979",
       "name": "華星光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4991",
       "name": "環宇-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "4995",
       "name": "晶達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5009",
       "name": "榮剛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5011",
       "name": "久陽",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5013",
       "name": "強新",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5014",
       "name": "建錩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5015",
       "name": "華祺",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5016",
       "name": "松和",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5201",
       "name": "凱衛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5202",
       "name": "力新",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5205",
       "name": "中茂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5206",
       "name": "坤悅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5209",
       "name": "新鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5210",
       "name": "寶碩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5211",
       "name": "蒙恬",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5212",
       "name": "凌網",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5213",
       "name": "亞昕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5220",
       "name": "萬達光電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5223",
       "name": "安力-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5227",
       "name": "立凱-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5228",
       "name": "鈺鎧",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5230",
       "name": "雷笛克光學",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5236",
       "name": "凌陽創新",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5245",
       "name": "智晶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5251",
       "name": "天鉞電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5263",
       "name": "智崴",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5272",
       "name": "笙科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5274",
       "name": "信驊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5276",
       "name": "達輝-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5278",
       "name": "尚凡*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5287",
       "name": "數字",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5289",
       "name": "宜鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5291",
       "name": "邑昇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5299",
       "name": "杰力",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5301",
       "name": "寶得利",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5302",
       "name": "太欣",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5309",
       "name": "系統電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5310",
       "name": "天剛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5312",
       "name": "寶島科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5314",
       "name": "世紀*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5315",
       "name": "光聯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5321",
       "name": "美而快",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5324",
       "name": "士開",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5328",
       "name": "華容",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5340",
       "name": "建榮",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5344",
       "name": "立衛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5345",
       "name": "馥鴻",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5347",
       "name": "世界",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5348",
       "name": "正能量智能",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5351",
       "name": "鈺創",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5353",
       "name": "台林",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5355",
       "name": "佳總",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5356",
       "name": "協益",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5364",
       "name": "力麗店",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5371",
       "name": "中光電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5381",
       "name": "光譜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5386",
       "name": "青雲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5392",
       "name": "能率",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5398",
       "name": "慕康生醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5403",
       "name": "中菲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5410",
       "name": "國眾",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5425",
       "name": "台半",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5426",
       "name": "振發",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5432",
       "name": "新門",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5438",
       "name": "東友",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5439",
       "name": "高技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5443",
       "name": "均豪",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5450",
       "name": "南良",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5452",
       "name": "佶優",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5455",
       "name": "昇益",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5457",
       "name": "宣德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5460",
       "name": "同協",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5464",
       "name": "霖宏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5465",
       "name": "富驊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5468",
       "name": "凱鈺",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5474",
       "name": "聰泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5475",
       "name": "德宏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5478",
       "name": "智冠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5481",
       "name": "新華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5483",
       "name": "中美晶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5487",
       "name": "通泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5488",
       "name": "松普",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5489",
       "name": "彩富",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5490",
       "name": "同亨",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5493",
       "name": "三聯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5498",
       "name": "凱崴",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5508",
       "name": "永信建",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5511",
       "name": "德昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5512",
       "name": "力麒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5514",
       "name": "三豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5516",
       "name": "雙喜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5520",
       "name": "力泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5523",
       "name": "豐謙",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5529",
       "name": "鉅陞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5530",
       "name": "龍巖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5536",
       "name": "聖暉*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5543",
       "name": "桓鼎-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5547",
       "name": "久舜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5548",
       "name": "安倉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5601",
       "name": "台聯櫃",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5603",
       "name": "陸海",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5604",
       "name": "中連",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5609",
       "name": "中菲行",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5701",
       "name": "劍湖山",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5703",
       "name": "亞都",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5704",
       "name": "老爺知",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5864",
       "name": "致和證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5878",
       "name": "台名",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5902",
       "name": "德記",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5903",
       "name": "全家",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5904",
       "name": "寶雅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "5905",
       "name": "南仁湖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6015",
       "name": "宏遠證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6016",
       "name": "康和證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6020",
       "name": "大展證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6021",
       "name": "美好證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6023",
       "name": "元大期",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6026",
       "name": "福邦證",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6028",
       "name": "公勝保經",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6101",
       "name": "寬魚國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6103",
       "name": "合邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6104",
       "name": "創惟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6109",
       "name": "亞元",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6111",
       "name": "光聚晶電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6113",
       "name": "亞矽",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6114",
       "name": "久威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6118",
       "name": "建達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6121",
       "name": "新普",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6122",
       "name": "擎邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6123",
       "name": "上奇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6124",
       "name": "業強",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6125",
       "name": "廣運",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6126",
       "name": "信音",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6127",
       "name": "九豪",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6129",
       "name": "普誠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6130",
       "name": "上亞科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6134",
       "name": "萬旭",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6138",
       "name": "茂達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6140",
       "name": "訊達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6143",
       "name": "振曜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6144",
       "name": "得利影",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6146",
       "name": "耕興",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6147",
       "name": "頎邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6148",
       "name": "驊宏資",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6150",
       "name": "撼訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6151",
       "name": "晉倫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6154",
       "name": "順發",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6156",
       "name": "松上",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6158",
       "name": "禾昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6160",
       "name": "欣技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6161",
       "name": "捷波",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6163",
       "name": "華電網",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6167",
       "name": "久正",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6169",
       "name": "昱泉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6170",
       "name": "統振",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6171",
       "name": "大城地產",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6173",
       "name": "信昌電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6174",
       "name": "安碁",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6175",
       "name": "立敦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6179",
       "name": "亞通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6180",
       "name": "橘子",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6182",
       "name": "合晶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6185",
       "name": "幃翔",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6186",
       "name": "新潤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6187",
       "name": "萬潤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6188",
       "name": "廣明",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6190",
       "name": "萬泰科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6194",
       "name": "育富",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6195",
       "name": "詩肯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6198",
       "name": "瑞築",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6199",
       "name": "天品",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "006201",
       "name": "元大富櫃50",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6203",
       "name": "海韻電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6204",
       "name": "艾華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6207",
       "name": "雷科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6208",
       "name": "日揚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6210",
       "name": "慶生",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6212",
       "name": "理銘",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6217",
       "name": "中探針",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6218",
       "name": "豪勉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6219",
       "name": "富旺",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6220",
       "name": "岳豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6221",
       "name": "晉泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6222",
       "name": "立軒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6223",
       "name": "旺矽",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6227",
       "name": "茂綸",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6228",
       "name": "全譜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6229",
       "name": "研通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6231",
       "name": "系微",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6233",
       "name": "旺玖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6234",
       "name": "高僑",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6236",
       "name": "中湛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6237",
       "name": "驊訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6240",
       "name": "松崗",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6241",
       "name": "鑫永洋",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6242",
       "name": "立康",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6244",
       "name": "茂迪",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6245",
       "name": "立端",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6246",
       "name": "臺龍",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6248",
       "name": "沛波",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6259",
       "name": "百徽",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6261",
       "name": "久元",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6263",
       "name": "普萊德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6264",
       "name": "富裔",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6265",
       "name": "方土昶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6266",
       "name": "泰詠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6270",
       "name": "倍微",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6274",
       "name": "台燿",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6275",
       "name": "元山",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6276",
       "name": "安鈦克",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6279",
       "name": "胡連",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6284",
       "name": "佳邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6290",
       "name": "良維",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6291",
       "name": "沛亨",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6292",
       "name": "迅德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6294",
       "name": "智基",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6411",
       "name": "晶焱",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6417",
       "name": "韋僑",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6418",
       "name": "詠昇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6419",
       "name": "京晨科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6423",
       "name": "億而得",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6425",
       "name": "易發",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6432",
       "name": "今展科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6435",
       "name": "大中",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6441",
       "name": "廣錠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6461",
       "name": "益得",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6462",
       "name": "神盾",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6465",
       "name": "威潤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6469",
       "name": "大樹",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6470",
       "name": "宇智",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6474",
       "name": "華豫寧",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6482",
       "name": "弘煜科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6485",
       "name": "點序",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6486",
       "name": "互動",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6488",
       "name": "環球晶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6492",
       "name": "生華科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6494",
       "name": "九齊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6496",
       "name": "科懋",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6498",
       "name": "久禾光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6499",
       "name": "益安",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6506",
       "name": "雙邦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6508",
       "name": "惠光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6509",
       "name": "聚和",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6510",
       "name": "精測",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6512",
       "name": "啟發電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6516",
       "name": "勤崴國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6517",
       "name": "保勝光學",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6523",
       "name": "達爾膚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6527",
       "name": "明達醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6530",
       "name": "創威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6532",
       "name": "瑞耘",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6535",
       "name": "順藥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6538",
       "name": "倉和",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6542",
       "name": "隆中",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6546",
       "name": "正基",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6547",
       "name": "高端疫苗",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6548",
       "name": "長科*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6556",
       "name": "勝品",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6560",
       "name": "欣普羅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6561",
       "name": "是方",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6568",
       "name": "宏觀",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6569",
       "name": "醫揚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6570",
       "name": "維田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6574",
       "name": "霈方",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6576",
       "name": "逸達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6577",
       "name": "勁豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6578",
       "name": "達邦蛋白",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6584",
       "name": "南俊國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6588",
       "name": "東典光電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6590",
       "name": "普鴻",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6593",
       "name": "台灣銘板",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6596",
       "name": "寬宏藝術",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6597",
       "name": "立誠",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6603",
       "name": "富強鑫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6609",
       "name": "瀧澤科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6612",
       "name": "奈米醫材",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6613",
       "name": "朋億*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6615",
       "name": "慧智",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6616",
       "name": "特昇-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6617",
       "name": "共信-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6620",
       "name": "漢達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6624",
       "name": "萬年清",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6629",
       "name": "泰金-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6637",
       "name": "醫影",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6640",
       "name": "均華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6642",
       "name": "富致",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6643",
       "name": "M31",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6649",
       "name": "台生材",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6651",
       "name": "全宇昕",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6654",
       "name": "天正國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6661",
       "name": "威健生技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6662",
       "name": "樂斯科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6664",
       "name": "群翊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6667",
       "name": "信紘科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6679",
       "name": "鈺太",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6680",
       "name": "鑫創電子",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6683",
       "name": "雍智科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6684",
       "name": "安格",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6690",
       "name": "安碁資訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6692",
       "name": "進能服",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6693",
       "name": "廣閎科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6697",
       "name": "東捷資訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6703",
       "name": "軒郁",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6708",
       "name": "天擎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6712",
       "name": "長聖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6716",
       "name": "應廣",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6720",
       "name": "久昌",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6721",
       "name": "信實",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6725",
       "name": "矽科宏晟",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6727",
       "name": "亞泰金屬",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6728",
       "name": "上洋",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6730",
       "name": "常廣",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6732",
       "name": "昇佳電子",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6733",
       "name": "博晟生醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6735",
       "name": "美達科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6739",
       "name": "竹陞科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6741",
       "name": "91APP*-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6751",
       "name": "智聯服務",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6752",
       "name": "叡揚",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6761",
       "name": "穩得",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6762",
       "name": "達亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6763",
       "name": "綠界科技*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6767",
       "name": "台微醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6785",
       "name": "昱展新藥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6788",
       "name": "華景電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6791",
       "name": "虎門科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6803",
       "name": "崑鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6804",
       "name": "明係",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6811",
       "name": "宏碁資訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6821",
       "name": "聯寶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6823",
       "name": "濾能",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6829",
       "name": "千附精密",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6840",
       "name": "東研信超",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6841",
       "name": "長佳智能",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6843",
       "name": "進典",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6844",
       "name": "諾貝兒",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6846",
       "name": "綠茵",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6855",
       "name": "數泓科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6856",
       "name": "鑫傳",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6859",
       "name": "伯特光",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6865",
       "name": "偉康科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6870",
       "name": "騰雲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6872",
       "name": "浩宇生醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6874",
       "name": "倍力",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6875",
       "name": "國邑*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6877",
       "name": "鏵友益",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6881",
       "name": "潤德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6884",
       "name": "海柏特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6894",
       "name": "衛司特",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6895",
       "name": "宏碩系統",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6899",
       "name": "創為精密",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6903",
       "name": "巨漢",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6904",
       "name": "伯鑫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6907",
       "name": "雅特力-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6910",
       "name": "德鴻",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6913",
       "name": "鴻呈",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6922",
       "name": "宸曜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6925",
       "name": "意藍",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6929",
       "name": "佑全",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6945",
       "name": "圓祥生技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6953",
       "name": "家碩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6961",
       "name": "旅天下",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6967",
       "name": "汎瑋材料",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6968",
       "name": "萬達寵物",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6971",
       "name": "惠民實業",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6982",
       "name": "大井泵浦",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6983",
       "name": "華洋精機",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6996",
       "name": "力領科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "6997",
       "name": "博弘",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7402",
       "name": "邑錡",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7547",
       "name": "碩網",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7556",
       "name": "意德士",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7584",
       "name": "樂意",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7642",
       "name": "昶瑞機電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7703",
       "name": "銳澤",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7704",
       "name": "明遠精密",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7708",
       "name": "全家餐飲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7709",
       "name": "榮田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7712",
       "name": "博盛半導體",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7713",
       "name": "威力德生醫",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7714",
       "name": "創泓科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7715",
       "name": "裕山",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7716",
       "name": "昱臺國際",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7717",
       "name": "萊德光電-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7718",
       "name": "友鋮",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7723",
       "name": "築間",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7728",
       "name": "光焱科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7734",
       "name": "印能科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7738",
       "name": "東聯互動",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7743",
       "name": "金利食安",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7744",
       "name": "崴寶",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7747",
       "name": "昕奇雲端",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7751",
       "name": "竑騰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7753",
       "name": "星亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7757",
       "name": "金色三麥",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7767",
       "name": "仁大資訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7770",
       "name": "君曜",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7772",
       "name": "耀穎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7777",
       "name": "能率亞洲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7782",
       "name": "光速火箭",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7792",
       "name": "安葆",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7794",
       "name": "宏碁智新",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7805",
       "name": "威聯通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7810",
       "name": "捷創科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7811",
       "name": "民盛",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7819",
       "name": "精誠金融",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7820",
       "name": "立盈",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7828",
       "name": "創新服務",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "7842",
       "name": "天能綠電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8024",
       "name": "佑華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8027",
       "name": "鈦昇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8032",
       "name": "光菱",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8034",
       "name": "榮群",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8038",
       "name": "長園科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8040",
       "name": "九暘",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8042",
       "name": "金山電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8043",
       "name": "蜜望實",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8044",
       "name": "網家",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8047",
       "name": "星雲",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8048",
       "name": "德勝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8049",
       "name": "晶采",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8050",
       "name": "廣積",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8054",
       "name": "安國",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8059",
       "name": "凱碩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8064",
       "name": "東捷",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8066",
       "name": "來思達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8067",
       "name": "志旭",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8068",
       "name": "全達",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8069",
       "name": "元太",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8071",
       "name": "能率網通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8074",
       "name": "鉅橡",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8076",
       "name": "伍豐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8077",
       "name": "洛碁",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8080",
       "name": "泰霖",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8083",
       "name": "瑞穎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8084",
       "name": "巨虹",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8085",
       "name": "福華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8086",
       "name": "宏捷科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8087",
       "name": "麗升能源",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8088",
       "name": "品安",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8089",
       "name": "康全電訊",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8091",
       "name": "翔名",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8092",
       "name": "建暐",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8093",
       "name": "保銳",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8096",
       "name": "擎亞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8097",
       "name": "常珵",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8099",
       "name": "大世科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8102",
       "name": "傑霖科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8107",
       "name": "大億金茂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8109",
       "name": "博大",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8111",
       "name": "立碁",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8121",
       "name": "越峰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8147",
       "name": "正淩",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8155",
       "name": "博智",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8171",
       "name": "天宇",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8176",
       "name": "智捷",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8182",
       "name": "加高",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8183",
       "name": "精星",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8227",
       "name": "巨有科技",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8234",
       "name": "新漢",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8240",
       "name": "華宏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8255",
       "name": "朋程",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8272",
       "name": "全景軟體",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8277",
       "name": "商丞",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8279",
       "name": "生展",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8284",
       "name": "三竹",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8289",
       "name": "泰藝",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8291",
       "name": "尚茂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8299",
       "name": "群聯",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8342",
       "name": "益張",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8349",
       "name": "恒耀",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8354",
       "name": "冠好",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8358",
       "name": "金居",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8383",
       "name": "千附",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8390",
       "name": "金益鼎",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8401",
       "name": "白紗科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8403",
       "name": "盛弘",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8409",
       "name": "商之器",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8410",
       "name": "森田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8415",
       "name": "大國鋼",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8416",
       "name": "實威",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8421",
       "name": "旭源",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8423",
       "name": "保綠-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8424",
       "name": "惠普",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8426",
       "name": "紅木-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8431",
       "name": "匯鑽科",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8432",
       "name": "東生華",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8433",
       "name": "弘帆",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8435",
       "name": "鉅邁",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8436",
       "name": "大江",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8437",
       "name": "大地-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8440",
       "name": "綠電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8444",
       "name": "綠河-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8446",
       "name": "華研",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8450",
       "name": "霹靂",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8455",
       "name": "大拓-KY",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8472",
       "name": "夠麻吉",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8477",
       "name": "創業家",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8489",
       "name": "三貝德",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8905",
       "name": "裕國",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8906",
       "name": "花王",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8908",
       "name": "欣雄",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8916",
       "name": "光隆",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8917",
       "name": "欣泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8921",
       "name": "沈氏",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8923",
       "name": "時報",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8924",
       "name": "大田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8927",
       "name": "北基",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8928",
       "name": "鉅明",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8929",
       "name": "富堡",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8930",
       "name": "青鋼",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8931",
       "name": "大汽電",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8932",
       "name": "智通*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8933",
       "name": "愛地雅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8935",
       "name": "邦泰",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8936",
       "name": "國統",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8937",
       "name": "合騏*",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8938",
       "name": "明安",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8941",
       "name": "關中",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "8942",
       "name": "森鉅",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "009806",
       "name": "台新標普500",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "009807",
       "name": "台新標普科技精選",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "009814",
       "name": "富邦標普500",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "009815",
       "name": "大華美國MAG7+",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "009822",
       "name": "華南永昌未來金融",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "9949",
       "name": "琉園",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "9950",
       "name": "萬國通",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "9951",
       "name": "皇田",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "9960",
       "name": "邁達康",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "9962",
       "name": "有益",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020001",
       "name": "富邦存股雙十N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020025",
       "name": "統一亞洲半導體N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020027",
       "name": "元大上櫃ESG成長N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020033",
       "name": "統一恒生科期N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020035",
       "name": "元大上櫃ESG高息N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020040",
       "name": "元大上櫃ESG龍頭N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     },
     {
       "code": "020041",
       "name": "兆豐半導體氣候N",
-      "type": "otc"
+      "type": "otc",
+      "sector": ""
     }
   ]
 }
