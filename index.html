@@ -1313,6 +1313,36 @@ async function syncFromFirestore(uid, { getDoc, doc, onSnapshot }, retryCount){
           }
         });
         updateCustomWlBadge && updateCustomWlBadge();
+        // Fetch history + prices for newly added custom stocks
+        setTimeout(function(){
+          var customInWL = WL.filter(function(w){
+            return WATCHLIST_CUSTOM.indexOf(w.tick) >= 0;
+          });
+          var needHist = customInWL.filter(function(w){
+            return !(SD[w.sym] && SD[w.sym].histReal);
+          });
+          if(needHist.length > 0 && typeof fetchHistoryBackground === 'function'){
+            needHist.forEach(function(w){
+              fetchHistoryBackground(w).then(function(){
+                renderAll && renderAll();
+                updateSignalCounts && updateSignalCounts();
+              }).catch(function(){});
+            });
+          }
+          // Also fetch prices for custom stocks
+          if(customInWL.length > 0){
+            var codes = customInWL.filter(function(w){ return w.type==='tw'; }).map(function(w){ return w.tick; });
+            if(codes.length > 0){
+              safeFetch(PROXY+'/twse/quote?symbols='+codes.join(',')).then(function(j){
+                if(j && j.data) j.data.forEach(function(q){
+                  var sym = q.sym+'.TW';
+                  if(SD[sym]){ SD[sym].price=q.price; SD[sym].prev=q.prev; SD[sym].chg=q.chg; SD[sym].chgPct=q.chgPct; SD[sym].vol=q.vol; SD[sym].real=true; }
+                });
+                renderAll && renderAll();
+              }).catch(function(){});
+            }
+          }
+        }, 500);
       }
       // Restore tracker records
       if(Array.isArray(data.tracker)){
