@@ -3985,7 +3985,8 @@ function openSearch(){
   document.body.style.overflow = 'hidden';
   setTimeout(function(){ document.getElementById('searchInput').focus(); }, 50);
   document.getElementById('searchInput').value = '';
-  renderSearchResults('');
+  var resEl = document.getElementById('searchResults');
+  if(resEl) resEl.innerHTML = '<div class="search-empty">輸入股票代號或名稱開始搜尋<br><span style="font-size:10px;color:var(--mu)">可搜尋監控清單或全市場 1800+ 支</span></div>';
 }
 
 function closeSearch(e){
@@ -4081,7 +4082,13 @@ function selectSearchResult(sym){
   openModal(sym);
 }
 
-function onSearchInput(val){ renderSearchResults(val).catch(console.warn); }
+var _searchDebounce = null;
+function onSearchInput(val){
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(function(){
+    renderSearchResults(val).catch(console.warn);
+  }, 150);
+}
 
 function onSearchKey(e){
   var items = document.querySelectorAll('.search-item');
