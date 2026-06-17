@@ -2692,7 +2692,7 @@ function renderGrid(){
         <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
           <button onclick="event.stopPropagation();toggleCustomWl('${w.tick}')" style="background:none;border:none;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;color:var(--gd)" title="${WATCHLIST_CUSTOM.includes(w.tick)?'從自選移除':'加入自選'}">${WATCHLIST_CUSTOM.includes(w.tick)?'⭐':'☆'}</button>
           <button class="card-watch-btn" data-tick="${w.tick}" title="${isInWatchList(w.tick)?'從觀察清單移除':'加入觀察清單'}"
-            style="background:none;border:none;cursor:pointer;font-size:13px;padding:2px 3px;line-height:1;color:${isInWatchList(w.tick)?'var(--up)':'var(--mu)'};opacity:${isInWatchList(w.tick)?'1':'.7'}">${isInWatchList(w.tick)?'👁':'👁'}</button>
+            style="background:none;border:none;cursor:pointer;font-size:14px;padding:3px 4px;line-height:1;color:${isInWatchList(w.tick)?'var(--up)':'var(--mu2)'};opacity:${isInWatchList(w.tick)?'1':'.85'};transition:all .15s">${isInWatchList(w.tick)?'👁':'👁'}</button>
           <button class="card-rm-btn" data-tick="${w.tick}" title="移除此股票"
             style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:11px;padding:2px 4px;opacity:.5;line-height:1">✕</button>
         </span>
@@ -4457,7 +4457,9 @@ function renderWatchModal(){
   var el = document.getElementById('watch-modal-body');
   if(!el) return;
   if(!WATCH_LIST.length){
-    el.innerHTML = '<div style="text-align:center;color:var(--mu);padding:40px 0">尚無觀察項目<br><span style="font-size:11px">點擊個股卡片上的 👁 按鈕加入觀察</span></div>';
+    el.innerHTML = '<div style="text-align:center;color:var(--mu);padding:40px 0">'
+      +'尚無觀察項目<br>'
+      +'<span style="font-size:11px">點擊個股卡片上的 👁 按鈕加入觀察</span></div>';
     return;
   }
 
@@ -4472,105 +4474,116 @@ function renderWatchModal(){
   var sorted = WATCH_LIST.slice();
   if(WATCH_SORT==='dist'){
     sorted.sort(function(a,b){
-      var wa=WL.find(function(w){return w.tick===a.tick;}), wb=WL.find(function(w){return w.tick===b.tick;});
-      var pa=wa&&SD[wa.sym]?SD[wa.sym].price:0, pb=wb&&SD[wb.sym]?SD[wb.sym].price:0;
+      var wa=WL.find(function(w){return w.tick===a.tick;}),wb=WL.find(function(w){return w.tick===b.tick;});
+      var pa=wa&&SD[wa.sym]?SD[wa.sym].price:0,pb=wb&&SD[wb.sym]?SD[wb.sym].price:0;
       var da=a.targetPrice&&pa?(pa-a.targetPrice)/a.targetPrice*100:999;
       var db=b.targetPrice&&pb?(pb-b.targetPrice)/b.targetPrice*100:999;
       return da-db;
     });
   } else if(WATCH_SORT==='chg'){
     sorted.sort(function(a,b){
-      var wa=WL.find(function(w){return w.tick===a.tick;}), wb=WL.find(function(w){return w.tick===b.tick;});
-      var da=wa&&SD[wa.sym]?SD[wa.sym].chgPct:0, db=wb&&SD[wb.sym]?SD[wb.sym].chgPct:0;
+      var wa=WL.find(function(w){return w.tick===a.tick;}),wb=WL.find(function(w){return w.tick===b.tick;});
+      var da=wa&&SD[wa.sym]?SD[wa.sym].chgPct:0,db=wb&&SD[wb.sym]?SD[wb.sym].chgPct:0;
       return db-da;
     });
   }
 
   var rows = sorted.map(function(item){
-    var wl=WL.find(function(w){return w.tick===item.tick;}), d=wl?SD[wl.sym]:null;
-    var cur=d?d.price:null, tw=wl&&wl.type==='tw';
-    var chgCol=d&&d.chgPct!==undefined?(d.chgPct>0?(tw?'var(--dn)':'var(--up)'):(tw?'var(--up)':'var(--dn)')):'var(--mu)';
+    var wl=WL.find(function(w){return w.tick===item.tick;}),d=wl?SD[wl.sym]:null;
+    var cur=d?d.price:null,tw=wl&&wl.type==='tw';
+    var chgPct=d&&d.chgPct!==undefined?d.chgPct:null;
+    var priceCol=chgPct!==null?(chgPct>0?(tw?'var(--dn)':'var(--up)'):(tw?'var(--up)':'var(--dn)')):'var(--mu)';
     var status=item.status||'watching';
     var sCol=WATCH_STATUS_COLORS[status]||'var(--mu)';
     var sLabel=WATCH_STATUS_LABELS[status]||'等待中';
     var isAlert=item.targetPrice&&cur&&cur<=item.targetPrice*1.02;
 
-    // P&L or target distance
+    // P&L
     var pnlHtml='';
     if(item.buyPrice&&cur){
       var pnl=(cur-item.buyPrice)/item.buyPrice*100;
-      pnlHtml='<div style="font-size:11px;font-weight:600;color:'+(pnl>=0?'var(--up)':'var(--dn)');+'margin-top:2px">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'%</div>';
-    } else if(item.targetPrice&&cur){
-      var dist=(cur-item.targetPrice)/item.targetPrice*100;
-      pnlHtml='<div style="font-size:10px;color:'+(dist<=0?'var(--up)':'var(--mu)')+';margin-top:2px">'+(dist<=0?'▼ 接近目標':'麻離目標 '+Math.abs(dist).toFixed(1)+'%')+'</div>';
+      pnlHtml='<span style="font-size:11px;font-weight:600;color:'+(pnl>=0?'var(--up)':'var(--dn)')+';">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'% 報酬</span>';
     }
 
-    return '<div class="wi-card" data-tick="'+item.tick+'" style="background:var(--s1);border:1px solid '+(isAlert?'rgba(52,211,153,.4)':'var(--bd)')+';border-radius:10px;padding:14px 16px;margin-bottom:10px">'
-      // Row 1: code + name + price + status + delete
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-        +'<div style="display:flex;align-items:center;gap:10px">'
-          +'<span style="font-family:monospace;font-weight:700;font-size:15px;color:var(--tw)">'+item.tick+'</span>'
-          +'<span style="font-size:13px;color:var(--tx);font-weight:500">'+item.name+'</span>'
-          +(isAlert?'<span style="font-size:9px;background:rgba(52,211,153,.15);color:var(--up);padding:2px 8px;border-radius:4px;font-weight:600">⚡接近目標</span>':'')
-          +'<span style="font-size:10px;background:var(--s2);color:'+sCol+';padding:2px 8px;border-radius:4px">'+sLabel+'</span>'
+    return (
+      // Card container
+      '<div style="background:var(--s1);border:1px solid '+(isAlert?'var(--up)':'var(--bd)')+';border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative">'
+
+      // ── Delete btn top-right ──
+      +'<button class="wm-rm-btn" data-tick="'+item.tick+'"'
+        +' style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:18px;opacity:.45;line-height:1;padding:0;z-index:1">×</button>'
+
+      // ── Row 1: code + name (left)  price (right) ──
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;padding-right:28px;margin-bottom:6px">'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0">'
+          +'<span style="font-family:monospace;font-weight:700;font-size:16px;color:var(--tw);white-space:nowrap">'+item.tick+'</span>'
+          +'<span style="font-size:14px;color:var(--tx);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">'+item.name+'</span>'
         +'</div>'
-        +'<div style="display:flex;align-items:center;gap:12px">'
-          +(cur?'<div style="text-align:right"><div style="font-family:monospace;font-size:15px;font-weight:700;color:'+chgCol+'">'+cur+'</div>'+(d&&d.chgPct!==undefined?'<div style="font-size:10px;color:'+chgCol+'">'+(d.chgPct>=0?'+':'')+d.chgPct.toFixed(2)+'%</div>':'')+'</div>':'')
-          +pnlHtml
-          +'<button class="wm-rm-btn" data-tick="'+item.tick+'" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:16px;padding:0;opacity:.4;line-height:1">×</button>'
+        +'<div style="text-align:right;flex-shrink:0">'
+          +(cur?'<div style="font-family:monospace;font-size:16px;font-weight:700;color:'+priceCol+'">'+cur+'</div>':'')
+          +(chgPct!==null?'<div style="font-size:11px;color:'+priceCol+'">'+(chgPct>=0?'+':'')+chgPct.toFixed(2)+'%</div>':'')
+          +(pnlHtml?'<div style="margin-top:2px">'+pnlHtml+'</div>':'')
         +'</div>'
       +'</div>'
-      // Row 2: editable fields
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr;gap:8px;align-items:end">'
+
+      // ── Row 2: tags (status + alert + date) ──
+      +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px">'
+        +'<span style="font-size:10px;background:var(--s2);color:'+sCol+';padding:2px 8px;border-radius:4px;border:1px solid '+sCol+'40">'+sLabel+'</span>'
+        +(isAlert?'<span style="font-size:10px;background:rgba(52,211,153,.12);color:var(--up);padding:2px 8px;border-radius:4px;font-weight:600;border:1px solid rgba(52,211,153,.3)">⚡ 接近目標</span>':'')
+        +(item.addedAt?'<span style="font-size:10px;color:var(--mu)">加入 '+item.addedAt+'</span>':'')
+      +'</div>'
+
+      // ── Row 3: 4 editable fields ──
+      +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
         // Target price
         +'<div>'
           +'<div style="font-size:10px;color:var(--mu);margin-bottom:3px">目標買入價</div>'
-          +'<input type="number" step="0.01" value="'+(item.targetPrice||'')+'" placeholder="--" '
-          +'data-tick="'+item.tick+'" data-field="targetPrice" '
-          +'style="width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:5px 8px;font-size:12px;font-family:monospace;outline:none">'
+          +'<input type="number" step="0.01" value="'+(item.targetPrice||'')+'" placeholder="--"'
+            +' data-tick="'+item.tick+'" data-field="targetPrice"'
+            +' style="width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:6px 8px;font-size:12px;font-family:monospace;outline:none;box-sizing:border-box">'
         +'</div>'
         // Buy price
         +'<div>'
           +'<div style="font-size:10px;color:var(--mu);margin-bottom:3px">實際買入價</div>'
-          +'<input type="number" step="0.01" value="'+(item.buyPrice||'')+'" placeholder="--" '
-          +'data-tick="'+item.tick+'" data-field="buyPrice" '
-          +'style="width:100%;background:var(--s2);border:1px solid '+(item.buyPrice?'var(--up)':'var(--bd)')+';color:'+(item.buyPrice?'var(--up)':'var(--mu2)')+';border-radius:6px;padding:5px 8px;font-size:12px;font-family:monospace;outline:none">'
+          +'<input type="number" step="0.01" value="'+(item.buyPrice||'')+'" placeholder="--"'
+            +' data-tick="'+item.tick+'" data-field="buyPrice"'
+            +' style="width:100%;background:var(--s2);border:1px solid '+(item.buyPrice?'var(--up)':'var(--bd)')+';color:'+(item.buyPrice?'var(--up)':'var(--mu2)')+';border-radius:6px;padding:6px 8px;font-size:12px;font-family:monospace;outline:none;box-sizing:border-box">'
         +'</div>'
         // Status
         +'<div>'
           +'<div style="font-size:10px;color:var(--mu);margin-bottom:3px">狀態</div>'
-          +'<select data-tick="'+item.tick+'" data-field="status" '
-          +'style="width:100%;background:var(--s2);border:1px solid var(--bd);color:'+sCol+';border-radius:6px;padding:5px 6px;font-size:12px;cursor:pointer;font-family:inherit;outline:none">'
-          +Object.keys(WATCH_STATUS_LABELS).map(function(k){
-            return '<option value="'+k+'"'+(status===k?' selected':'')+'>'+WATCH_STATUS_LABELS[k]+'</option>';
-          }).join('')
+          +'<select data-tick="'+item.tick+'" data-field="status"'
+            +' style="width:100%;background:var(--s2);border:1px solid var(--bd);color:'+sCol+';border-radius:6px;padding:6px;font-size:12px;cursor:pointer;font-family:inherit;outline:none;box-sizing:border-box">'
+            +Object.keys(WATCH_STATUS_LABELS).map(function(k){
+              return '<option value="'+k+'"'+(status===k?' selected':'')+'>'+WATCH_STATUS_LABELS[k]+'</option>';
+            }).join('')
           +'</select>'
         +'</div>'
         // Note
         +'<div>'
           +'<div style="font-size:10px;color:var(--mu);margin-bottom:3px">備註</div>'
-          +'<input type="text" value="'+(item.note||'')+'" placeholder="輸入備註..." '
-          +'data-tick="'+item.tick+'" data-field="note" '
-          +'style="width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:5px 8px;font-size:12px;outline:none;font-family:inherit">'
+          +'<input type="text" value="'+(item.note||'')+'" placeholder="輸入備註..."'
+            +' data-tick="'+item.tick+'" data-field="note"'
+            +' style="width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:6px 8px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box">'
         +'</div>'
       +'</div>'
-      +'<div style="margin-top:8px;font-size:10px;color:var(--mu)">加入日：'+(item.addedAt||'')+'</div>'
-    +'</div>';
+    +'</div>'
+    );
   }).join('');
 
-  el.innerHTML = '<div style="display:flex;gap:6px;margin-bottom:14px">'
-    +'<span style="font-size:11px;color:var(--mu);line-height:2">排序：</span>'
-    +sortBtns+'</div>'
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">'
+      +'<span style="font-size:11px;color:var(--mu)">排序：</span>'
+      +sortBtns
+    +'</div>'
     +rows;
 
-  // Event delegation
+  // Events
   el.querySelectorAll('.ws-sort-btn').forEach(function(btn){
     btn.addEventListener('click', function(){ WATCH_SORT=this.dataset.sort; renderWatchModal(); });
   });
-  el.querySelectorAll('input[data-field], select[data-field]').forEach(function(inp){
-    inp.addEventListener('change', function(){
-      updateWatchItem(this.dataset.tick, this.dataset.field, this.value);
-    });
+  el.querySelectorAll('input[data-field],select[data-field]').forEach(function(inp){
+    inp.addEventListener('change', function(){ updateWatchItem(this.dataset.tick,this.dataset.field,this.value); });
   });
   el.querySelectorAll('.wm-rm-btn').forEach(function(btn){
     btn.addEventListener('click', function(){ removeWatchItem(this.dataset.tick); renderWatchModal(); });
