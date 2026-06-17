@@ -1334,9 +1334,12 @@ async function initFirebase(){
         safeStorage('remove','sr_tracker');
         safeStorage('remove','sr_custom_wl');
         safeStorage('remove','sr_removed_stocks');
+        safeStorage('remove','sr_watchlist');
         WATCHLIST_CUSTOM = [];
+        WATCH_LIST = [];
         updateCustomWlBadge && updateCustomWlBadge();
         loadTracker && loadTracker();
+        renderWatchSection && renderWatchSection();
       } catch(e){}
       await signOut(fbAuth);
       showToast('已登出');
@@ -4520,9 +4523,29 @@ function renderWatchModal(){
           +'<span style="font-size:14px;color:var(--tx);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">'+item.name+'</span>'
         +'</div>'
         +'<div style="text-align:right;flex-shrink:0">'
-          +(cur?'<div style="font-family:monospace;font-size:16px;font-weight:700;color:'+priceCol+'">'+cur+'</div>':'')
-          +(chgPct!==null?'<div style="font-size:11px;color:'+priceCol+'">'+(chgPct>=0?'+':'')+chgPct.toFixed(2)+'%</div>':'')
-          +(pnlHtml?'<div style="margin-top:2px">'+pnlHtml+'</div>':'')
+          // Line 1: price + today change
+          +'<div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end">'
+            +(cur?'<span style="font-family:monospace;font-size:16px;font-weight:700;color:'+priceCol+'">'+cur+'</span>':'')
+            +(chgPct!==null?'<span style="font-size:11px;color:'+priceCol+'">'+(chgPct>=0?'+':'')+chgPct.toFixed(2)+'%</span>':'')
+          +'</div>'
+          // Line 2: buy price + P&L OR target distance
+          +(item.buyPrice&&cur
+            ? '<div style="font-size:11px;color:var(--mu);margin-top:3px">'
+                +'<span>買 '+item.buyPrice+'</span>'
+                +' <span style="color:'+(((cur-item.buyPrice)/item.buyPrice*100)>=0?'var(--up)':'var(--dn)')+';font-weight:600">'
+                  +(((cur-item.buyPrice)/item.buyPrice*100)>=0?'↗':'↘')+' '
+                  +(((cur-item.buyPrice)/item.buyPrice*100)>=0?'+':'')+((cur-item.buyPrice)/item.buyPrice*100).toFixed(2)+'%'
+                +'</span>'
+              +'</div>'
+            : (item.targetPrice&&cur
+              ? '<div style="font-size:11px;color:var(--mu);margin-top:3px">'
+                  +'目標 '+item.targetPrice
+                  +' <span style="color:'+(cur<=item.targetPrice?'var(--up)':'var(--mu)')+'">'
+                    +(cur<=item.targetPrice?'▼ 達標':'麻離 '+Math.abs((cur-item.targetPrice)/item.targetPrice*100).toFixed(1)+'%')
+                  +'</span>'
+                +'</div>'
+              : '')
+          )
         +'</div>'
       +'</div>'
 
